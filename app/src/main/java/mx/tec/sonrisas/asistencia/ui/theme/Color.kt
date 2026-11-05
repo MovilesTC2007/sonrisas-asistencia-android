@@ -2,8 +2,6 @@ package mx.tec.sonrisas.asistencia.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Brand — see docs/identidad-de-marca.md for the full token rationale.
-// Pulled from the institutional logo's rainbow stars; morado (purple) leads.
 val BrandPurple = Color(0xFF6C4FD1)
 val BrandPurpleDeep = Color(0xFF241B3D)
 val BrandPurpleLight = Color(0xFFEDE7FB)

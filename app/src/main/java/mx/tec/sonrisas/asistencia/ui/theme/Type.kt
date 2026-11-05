@@ -47,10 +47,6 @@ private fun label(size: Double) = TextStyle(
     letterSpacing = (0.02 * size).sp,
 )
 
-// Named styles matching the token ramp in docs/identidad-de-marca.md — reach
-// for these directly where a Material3 slot doesn't fit; everything else
-// (Button, Card, Text with no explicit style) picks these up automatically
-// through the Typography object below.
 object SonrisasTextStyle {
     val Display = display(23)
     val Title = title(17)

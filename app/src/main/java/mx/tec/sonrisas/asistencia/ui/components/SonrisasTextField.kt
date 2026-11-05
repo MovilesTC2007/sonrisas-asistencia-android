@@ -28,11 +28,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 
-/**
- * The "icon chip + label above value" field from docs/identidad-de-marca.md —
- * not a Material3 OutlinedTextField, so it keeps the brand's visual language
- * across every form in the app.
- */
+
 @Composable
 fun SonrisasTextField(
     value: String,
