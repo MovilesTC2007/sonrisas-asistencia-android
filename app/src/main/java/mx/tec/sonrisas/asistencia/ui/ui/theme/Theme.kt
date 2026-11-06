@@ -1,6 +1,5 @@
-package mx.tec.sonrisas.asistencia.ui.theme
+package mx.tec.sonrisas.asistencia.ui.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
