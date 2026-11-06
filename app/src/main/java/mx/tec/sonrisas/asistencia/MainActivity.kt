@@ -7,11 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import mx.tec.sonrisas.asistencia.ui.screens.LoginScreen
+import mx.tec.sonrisas.asistencia.ui.screens.CreateAccountScreen
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SonrisasAsistenciasTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginScreen(
+                    CreateAccountScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -33,8 +32,8 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginPreview() {
+fun CreateAccountPreview() {
     SonrisasAsistenciasTheme {
-       LoginScreen()
+       CreateAccountScreen()
     }
 }
