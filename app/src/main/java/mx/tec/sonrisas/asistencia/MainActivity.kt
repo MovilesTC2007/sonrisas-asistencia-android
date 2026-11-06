@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import mx.tec.sonrisas.asistencia.ui.screens.CreateAccountScreen
+import mx.tec.sonrisas.asistencia.ui.screens.LocationRequestScreen
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SonrisasAsistenciasTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    CreateAccountScreen(
+                    LocationRequestScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -32,8 +33,8 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun CreateAccountPreview() {
+fun LocationRequestScreenPreview() {
     SonrisasAsistenciasTheme {
-       CreateAccountScreen()
+       LocationRequestScreen()
     }
 }
