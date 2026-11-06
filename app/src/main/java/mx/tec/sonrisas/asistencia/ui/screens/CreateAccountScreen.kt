@@ -60,6 +60,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusSm
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
+import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
 @Composable
@@ -83,12 +84,12 @@ fun CreateAccountScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = Spacing.xl),
         ) {
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(Spacing.md))
             CreateAccountHeader()
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(Spacing.md))
             Text(
                 text = "Tu responsable te comparte el código para unirte a tu estancia.",
                 style = SonrisasTextStyle.Body,
@@ -96,7 +97,7 @@ fun CreateAccountScreen(modifier: Modifier = Modifier) {
             )
 
             // Tarjeta 1: Código Invitación
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(Spacing.xl))
             FormCard {
                 SonrisasTextField(
                     value = invitationCode,
@@ -105,11 +106,11 @@ fun CreateAccountScreen(modifier: Modifier = Modifier) {
                     icon = Icons.Outlined.Key,
                 )
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Spacing.sm))
             EstanciaCaption(estancia = "Mi Segunda Casita")
 
             // Tarjeta 2: Datos de la Persona
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Spacing.lg))
             FormCard {
                 SonrisasTextField(
                     value = fullName,
@@ -117,7 +118,7 @@ fun CreateAccountScreen(modifier: Modifier = Modifier) {
                     label = "Nombre completo",
                     icon = Icons.Outlined.Person,
                 )
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(Spacing.md))
                 SonrisasTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -125,7 +126,7 @@ fun CreateAccountScreen(modifier: Modifier = Modifier) {
                     icon = Icons.Outlined.Email,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 )
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(Spacing.md))
                 SonrisasTextField(
                     value = password,
                     onValueChange = { password = it },
@@ -157,34 +158,34 @@ fun CreateAccountScreen(modifier: Modifier = Modifier) {
                     },
                 )
             }
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Spacing.sm))
             Text(
                 text = "Usa al menos 8 caracteres, incluye al menos un carácter especial y un número.",
                 style = SonrisasTextStyle.Caption,
                 color = InkFaint,
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier.padding(horizontal = Spacing.xs),
             )
 
             // Aviso de privacidad
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(Spacing.xl))
             PrivacyConsentRow(
                 checked = privacyAccepted,
                 onCheckedChange = { privacyAccepted = it },
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(Spacing.md))
             Text(
                 text = "La aceptación es necesaria para activar tu cuenta.",
                 style = SonrisasTextStyle.Caption,
                 color = InkFaint,
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier.padding(horizontal = Spacing.xs),
             )
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Spacing.xxl))
         }
 
         SonrisasPrimaryButton(
             text = "Activar cuenta",
             onClick = {},
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 16.dp),
+            modifier = Modifier.padding(start = Spacing.xl, end = Spacing.xl, top = Spacing.sm, bottom = Spacing.lg),
         )
     }
 }
@@ -209,7 +210,7 @@ private fun CreateAccountHeader() {
                 )
             }
         }
-        Spacer(Modifier.size(8.dp))
+        Spacer(Modifier.size(Spacing.sm))
         Text(
             text = "Activar cuenta",
             style = SonrisasTextStyle.Display,
@@ -225,7 +226,7 @@ private fun FormCard(content: @Composable () -> Unit) {
             .fillMaxWidth()
             .clip(RadiusLg)
             .background(SurfaceWhite)
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = Spacing.lg, vertical = Spacing.md),
         verticalArrangement = Arrangement.Top,
     ) {
         content()
@@ -243,7 +244,7 @@ private fun EstanciaCaption(estancia: String) {
         },
         style = SonrisasTextStyle.Caption,
         color = InkSoft,
-        modifier = Modifier.padding(horizontal = 4.dp),
+        modifier = Modifier.padding(horizontal = Spacing.xs),
     )
 }
 
@@ -257,7 +258,7 @@ private fun PrivacyConsentRow(
             .fillMaxWidth()
             .clip(RadiusLg)
             .background(SurfaceWhite)
-            .padding(horizontal = 8.dp, vertical = 8.dp),
+            .padding(horizontal = Spacing.sm, vertical = Spacing.sm),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Checkbox(
@@ -270,7 +271,7 @@ private fun PrivacyConsentRow(
             ),
             modifier = Modifier.size(48.dp),
         )
-        Spacer(Modifier.size(4.dp))
+        Spacer(Modifier.size(Spacing.xs))
         Column {
             Text(
                 text = "Acepto el aviso de privacidad",

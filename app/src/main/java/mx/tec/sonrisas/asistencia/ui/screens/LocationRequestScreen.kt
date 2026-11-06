@@ -43,12 +43,9 @@ import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
+import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
-/**
- * Permisos de ubicación — pantalla solo visual (mockup p. 4).
- * Sin lógica: los onClick están vacíos a propósito.
- */
 @Composable
 fun LocationRequestScreen(modifier: Modifier = Modifier) {
     Column(
@@ -62,46 +59,43 @@ fun LocationRequestScreen(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = Spacing.xl),
         ) {
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(Spacing.md))
             LocationHeader()
-
-            // Aire generoso antes del bloque central, como en el mockup.
+            
             Spacer(Modifier.height(88.dp))
             LocationHero()
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Spacing.xxl))
             Text(
                 text = "Solo usamos tu ubicación al momento de registrar tu entrada " +
                         "o salida, para confirmar que estás en la estancia. " +
                         "No rastreamos tu ubicación.",
                 style = SonrisasTextStyle.Body,
                 color = InkPrimary,
-                modifier = Modifier.padding(horizontal = 4.dp),
+                modifier = Modifier.padding(horizontal = Spacing.xs),
             )
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Spacing.xxl))
             PrivacyNoteCard(
                 text = "Tu privacidad importa. El permiso se usa únicamente en ese momento.",
             )
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(Spacing.xxl))
         }
 
         SonrisasPrimaryButton(
             text = "Permitir ubicación",
             onClick = {},
             leadingIcon = Icons.Outlined.LocationOn,
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 16.dp),
+            modifier = Modifier.padding(start = Spacing.xl, end = Spacing.xl, top = Spacing.sm, bottom = Spacing.lg),
         )
     }
 }
 
-/** Encabezado: chip de regreso + nombre de pantalla (mismo patrón que Activar cuenta). */
 @Composable
 private fun LocationHeader() {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        // Área táctil de 48 dp; el chip visible mide 40 dp.
         IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
             Box(
                 modifier = Modifier
@@ -118,7 +112,7 @@ private fun LocationHeader() {
                 )
             }
         }
-        Spacer(Modifier.size(8.dp))
+        Spacer(Modifier.size(Spacing.sm))
         Text(
             text = "Permisos de ubicación",
             style = SonrisasTextStyle.Display,
@@ -128,7 +122,6 @@ private fun LocationHeader() {
     }
 }
 
-/** Bloque central: círculo con pin + titular en morado. */
 @Composable
 private fun LocationHero() {
     Column(
@@ -144,12 +137,12 @@ private fun LocationHero() {
         ) {
             Icon(
                 imageVector = Icons.Outlined.LocationOn,
-                contentDescription = null, // decorativo; el titular ya da el contexto
+                contentDescription = null,
                 tint = BrandPurple,
                 modifier = Modifier.size(36.dp),
             )
         }
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(Spacing.xxl))
         Text(
             text = "Solo al registrar\ntu entrada o salida",
             style = SonrisasTextStyle.Display,
@@ -159,7 +152,6 @@ private fun LocationHero() {
     }
 }
 
-/** Nota de privacidad: tarjeta blanca con chip de icono, igual que los campos de formulario. */
 @Composable
 private fun PrivacyNoteCard(text: String) {
     Row(
@@ -167,7 +159,7 @@ private fun PrivacyNoteCard(text: String) {
             .fillMaxWidth()
             .clip(RadiusLg)
             .background(SurfaceWhite)
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = Spacing.lg, vertical = Spacing.lg),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
@@ -185,7 +177,7 @@ private fun PrivacyNoteCard(text: String) {
                 modifier = Modifier.size(15.dp),
             )
         }
-        Spacer(Modifier.size(12.dp))
+        Spacer(Modifier.size(Spacing.md))
         Text(
             text = text,
             style = SonrisasTextStyle.Caption,
