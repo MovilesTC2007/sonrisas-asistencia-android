@@ -21,11 +21,6 @@ import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
-/**
- * The solid pill button — primary action on a screen (Entrar, Comenzar, …).
- * [leadingIcon] es opcional (p. ej. el pin de "Permitir ubicación"); con null
- * se comporta exactamente igual que antes, así que Login y Activar cuenta no cambian.
- */
 @Composable
 fun SonrisasPrimaryButton(
     text: String,
@@ -58,7 +53,6 @@ fun SonrisasPrimaryButton(
     }
 }
 
-/** The tinted pill button — secondary action (Código de invitación, …). */
 @Composable
 fun SonrisasTintedButton(
     text: String,
@@ -82,7 +76,6 @@ fun SonrisasTintedButton(
     }
 }
 
-/** A plain text link, centered — ¿Olvidaste tu contraseña?, and similar. */
 @Composable
 fun SonrisasTextLink(
     text: String,
