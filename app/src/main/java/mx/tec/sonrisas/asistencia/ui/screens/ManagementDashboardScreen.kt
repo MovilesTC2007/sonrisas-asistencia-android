@@ -14,12 +14,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -86,11 +89,30 @@ fun DirectorDashboardScreen(
                 .padding(horizontal = Spacing.xxl),
         ) {
             Spacer(modifier = Modifier.height(Spacing.xxl))
-            Text(
-                text = "Panel de Dirección",
-                style = SonrisasTypography.displayLarge,
-                color = InkPrimary,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(BrandPurpleLight),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = "Regresar",
+                            tint = BrandPurple,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                }
+                Spacer(Modifier.size(Spacing.sm))
+                Text(
+                    text = "Panel de Dirección",
+                    style = SonrisasTypography.displayMedium,
+                    color = InkPrimary,
+                )
+            }
             Spacer(modifier = Modifier.height(Spacing.xl))
             Row(
                 modifier = Modifier.fillMaxWidth(),

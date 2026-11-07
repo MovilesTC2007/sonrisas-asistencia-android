@@ -1,7 +1,9 @@
 package mx.tec.sonrisas.asistencia.ui.screens
+import android.R.attr.text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,7 +50,10 @@ import androidx.compose.ui.graphics.Color
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.WifiOff
+import androidx.compose.material3.IconButton
+import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
 import mx.tec.sonrisas.asistencia.ui.theme.SurfacePeach
 
@@ -88,11 +93,30 @@ fun AttendanceScreen(
                 .padding(horizontal = Spacing.xxl),
         ) {
             Spacer(modifier = Modifier.height(Spacing.xxl))
-            Text(
-                text = "Hola, $userName",
-                style = SonrisasTypography.displayLarge,
-                color = InkPrimary,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(BrandPurpleLight),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = "Regresar",
+                            tint = BrandPurple,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                }
+                Spacer(Modifier.size(Spacing.sm))
+                Text(
+                    text = "Hola, $userName",
+                    style = SonrisasTypography.displayMedium,
+                    color = InkPrimary,
+                )
+            }
             Spacer(modifier = Modifier.height(Spacing.xl))
 
             if (!isOnline) {

@@ -15,15 +15,18 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,6 +49,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
 import mx.tec.sonrisas.asistencia.ui.theme.AccentYellow
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
+import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
@@ -94,11 +98,30 @@ fun RequestsScreen(
                 .padding(horizontal = Spacing.xxl),
         ) {
             Spacer(modifier = Modifier.height(Spacing.xxl))
-            Text(
-                text = "Solicitudes",
-                style = SonrisasTypography.displayLarge,
-                color = InkPrimary,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(BrandPurpleLight),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = "Regresar",
+                            tint = BrandPurple,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                }
+                Spacer(Modifier.size(Spacing.sm))
+                Text(
+                    text = "Solicitudes",
+                    style = SonrisasTypography.displayMedium,
+                    color = InkPrimary,
+                )
+            }
             Spacer(modifier = Modifier.height(Spacing.sm))
             Text(
                 text = "¿Qué necesitas avisar?",
