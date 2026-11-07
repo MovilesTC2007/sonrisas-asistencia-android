@@ -27,3 +27,14 @@ val AccentYellow = Color(0xFFFFC83D)
 val AccentOrange = Color(0xFFFF9F43)
 val AccentRed = Color(0xFFFF6B6B)
 val AccentBlue = Color(0xFF3DA9FC)
+
+// Status tints & inks — derived from the accents above for status summary
+// surfaces (e.g. the cards in Mis asistencias). Tint = accent heavily
+// lightened, used as background; Ink = accent darkened so text on its tint
+// meets AA contrast. Same rule as the accents: only where color means status.
+val StatusGreenTint = Color(0xFFE9F7F0)
+val StatusGreenInk = Color(0xFF1D7A54)
+val StatusYellowTint = Color(0xFFFFF6DC)
+val StatusYellowInk = Color(0xFF8A6410)
+val StatusRedTint = Color(0xFFFFECEC)
+val StatusRedInk = Color(0xFFB0383A)
