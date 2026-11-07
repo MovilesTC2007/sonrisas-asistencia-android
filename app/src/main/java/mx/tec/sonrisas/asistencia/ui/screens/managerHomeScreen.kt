@@ -321,7 +321,7 @@ private val sampleCoverage = listOf(
 
 @Preview(showBackground = true, heightDp = 900)
 @Composable
-private fun ManagerHomePreview() {
+private fun ManagerHomeScreenPreview() {
     SonrisasAsistenciasTheme {
         ManagerHomeScreen(
             managerName = "Elena",

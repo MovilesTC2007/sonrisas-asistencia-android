@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -30,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.semantics.contentDescription
@@ -50,6 +53,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
+import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
@@ -62,6 +66,10 @@ data class StayAlert(
     val message: String,
 )
 
+private data class AttendanceSlice(
+    val count: Int,
+    val color: Color,
+)
 @Composable
 fun StatisticsScreen(
     presentCount: Int,
@@ -117,6 +125,12 @@ fun StatisticsScreen(
                 fraction = coverageFraction,
                 presentCount = presentCount,
                 expectedCount = expectedCount,
+                slices = listOf(
+                    AttendanceSlice(onTimeCount, AccentGreen),
+                    AttendanceSlice(minorDelayCount, AccentYellow),
+                    AttendanceSlice(majorDelayCount, AccentOrange),
+                    AttendanceSlice(absentCount, AccentRed),
+                ),
             )
             Spacer(modifier = Modifier.height(Spacing.xxl))
             Text(
@@ -185,6 +199,7 @@ private fun CoverageSummaryCard(
     fraction: Float,
     presentCount: Int,
     expectedCount: Int,
+    slices: List<AttendanceSlice>,
     modifier: Modifier = Modifier,
 ) {
     val percent = (fraction*100).roundToInt()
@@ -196,22 +211,18 @@ private fun CoverageSummaryCard(
             .background(SurfaceLilac)
             .padding(Spacing.xl),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Spacing.xl),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.lg),
     ) {
-        CoverageDonut(
-            fraction = fraction,
-            modifier = Modifier.semantics { contentDescription = "Cobertura de hoy: $percent por ciento" },
-        )
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Cobertura de hoy",
                 style = SonrisasTypography.titleLarge,
-                color = BrandPurple,
+                color = InkPrimary,
             )
             Text(
                 text = "$percent%",
                 style = SonrisasTypography.displayLarge,
-                color = InkPrimary,
+                color = BrandPurple,
             )
             Text(
                 text = "$presentCount de $expectedCount presentes",
@@ -219,9 +230,87 @@ private fun CoverageSummaryCard(
                 color = InkSoft,
             )
         }
+        CoverageDonut(
+            fraction = fraction,
+            slices = slices,
+            total = expectedCount,
+            modifier = Modifier.semantics { contentDescription = "Cobertura de hoy: $percent por ciento" },
+        )
     }
 }
 
+@Composable
+private fun CoverageDonut(
+    fraction: Float,
+    slices: List<AttendanceSlice>,
+    total: Int,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.size(130.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val strokeWidth = 14.dp.toPx()
+            val arcSize = Size(size.width-strokeWidth, size.height-strokeWidth)
+            val arcTopLeft = Offset(strokeWidth/2, strokeWidth/2)
+
+            drawArc(
+                color = InkFaint.copy(alpha = 0.25f),
+                startAngle = 0f,
+                sweepAngle = 360f,
+                useCenter = false,
+                topLeft = arcTopLeft,
+                size = arcSize,
+                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
+            )
+            drawArc(
+                color = BrandPurple,
+                startAngle = -90f,
+                sweepAngle = 360f*fraction.coerceIn(0f, 1f),
+                useCenter = false,
+                topLeft = arcTopLeft,
+                size = arcSize,
+                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
+            )
+        }
+        Column(
+            modifier = Modifier.width(76.dp),
+            verticalArrangement = Arrangement.spacedBy(Spacing.sm),
+        ) {
+            slices.forEach { slice ->
+                val barFraction = if (total>0) slice.count.toFloat()/total else 0f
+                DonutBar(
+                    fraction = if (slice.count>0) barFraction.coerceAtLeast(0.12f) else 0f,
+                    color = slice.color,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DonutBar(
+    fraction: Float,
+    color: Color,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(10.dp)
+            .clip(RadiusPill)
+            .background(InkFaint.copy(alpha = 0.2f)),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(fraction.coerceIn(0f, 1f))
+                .fillMaxHeight()
+                .clip(RadiusPill)
+                .background(color),
+        )
+    }
+}
 @Composable
 private fun CoverageDonut(
     fraction: Float,

@@ -63,7 +63,7 @@ data class WeekdayAbsenteeism(
 )
 
 @Composable
-fun DirectorDashboardScreen(
+fun ManagementDashboardScreen(
     totalStaff: Int,
     absencesToday: Int,
     hiresThisMonth: Int,
@@ -339,9 +339,9 @@ private val sampleAbsenteeism = listOf(
 
 @Preview(showBackground = true, heightDp = 1000)
 @Composable
-private fun DirectorDashboardPreview() {
+private fun ManagementDashboardScreenPreview() {
     SonrisasAsistenciasTheme {
-        DirectorDashboardScreen(
+        ManagementDashboardScreen(
             totalStaff = 84,
             absencesToday = 6,
             hiresThisMonth = 4,
