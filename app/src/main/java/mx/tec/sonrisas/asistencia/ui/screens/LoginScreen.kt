@@ -61,88 +61,88 @@ fun LoginScreen(
     var passwordVisible by remember { mutableStateOf(false) }
 
 
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = Spacing.xl),
+        // verticalArrangement = Arrangement.Center  -> Doesnt look good take a look
+    ) {
         Column(
-            modifier = modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = Spacing.xl),
-                   // verticalArrangement = Arrangement.Center  -> Doesnt look good take a look
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = Spacing.xxl, bottom = Spacing.lg)
+                .clip(RadiusLg)
+                .background(BrandPurpleDeep)
+                .padding(Spacing.lg),
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = Spacing.xxl, bottom = Spacing.lg)
-                    .clip(RadiusLg)
-                    .background(BrandPurpleDeep)
-                    .padding(Spacing.lg),
-            ) {
-                Text(
-                    text = "Hola de nuevo",
-                    style = SonrisasTextStyle.Title,
-                    color = SurfaceWhite,
-                )
-                Text(
-                    text = "Sonrisas de Cristal · Personal",
-                    style = SonrisasTextStyle.Caption,
-                    color = SurfaceWhite.copy(alpha = 0.72f),
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RadiusLg)
-                    .background(SurfaceWhite)
-                    .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
-            ) {
-                SonrisasTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = "Correo electrónico",
-                    icon = Icons.Outlined.Email,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next,
-                    ),
-                )
-                SonrisasTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = "Contraseña",
-                    icon = Icons.Outlined.Lock,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done,
-                    ),
-                    visualTransformation = if (passwordVisible) {
-                        VisualTransformation.None
-                    } else {
-                        PasswordVisualTransformation()
-                    },
-                    trailingContent = {
-                        IconButton(
-                            onClick = { passwordVisible = !passwordVisible },
-                            modifier = Modifier.size(24.dp)
-                        ) {
-                            Icon(
-                                imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
-                                contentDescription = if (passwordVisible) "Ocultar" else "Mostrar",
-                                tint = BrandPurple
-                            )
-                        }
-                    },
-                )
-            }
-
-            Spacer(modifier = Modifier.height(Spacing.lg))
-            SonrisasPrimaryButton(text = "Entrar", onClick = { onLogin(email, password) })
-            Spacer(modifier = Modifier.height(Spacing.sm))
-            SonrisasTextLink(text = "¿Olvidaste tu contraseña?", onClick = onForgotPassword)
-            Spacer(modifier = Modifier.height(Spacing.sm))
-            SonrisasTintedButton(text = "Código de invitación", onClick = onInviteCode)
-            Spacer(modifier = Modifier.height(Spacing.xxl))
+            Text(
+                text = "Hola de nuevo",
+                style = SonrisasTextStyle.Title,
+                color = SurfaceWhite,
+            )
+            Text(
+                text = "Sonrisas de Cristal · Personal",
+                style = SonrisasTextStyle.Caption,
+                color = SurfaceWhite.copy(alpha = 0.72f),
+            )
         }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RadiusLg)
+                .background(SurfaceWhite)
+                .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
+        ) {
+            SonrisasTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = "Correo electrónico",
+                icon = Icons.Outlined.Email,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                ),
+            )
+            SonrisasTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = "Contraseña",
+                icon = Icons.Outlined.Lock,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done,
+                ),
+                visualTransformation = if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
+                trailingContent = {
+                    IconButton(
+                        onClick = { passwordVisible = !passwordVisible },
+                        modifier = Modifier.size(24.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = if (passwordVisible) "Ocultar" else "Mostrar",
+                            tint = BrandPurple
+                        )
+                    }
+                },
+            )
+        }
+
+        Spacer(modifier = Modifier.height(Spacing.lg))
+        SonrisasPrimaryButton(text = "Entrar", onClick = { onLogin(email, password) })
+        Spacer(modifier = Modifier.height(Spacing.sm))
+        SonrisasTextLink(text = "¿Olvidaste tu contraseña?", onClick = onForgotPassword)
+        Spacer(modifier = Modifier.height(Spacing.sm))
+        SonrisasTintedButton(text = "Código de invitación", onClick = onInviteCode)
+        Spacer(modifier = Modifier.height(Spacing.xxl))
+    }
 
 }
 

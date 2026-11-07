@@ -1,13 +1,18 @@
 package mx.tec.sonrisas.asistencia.ui.components
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
@@ -16,13 +21,18 @@ import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
-/** The solid pill button — primary action on a screen (Entrar, Comenzar, …). */
+/**
+ * The solid pill button — primary action on a screen (Entrar, Comenzar, …).
+ * [leadingIcon] es opcional (p. ej. el pin de "Permitir ubicación"); con null
+ * se comporta exactamente igual que antes, así que Login y Activar cuenta no cambian.
+ */
 @Composable
 fun SonrisasPrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    leadingIcon: ImageVector? = null,
 ) {
     Button(
         onClick = onClick,
@@ -36,6 +46,14 @@ fun SonrisasPrimaryButton(
             .fillMaxWidth()
             .height(48.dp),
     ) {
+        leadingIcon?.let {
+            Icon(
+                imageVector = it,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+        }
         Text(text = text, style = SonrisasTextStyle.Button)
     }
 }
