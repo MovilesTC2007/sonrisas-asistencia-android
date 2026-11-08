@@ -76,6 +76,8 @@ fun AttendanceScreen(
     onClockActionClick: () -> Unit,
     isOnline: Boolean = true,
     pendingRecordsCount: Int = 0,
+    isWithinRange: Boolean = true,
+    distanceMeters: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     val visibleRecords = recentRecords.take(5)
@@ -124,30 +126,37 @@ fun AttendanceScreen(
             }
 
             TodayShiftCard(schedule = shiftSchedule, role = shiftRole)
+
             Spacer(modifier = Modifier.height(Spacing.xxl))
             ClockActionButton(
                 shiftStatus = shiftStatus,
                 onClick = onClockActionClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
+
             Spacer(modifier = Modifier.height(Spacing.md))
-            Row(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Check,
-                    contentDescription = null,
-                    tint = AccentGreen,
-                    modifier = Modifier.size(20.dp),
-                )
-                Text(
-                    text = "Estás en la estancia",
-                    style = SonrisasTypography.titleMedium,
-                    color = InkSoft,
-                )
+            if (isWithinRange) {
+                Row(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = null,
+                        tint = AccentGreen,
+                        modifier = Modifier.size(20.dp),
+                    )
+                    Text(
+                        text = "Estás en la estancia",
+                        style = SonrisasTypography.titleMedium,
+                        color = InkSoft,
+                    )
+                }
+            } else {
+                OutOfRangeNote(distanceMeters = distanceMeters)
             }
+
             Spacer(modifier = Modifier.height(Spacing.xxl))
             Text(
                 text = "Últimos 5 registros",
@@ -163,6 +172,41 @@ fun AttendanceScreen(
             }
             Spacer(modifier = Modifier.height(Spacing.xxl))
         }
+    }
+}
+
+@Composable
+private fun OutOfRangeNote(
+    distanceMeters: Int?,
+    modifier: Modifier = Modifier,
+) {
+    val distanceText = if (distanceMeters!=null) {
+        "Estás a $distanceMeters m de la estancia."
+    } else {
+        "Estás lejos de la estancia."
+    }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RadiusLg)
+            .background(BrandPurpleLight)
+            .padding(Spacing.lg),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Info,
+            contentDescription = null,
+            tint = BrandPurple,
+            modifier = Modifier.size(20.dp),
+        )
+        Text(
+            text = "$distanceText Tu registro se guardará y se notificará a tu responsable.",
+            style = SonrisasTypography.bodyLarge,
+            color = InkPrimary,
+            modifier = Modifier.weight(1f),
+        )
     }
 }
 
@@ -391,6 +435,23 @@ private fun OfflinePreview() {
             onClockActionClick = {},
             isOnline = false,
             pendingRecordsCount = 3,
+        )
+    }
+}
+
+@Preview(showBackground = true, heightDp = 780)
+@Composable
+private fun OutOfRangePreview() {
+    SonrisasAsistenciasTheme {
+        AttendanceScreen(
+            userName = "Fernando",
+            shiftSchedule = "8:00 – 16:00",
+            shiftRole = "Maestra · Lactantes",
+            shiftStatus = ShiftStatus.NotClockedIn,
+            recentRecords = sampleClockInRecords,
+            onClockActionClick = {},
+            isWithinRange = false,
+            distanceMeters = 350,
         )
     }
 }
