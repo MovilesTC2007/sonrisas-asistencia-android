@@ -26,10 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasHeroBadge
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
@@ -69,13 +67,11 @@ fun AttendanceConfirmationScreen(
             Spacer(Modifier.height(Spacing.md))
             SonrisasTopBar(title = "Registro guardado")
 
-            // AUDITORÍA: 64dp suelto → Spacing.hero (mismo espacio que Ubicación).
             Spacer(Modifier.height(Spacing.hero))
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                // AUDITORÍA: SuccessBadge local → componente compartido SonrisasHeroBadge.
                 SonrisasHeroBadge(icon = Icons.Rounded.Check)
 
                 Spacer(Modifier.height(Spacing.xxl))
@@ -121,8 +117,7 @@ fun AttendanceConfirmationScreen(
                 bottom = Spacing.lg,
             ),
         )
-
-        SonrisasBottomBar(selected = SonrisasTab.Inicio)
+        //se quita la barra de aqui 
     }
 }
 

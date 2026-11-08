@@ -27,7 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,9 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Calendar
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
@@ -108,7 +105,6 @@ fun MyAttendanceScreen(
     modifier: Modifier = Modifier,
     initialSelectedDay: Int = 8,
 ) {
-    var selectedTab by rememberSaveable { mutableStateOf(SonrisasTab.Asistencias) }
     var year by rememberSaveable { mutableIntStateOf(2026) }
     var month by rememberSaveable { mutableIntStateOf(10) }
     var selectedDate by rememberSaveable { mutableIntStateOf(dateKey(2026, 10, initialSelectedDay)) }
@@ -202,11 +198,7 @@ fun MyAttendanceScreen(
             SelectedDayRow(date = selectedDate)
             Spacer(Modifier.height(Spacing.xxl))
         }
-
-        SonrisasBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
+        //eliminacion de la navbar
     }
 }
 

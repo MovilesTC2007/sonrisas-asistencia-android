@@ -19,10 +19,6 @@ import androidx.compose.material.icons.outlined.SwapHoriz
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,8 +26,6 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mx.tec.sonrisas.asistencia.ui.components.ResponsableBottomBar
-import mx.tec.sonrisas.asistencia.ui.components.ResponsableTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasOutlinedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
@@ -80,7 +74,6 @@ fun DetailStaffScreen(
     onTransfer: () -> Unit = {},
     onDeactivate: () -> Unit = {},
 ) {
-    var selectedTab by rememberSaveable { mutableStateOf(ResponsableTab.Personal) }
     val profile = SampleProfile
 
     Column(
@@ -143,11 +136,7 @@ fun DetailStaffScreen(
             )
             Spacer(Modifier.height(Spacing.xxl))
         }
-
-        ResponsableBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
+        //se quita navabar
     }
 }
 
