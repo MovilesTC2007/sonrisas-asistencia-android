@@ -1,8 +1,8 @@
 package mx.tec.sonrisas.asistencia.ui.screens
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,21 +15,28 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Login
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.outlined.Cancel
-import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.WifiOff
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.AccentOrange
-import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
-import mx.tec.sonrisas.asistencia.ui.theme.AccentYellow
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
@@ -38,32 +45,17 @@ import mx.tec.sonrisas.asistencia.ui.theme.LineColor
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
-import mx.tec.sonrisas.asistencia.ui.theme.SurfaceLilac
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
-import androidx.compose.material.icons.automirrored.filled.Login
-import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.WifiOff
-import androidx.compose.material3.IconButton
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
-import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
+import mx.tec.sonrisas.asistencia.ui.theme.SurfaceLilac
 import mx.tec.sonrisas.asistencia.ui.theme.SurfacePeach
+import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
 enum class ShiftStatus { NotClockedIn, OnShift }
-
-enum class RecordStatus { OnTime, MinorDelay, MajorDelay, Absent }
 
 data class AttendanceRecord(
     val title: String,
     val detail: String,
-    val status: RecordStatus,
+    val status: AttendanceStatus,
 )
 
 @Composable
@@ -92,30 +84,7 @@ fun AttendanceScreen(
                 .padding(horizontal = Spacing.xxl),
         ) {
             Spacer(modifier = Modifier.height(Spacing.xxl))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(BrandPurpleLight),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = BrandPurple,
-                            modifier = Modifier.size(20.dp),
-                        )
-                    }
-                }
-                Spacer(Modifier.size(Spacing.sm))
-                Text(
-                    text = "Hola, $userName",
-                    style = SonrisasTypography.displayMedium,
-                    color = InkPrimary,
-                )
-            }
+            SonrisasTopBar(title = "Hola, $userName", onBack = {})
             Spacer(modifier = Modifier.height(Spacing.xl))
 
             if (!isOnline) {
@@ -144,14 +113,14 @@ fun AttendanceScreen(
                 )
                 Text(
                     text = "Estás en la estancia",
-                    style = SonrisasTypography.titleMedium,
+                    style = SonrisasTextStyle.Body.copy(fontWeight = FontWeight.SemiBold),
                     color = InkSoft,
                 )
             }
             Spacer(modifier = Modifier.height(Spacing.xxl))
             Text(
                 text = "Últimos 5 registros",
-                style = SonrisasTypography.titleLarge,
+                style = SonrisasTextStyle.Title,  //mucha combinacion de estilos indiferentes como isabela
                 color = InkPrimary,
             )
             Spacer(modifier = Modifier.height(Spacing.sm))
@@ -274,14 +243,14 @@ private fun ClockActionButton(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color.White,
+            tint = SurfaceWhite,
             modifier = Modifier.size(28.dp),
         )
         Spacer(modifier = Modifier.height(Spacing.sm))
         Text(
             text = text,
             style = SonrisasTextStyle.Button.copy(fontWeight = FontWeight.Bold),
-            color = Color.White,
+            color = SurfaceWhite,
             textAlign = TextAlign.Center,
         )
     }
@@ -292,18 +261,6 @@ private fun RecordRow(
     record: AttendanceRecord,
     modifier: Modifier = Modifier,
 ) {
-    val statusColor = when (record.status) {
-        RecordStatus.OnTime -> AccentGreen
-        RecordStatus.MinorDelay -> AccentYellow
-        RecordStatus.MajorDelay -> AccentOrange
-        RecordStatus.Absent -> AccentRed
-    }
-    val statusIcon = when (record.status) {
-        RecordStatus.OnTime -> Icons.Filled.Check
-        RecordStatus.Absent -> Icons.Outlined.Cancel
-        else -> Icons.Outlined.ErrorOutline
-    }
-
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -313,19 +270,19 @@ private fun RecordRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = record.title,
-                style = SonrisasTypography.bodyLarge,
+                style = SonrisasTextStyle.Body,
                 color = InkPrimary,
             )
             Text(
                 text = record.detail,
-                style = SonrisasTypography.bodyMedium,
+                style = SonrisasTextStyle.Body,
                 color = InkSoft,
             )
         }
         Icon(
-            imageVector = statusIcon,
-            contentDescription = null,
-            tint = statusColor,
+            imageVector = record.status.icon,
+            contentDescription = record.status.label,
+            tint = record.status.accent,
             modifier = Modifier.size(20.dp),
         )
     }
@@ -333,19 +290,19 @@ private fun RecordRow(
 
 
 private val sampleClockInRecords = listOf(
-    AttendanceRecord("Mié 7 oct", "7:58 – 16:02", RecordStatus.OnTime),
-    AttendanceRecord("Mar 6 oct", "8:08 – 16:01", RecordStatus.MinorDelay),
-    AttendanceRecord("Lun 5 oct", "7:55 – 16:00", RecordStatus.OnTime),
-    AttendanceRecord("Vie 2 oct", "Sin registro", RecordStatus.Absent),
-    AttendanceRecord("Jue 1 oct", "7:57 – 16:00", RecordStatus.OnTime),
+    AttendanceRecord("Mié 7 oct", "7:58 – 16:02", AttendanceStatus.OnTime),
+    AttendanceRecord("Mar 6 oct", "8:08 – 16:01", AttendanceStatus.MinorDelay),
+    AttendanceRecord("Lun 5 oct", "7:55 – 16:00", AttendanceStatus.OnTime),
+    AttendanceRecord("Vie 2 oct", "Sin registro", AttendanceStatus.Absent),
+    AttendanceRecord("Jue 1 oct", "7:57 – 16:00", AttendanceStatus.OnTime),
 )
 
 private val sampleClockOutRecords = listOf(
-    AttendanceRecord("Hoy · 8 oct", "Entrada 7:55 · En turno", RecordStatus.OnTime),
-    AttendanceRecord("Mié 7 oct", "7:58 – 16:02", RecordStatus.OnTime),
-    AttendanceRecord("Mar 6 oct", "8:08 – 16:01", RecordStatus.MinorDelay),
-    AttendanceRecord("Lun 5 oct", "7:56 – 16:00", RecordStatus.OnTime),
-    AttendanceRecord("Vie 2 oct", "Sin registro", RecordStatus.Absent),
+    AttendanceRecord("Hoy · 8 oct", "Entrada 7:55 · En turno", AttendanceStatus.OnTime),
+    AttendanceRecord("Mié 7 oct", "7:58 – 16:02", AttendanceStatus.OnTime),
+    AttendanceRecord("Mar 6 oct", "8:08 – 16:01", AttendanceStatus.MinorDelay),
+    AttendanceRecord("Lun 5 oct", "7:56 – 16:00", AttendanceStatus.OnTime),
+    AttendanceRecord("Vie 2 oct", "Sin registro", AttendanceStatus.Absent),
 )
 
 @Preview(showBackground = true, heightDp = 780)

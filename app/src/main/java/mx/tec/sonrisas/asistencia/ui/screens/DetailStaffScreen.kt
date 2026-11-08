@@ -1,7 +1,6 @@
 package mx.tec.sonrisas.asistencia.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,20 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.PersonRemove
 import androidx.compose.material.icons.outlined.SwapHoriz
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.components.ResponsableBottomBar
@@ -42,8 +35,8 @@ import mx.tec.sonrisas.asistencia.ui.components.ResponsableTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasOutlinedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
@@ -78,8 +71,15 @@ private val SampleProfile = StaffProfile(
     center = "Arcoíris · Lactantes",
 )
 
+//cambio de nombre de la funcion, se confunde para la llamada directa de la pantalla en el mainactivity
 @Composable
-fun StaffDetailScreen(modifier: Modifier = Modifier) {
+fun DetailStaffScreen(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit = {},
+    onEdit: () -> Unit = {},
+    onTransfer: () -> Unit = {},
+    onDeactivate: () -> Unit = {},
+) {
     var selectedTab by rememberSaveable { mutableStateOf(ResponsableTab.Personal) }
     val profile = SampleProfile
 
@@ -96,7 +96,7 @@ fun StaffDetailScreen(modifier: Modifier = Modifier) {
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            StaffDetailHeader()
+            SonrisasTopBar(title = "Detalle de personal", onBack = onBack) //encabezado componentes
 
             Spacer(Modifier.height(Spacing.lg))
             ProfileCard(profile = profile)
@@ -105,7 +105,7 @@ fun StaffDetailScreen(modifier: Modifier = Modifier) {
             Text(
                 text = "Datos de su estancia",
                 style = SonrisasTextStyle.Title,
-                color = BrandPurpleDeepText,
+                color = InkPrimary,
                 modifier = Modifier
                     .padding(horizontal = Spacing.xs)
                     .semantics { heading() },
@@ -125,20 +125,21 @@ fun StaffDetailScreen(modifier: Modifier = Modifier) {
             Spacer(Modifier.height(Spacing.xxl))
             SonrisasPrimaryButton(
                 text = "Editar",
-                onClick = {},
+                onClick = onEdit,
                 leadingIcon = Icons.Outlined.Edit,
             )
             Spacer(Modifier.height(Spacing.md))
             SonrisasOutlinedButton(
                 text = "Trasladar",
-                onClick = {},
+                onClick = onTransfer,
                 leadingIcon = Icons.Outlined.SwapHoriz,
             )
             Spacer(Modifier.height(Spacing.md))
             SonrisasOutlinedButton(
                 text = "Dar de baja",
-                onClick = {},
+                onClick = onDeactivate,
                 leadingIcon = Icons.Outlined.PersonRemove,
+                destructive = true, //para mejoramiento de visualizacion 
             )
             Spacer(Modifier.height(Spacing.xxl))
         }
@@ -146,38 +147,6 @@ fun StaffDetailScreen(modifier: Modifier = Modifier) {
         ResponsableBottomBar(
             selected = selectedTab,
             onTabClick = { selectedTab = it },
-        )
-    }
-}
-
-@Composable
-private fun StaffDetailHeader() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        // Área táctil de 48 dp; el chip visible mide 40 dp.
-        IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(BrandPurpleLight),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Regresar",
-                    tint = BrandPurple,
-                    modifier = Modifier.size(20.dp),
-                )
-            }
-        }
-        Spacer(Modifier.width(Spacing.sm))
-        Text(
-            text = "Detalle de personal",
-            style = SonrisasTextStyle.Display,
-            color = InkPrimary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.semantics { heading() },
         )
     }
 }
@@ -254,8 +223,8 @@ private fun DetailFieldRow(field: DetailField) {
 
 @Preview(name = "Detalle de personal (p. 14)", showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
-private fun StaffDetailScreenPreview() {
+private fun DetailStaffScreenPreview() {
     SonrisasAsistenciasTheme {
-        StaffDetailScreen()
+        DetailStaffScreen()
     }
 }

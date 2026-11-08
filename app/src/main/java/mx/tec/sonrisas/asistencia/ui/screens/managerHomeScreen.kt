@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Description
@@ -24,7 +22,6 @@ import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,17 +29,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.AccentOrange
-import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
-import mx.tec.sonrisas.asistencia.ui.theme.AccentYellow
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
@@ -54,8 +50,8 @@ import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
-import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
+import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
 data class AreaCoverage(
     val areaName: String,
@@ -91,58 +87,35 @@ fun ManagerHomeScreen(
                 .padding(horizontal = Spacing.xxl),
         ) {
             Spacer(modifier = Modifier.height(Spacing.xxl))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(BrandPurpleLight),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = BrandPurple,
-                            modifier = Modifier.size(20.dp),
-                        )
-                    }
-                }
-                Spacer(Modifier.size(Spacing.sm))
-                Text(
-                    text = "Buen día, $managerName",
-                    style = SonrisasTypography.displayMedium,
-                    color = InkPrimary,
-                )
-            }
+            SonrisasTopBar(title = "Buen día, $managerName", onBack = {})
             Spacer(modifier = Modifier.height(Spacing.xxl))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.md),
             ) {
-                StatCard(
+                SonrisasStatCard(
                     value = presentCount,
                     label = "Presentes",
-                    accentColor = AccentGreen,
+                    status = AttendanceStatus.OnTime,
                     modifier = Modifier.weight(1f),
                 )
-                StatCard(
+                SonrisasStatCard(
                     value = delayedCount,
                     label = "Retardos",
-                    accentColor = AccentYellow,
+                    status = AttendanceStatus.MinorDelay,
                     modifier = Modifier.weight(1f),
                 )
-                StatCard(
+                SonrisasStatCard(
                     value = absentCount,
                     label = "Falta",
-                    accentColor = AccentRed,
+                    status = AttendanceStatus.Absent,
                     modifier = Modifier.weight(1f),
                 )
             }
             Spacer(modifier = Modifier.height(Spacing.xxl))
             Text(
                 text = "Cobertura de hoy",
-                style = SonrisasTypography.titleLarge,
+                style = SonrisasTextStyle.Title,
                 color = InkPrimary,
             )
             Spacer(modifier = Modifier.height(Spacing.sm))
@@ -155,7 +128,7 @@ fun ManagerHomeScreen(
             Spacer(modifier = Modifier.height(Spacing.xxl))
             Text(
                 text = "Organiza tu estancia",
-                style = SonrisasTypography.titleLarge,
+                style = SonrisasTextStyle.Title,
                 color = InkPrimary,
             )
             Spacer(modifier = Modifier.height(Spacing.md))
@@ -190,32 +163,6 @@ fun ManagerHomeScreen(
 }
 
 @Composable
-private fun StatCard(
-    value: Int,
-    label: String,
-    accentColor: Color,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .clip(RadiusLg)
-            .background(accentColor.copy(alpha = 0.18f))
-            .padding(horizontal = Spacing.lg, vertical = Spacing.md),
-    ) {
-        Text(
-            text = value.toString(),
-            style = SonrisasTextStyle.Display,
-            color = lerp(accentColor, Color.Black, 0.4f),
-        )
-        Text(
-            text = label,
-            style = SonrisasTextStyle.Body,
-            color = lerp(accentColor, Color.Black, 0.4f),
-        )
-    }
-}
-
-@Composable
 private fun CoverageRow(
     area: AreaCoverage,
     modifier: Modifier = Modifier,
@@ -232,7 +179,7 @@ private fun CoverageRow(
     ) {
         Text(
             text = area.areaName,
-            style = SonrisasTypography.bodyLarge,
+            style = SonrisasTextStyle.Body,
             color = InkPrimary,
             modifier = Modifier.weight(1f),
         )
@@ -307,7 +254,7 @@ private fun RegisterMultipleButton(
         Text(
             text = "Registrar varias personas",
             style = SonrisasTextStyle.Button.copy(fontWeight = FontWeight.Bold),
-            color = Color.White,
+            color = SurfaceWhite,
         )
     }
 }

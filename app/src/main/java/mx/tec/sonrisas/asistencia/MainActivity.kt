@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import mx.tec.sonrisas.asistencia.ui.screens.AttendanceConfirmationScreen
+import mx.tec.sonrisas.asistencia.ui.screens.AttendanceScreen
 import mx.tec.sonrisas.asistencia.ui.screens.CreateAccountScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LocationRequestScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LoginScreen
@@ -37,6 +39,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun LocationRequestScreenPreview() {
     SonrisasAsistenciasTheme {
-       LocationRequestScreen()
+        LocationRequestScreen()
     }
 }

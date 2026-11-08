@@ -15,18 +15,15 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,12 +41,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
 import mx.tec.sonrisas.asistencia.ui.theme.AccentYellow
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
@@ -57,7 +54,6 @@ import mx.tec.sonrisas.asistencia.ui.theme.RadiusMd
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
-import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
@@ -98,34 +94,11 @@ fun RequestsScreen(
                 .padding(horizontal = Spacing.xxl),
         ) {
             Spacer(modifier = Modifier.height(Spacing.xxl))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(BrandPurpleLight),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = BrandPurple,
-                            modifier = Modifier.size(20.dp),
-                        )
-                    }
-                }
-                Spacer(Modifier.size(Spacing.sm))
-                Text(
-                    text = "Solicitudes",
-                    style = SonrisasTypography.displayMedium,
-                    color = InkPrimary,
-                )
-            }
+            SonrisasTopBar(title = "Solicitudes", onBack = {})
             Spacer(modifier = Modifier.height(Spacing.sm))
             Text(
                 text = "¿Qué necesitas avisar?",
-                style = SonrisasTypography.bodyLarge,
+                style = SonrisasTextStyle.Body,
                 color = InkPrimary,
             )
             Spacer(modifier = Modifier.height(Spacing.lg))
@@ -149,7 +122,7 @@ fun RequestsScreen(
             Spacer(modifier = Modifier.height(Spacing.xxl))
             Text(
                 text = "Historial",
-                style = SonrisasTypography.titleLarge,
+                style = SonrisasTextStyle.Title,
                 color = InkPrimary,
             )
             Spacer(modifier = Modifier.height(Spacing.sm))
@@ -171,7 +144,7 @@ private fun FieldLabel(
 ) {
     Text(
         text = text,
-        style = SonrisasTypography.titleMedium,
+        style = SonrisasTextStyle.Label,
         color = InkFaint,
         modifier = modifier,
     )
@@ -191,7 +164,7 @@ private fun RequestTypeSelector(
             .padding(Spacing.xs),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        RequestType.values().forEach { type ->
+        RequestType.entries.forEach { type ->
             val isSelected = type==selectedType
             Box(
                 modifier = Modifier
@@ -205,8 +178,8 @@ private fun RequestTypeSelector(
             ) {
                 Text(
                     text = type.label,
-                    style = SonrisasTypography.titleMedium,
-                    color = if (isSelected) Color.White else InkFaint,
+                    style = SonrisasTextStyle.Button,
+                    color = if (isSelected) SurfaceWhite else InkFaint,
                     textAlign = TextAlign.Center,
                 )
             }
@@ -232,7 +205,7 @@ private fun DateField(
     ) {
         Text(
             text = text,
-            style = SonrisasTypography.bodyLarge,
+            style = SonrisasTextStyle.Body,
             color = InkPrimary,
             modifier = Modifier.weight(1f),
         )
@@ -254,7 +227,7 @@ private fun ReasonField(
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
-        textStyle = SonrisasTypography.bodyLarge,
+        textStyle = SonrisasTextStyle.Body.copy(color = InkPrimary),
         cursorBrush = SolidColor(BrandPurple),
         modifier = modifier.fillMaxWidth(),
         decorationBox = { innerTextField ->
@@ -270,7 +243,7 @@ private fun ReasonField(
                 if (value.isEmpty()) {
                     Text(
                         text = "Describe brevemente el motivo",
-                        style = SonrisasTypography.bodyLarge,
+                        style = SonrisasTextStyle.Body,
                         color = InkFaint,
                     )
                 }
@@ -304,7 +277,7 @@ private fun SendRequestButton(
         Text(
             text = "Enviar solicitud",
             style = SonrisasTextStyle.Button.copy(fontWeight = FontWeight.Bold),
-            color = Color.White,
+            color = SurfaceWhite,
         )
     }
 }
@@ -334,7 +307,7 @@ private fun HistoryRow(
     ) {
         Text(
             text = item.title,
-            style = SonrisasTypography.bodyLarge,
+            style = SonrisasTextStyle.Body,
             color = InkPrimary,
             modifier = Modifier.weight(1f),
         )

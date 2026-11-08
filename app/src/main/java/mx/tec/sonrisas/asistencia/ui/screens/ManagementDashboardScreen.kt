@@ -13,47 +13,36 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.AccentOrange
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
-import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusSm
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
-import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
-import mx.tec.sonrisas.asistencia.ui.theme.Spacing.md
-import mx.tec.sonrisas.asistencia.ui.theme.SurfaceLilac
 import mx.tec.sonrisas.asistencia.ui.theme.SurfacePeach
-import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 import kotlin.math.roundToInt
 
 data class WeekdayAbsenteeism(
@@ -88,31 +77,9 @@ fun ManagementDashboardScreen(
                 .padding(horizontal = Spacing.xxl),
         ) {
             Spacer(modifier = Modifier.height(Spacing.xxl))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(BrandPurpleLight),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = BrandPurple,
-                            modifier = Modifier.size(20.dp),
-                        )
-                    }
-                }
-                Spacer(Modifier.size(Spacing.sm))
-                Text(
-                    text = "Panel de Dirección",
-                    style = SonrisasTypography.displayMedium,
-                    color = InkPrimary,
-                )
-            }
+            SonrisasTopBar(title = "Panel de Dirección", onBack = {})
             Spacer(modifier = Modifier.height(Spacing.xl))
+            //se regresan a valores de theme's ya definidos
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.md),
@@ -151,7 +118,7 @@ fun ManagementDashboardScreen(
             Spacer(modifier = Modifier.height(Spacing.xxl))
             Text(
                 text = "Cobertura de hoy · $presentTotal de $requiredTotal presentes",
-                style = SonrisasTypography.titleLarge,
+                style = SonrisasTextStyle.Title,
                 color = InkPrimary,
             )
             Spacer(modifier = Modifier.height(Spacing.sm))
@@ -164,7 +131,7 @@ fun ManagementDashboardScreen(
             Spacer(modifier = Modifier.height(Spacing.xxl))
             Text(
                 text = "Ausentismo promedio semanal",
-                style = SonrisasTypography.titleLarge,
+                style = SonrisasTextStyle.Title,
                 color = InkPrimary,
             )
             Spacer(modifier = Modifier.height(Spacing.lg))
@@ -180,23 +147,13 @@ private fun DirectorStatCard(
     label: String,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .clip(RadiusLg)
-            .background(BrandPurpleLight)
-            .padding(horizontal = Spacing.lg, vertical = Spacing.lg),
-    ) {
-        Text(
-            text = value.toString(),
-            style = SonrisasTextStyle.Display,
-            color = BrandPurple,
-        )
-        Text(
-            text = label,
-            style = SonrisasTextStyle.Body,
-            color = BrandPurpleDeepText,
-        )
-    }
+    SonrisasStatCard(
+        value = value,
+        label = label,
+        containerColor = BrandPurpleLight,
+        valueColor = BrandPurple,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -227,7 +184,7 @@ private fun IncompleteCoverageBanner(
         )
         Text(
             text = message,
-            style = MaterialTheme.typography.bodyLarge,
+            style = SonrisasTextStyle.Body,
             color = InkPrimary,
             modifier = Modifier.weight(1f),
         )
@@ -251,7 +208,7 @@ private fun FacilityCoverageRow(
     ) {
         Text(
             text = facility.areaName,
-            style = MaterialTheme.typography.bodyLarge,
+            style = SonrisasTextStyle.Body,
             color = InkPrimary,
             modifier = Modifier.weight(1f),
         )
@@ -304,7 +261,7 @@ private fun WeeklyAbsenteeismChart(
                         )
                         Text(
                             text = "${item.absencePercent.roundToInt()}%",
-                            style = SonrisasTypography.titleLarge,
+                            style = SonrisasTextStyle.Title,
                             color= BgCream
                         )
 
@@ -312,7 +269,7 @@ private fun WeeklyAbsenteeismChart(
                     Spacer(modifier = Modifier.height(Spacing.sm))
                     Text(
                         text = item.dayLabel,
-                        style = SonrisasTypography.bodyLarge,
+                        style = SonrisasTextStyle.Body,
                         color = InkPrimary,
                     )
                 }

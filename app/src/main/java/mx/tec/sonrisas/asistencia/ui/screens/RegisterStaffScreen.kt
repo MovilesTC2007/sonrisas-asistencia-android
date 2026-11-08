@@ -1,7 +1,6 @@
 package mx.tec.sonrisas.asistencia.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,13 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.selection.triStateToggleable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,8 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,10 +37,9 @@ import mx.tec.sonrisas.asistencia.ui.components.ResponsableTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasCheckbox
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSearchField
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
@@ -76,11 +67,12 @@ private val SampleStaff = listOf(
 )
 
 private val CheckboxVisualSize = 24.dp
-
 @Composable
 fun RegisterStaffScreen(
     modifier: Modifier = Modifier,
     initialSelectedCount: Int = SampleStaff.size,
+    onBack: () -> Unit = {},
+    onRegisterEntry: (selectedIds: Set<Int>) -> Unit = {},
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     var selectedIds by rememberSaveable {
@@ -109,7 +101,7 @@ fun RegisterStaffScreen(
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            RegisterStaffHeader()
+            SonrisasTopBar(title = "Registrar personal", onBack = onBack)
 
             Spacer(Modifier.height(Spacing.lg))
             SonrisasSearchField(
@@ -141,7 +133,7 @@ fun RegisterStaffScreen(
 
         SonrisasPrimaryButton(
             text = if (count > 0) "Registrar entrada ($count)" else "Registrar entrada",
-            onClick = {},
+            onClick = { onRegisterEntry(selectedIds) },
             enabled = count > 0,
             modifier = Modifier.padding(
                 start = Spacing.xl,
@@ -154,36 +146,6 @@ fun RegisterStaffScreen(
         ResponsableBottomBar(
             selected = selectedTab,
             onTabClick = { selectedTab = it },
-        )
-    }
-}
-
-@Composable
-private fun RegisterStaffHeader() {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        // Área táctil de 48 dp; el chip visible mide 40 dp.
-        IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(BrandPurpleLight),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Regresar",
-                    tint = BrandPurple,
-                    modifier = Modifier.size(20.dp),
-                )
-            }
-        }
-        Spacer(Modifier.width(Spacing.sm))
-        Text(
-            text = "Registrar personal",
-            style = SonrisasTextStyle.Display,
-            color = InkPrimary,
-            modifier = Modifier.semantics { heading() },
         )
     }
 }
