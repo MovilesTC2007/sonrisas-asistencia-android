@@ -11,16 +11,16 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,10 +33,13 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
@@ -45,7 +48,6 @@ import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
-import mx.tec.sonrisas.asistencia.ui.theme.LineColor
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
@@ -63,6 +65,8 @@ private data class AttendanceSlice(
     val count: Int,
     val color: Color,
 )
+
+//igual Restructuracion sin Scaffold se quita flecha de regresar y existia un coveragedonut doble que no se usaba pero ya elimiando
 @Composable
 fun StatisticsScreen(
     presentCount: Int,
@@ -74,92 +78,86 @@ fun StatisticsScreen(
     alerts: List<StayAlert>,
     modifier: Modifier = Modifier,
 ) {
-    val coverageFraction = if (expectedCount>0) presentCount.toFloat()/expectedCount else 0f
+    val coverageFraction = if (expectedCount > 0) presentCount.toFloat() / expectedCount else 0f
 
-    Scaffold(
-        modifier = modifier,
-        containerColor = BgCream,
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = Spacing.xxl),
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(BgCream)
+            .statusBarsPadding()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = Spacing.xl),
+    ) {
+        Spacer(Modifier.height(Spacing.md))
+        SonrisasTopBar(title = "Estadísticas")
+        Spacer(Modifier.height(Spacing.lg))
+        CoverageSummaryCard(
+            fraction = coverageFraction,
+            presentCount = presentCount,
+            expectedCount = expectedCount,
+            slices = listOf(
+                AttendanceSlice(onTimeCount, AttendanceStatus.OnTime.accent),
+                AttendanceSlice(minorDelayCount, AttendanceStatus.MinorDelay.accent),
+                AttendanceSlice(majorDelayCount, AttendanceStatus.MajorDelay.accent),
+                AttendanceSlice(absentCount, AttendanceStatus.Absent.accent),
+            ),
+        )
+        Spacer(Modifier.height(Spacing.xxl))
+        Text(
+            text = "Asistencia de hoy",
+            style = SonrisasTextStyle.Title,
+            color = InkPrimary,
+        )
+        Spacer(Modifier.height(Spacing.md))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
-            Spacer(modifier = Modifier.height(Spacing.xxl))
-            SonrisasTopBar(title = "Estadísticas", onBack = {})
-            Spacer(modifier = Modifier.height(Spacing.xl))
-            CoverageSummaryCard(
-                fraction = coverageFraction,
-                presentCount = presentCount,
-                expectedCount = expectedCount,
-                slices = listOf(
-                    AttendanceSlice(onTimeCount, AttendanceStatus.OnTime.accent),
-                    AttendanceSlice(minorDelayCount, AttendanceStatus.MinorDelay.accent),
-                    AttendanceSlice(majorDelayCount, AttendanceStatus.MajorDelay.accent),
-                    AttendanceSlice(absentCount, AttendanceStatus.Absent.accent),
-                ),
+            SonrisasStatCard(
+                value = onTimeCount,
+                label = AttendanceStatus.OnTime.label,
+                status = AttendanceStatus.OnTime,
+                modifier = Modifier.weight(1f),
             )
-            Spacer(modifier = Modifier.height(Spacing.xxl))
+            SonrisasStatCard(
+                value = minorDelayCount,
+                label = AttendanceStatus.MinorDelay.label,
+                status = AttendanceStatus.MinorDelay,
+                modifier = Modifier.weight(1f),
+            )
+        }
+        Spacer(Modifier.height(Spacing.md))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+        ) {
+            SonrisasStatCard(
+                value = majorDelayCount,
+                label = AttendanceStatus.MajorDelay.label,
+                status = AttendanceStatus.MajorDelay,
+                modifier = Modifier.weight(1f),
+            )
+            SonrisasStatCard(
+                value = absentCount,
+                label = AttendanceStatus.Absent.label,
+                status = AttendanceStatus.Absent,
+                modifier = Modifier.weight(1f),
+            )
+        }
+        if (alerts.isNotEmpty()) {
+            Spacer(Modifier.height(Spacing.xxl))
             Text(
-                text = "Asistencia de hoy",
+                text = "Estancias con alertas",
                 style = SonrisasTextStyle.Title,
                 color = InkPrimary,
             )
-            Spacer(modifier = Modifier.height(Spacing.md))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.md),
-            ) {
-                SonrisasStatCard(
-                    value = onTimeCount,
-                    label = AttendanceStatus.OnTime.label,
-                    status = AttendanceStatus.OnTime,
-                    modifier = Modifier.weight(1f),
-                )
-                SonrisasStatCard(
-                    value = minorDelayCount,
-                    label = AttendanceStatus.MinorDelay.label,
-                    status = AttendanceStatus.MinorDelay,
-                    modifier = Modifier.weight(1f),
-                )
+            Spacer(Modifier.height(Spacing.md))
+            //alertas para la tarjeta
+            SonrisasListCard(items = alerts) { alert ->
+                StayAlertRow(alert = alert)
             }
-            Spacer(modifier = Modifier.height(Spacing.md))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.md),
-            ) {
-                SonrisasStatCard(
-                    value = majorDelayCount,
-                    label = AttendanceStatus.MajorDelay.label,
-                    status = AttendanceStatus.MajorDelay,
-                    modifier = Modifier.weight(1f),
-                )
-                SonrisasStatCard(
-                    value = absentCount,
-                    label = AttendanceStatus.Absent.label,
-                    status = AttendanceStatus.Absent,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-            if (alerts.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(Spacing.xxl))
-                Text(
-                    text = "Estancias con alertas",
-                    style = SonrisasTextStyle.Title,
-                    color = InkPrimary,
-                )
-                Spacer(modifier = Modifier.height(Spacing.sm))
-                alerts.forEachIndexed { index, alert ->
-                    StayAlertRow(alert = alert)
-                    if (index<alerts.lastIndex) {
-                        HorizontalDivider(color = LineColor)
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(Spacing.xxl))
         }
+        Spacer(Modifier.height(Spacing.xxl))
     }
 }
 
@@ -171,7 +169,7 @@ private fun CoverageSummaryCard(
     slices: List<AttendanceSlice>,
     modifier: Modifier = Modifier,
 ) {
-    val percent = (fraction*100).roundToInt()
+    val percent = (fraction * 100).roundToInt()
 
     Row(
         modifier = modifier
@@ -221,8 +219,8 @@ private fun CoverageDonut(
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val strokeWidth = 14.dp.toPx()
-            val arcSize = Size(size.width-strokeWidth, size.height-strokeWidth)
-            val arcTopLeft = Offset(strokeWidth/2, strokeWidth/2)
+            val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth)
+            val arcTopLeft = Offset(strokeWidth / 2, strokeWidth / 2)
 
             drawArc(
                 color = InkFaint.copy(alpha = 0.25f),
@@ -236,7 +234,7 @@ private fun CoverageDonut(
             drawArc(
                 color = BrandPurple,
                 startAngle = -90f,
-                sweepAngle = 360f*fraction.coerceIn(0f, 1f),
+                sweepAngle = 360f * fraction.coerceIn(0f, 1f),
                 useCenter = false,
                 topLeft = arcTopLeft,
                 size = arcSize,
@@ -248,9 +246,9 @@ private fun CoverageDonut(
             verticalArrangement = Arrangement.spacedBy(Spacing.sm),
         ) {
             slices.forEach { slice ->
-                val barFraction = if (total>0) slice.count.toFloat()/total else 0f
+                val barFraction = if (total > 0) slice.count.toFloat() / total else 0f
                 DonutBar(
-                    fraction = if (slice.count>0) barFraction.coerceAtLeast(0.12f) else 0f,
+                    fraction = if (slice.count > 0) barFraction.coerceAtLeast(0.12f) else 0f,
                     color = slice.color,
                 )
             }
@@ -280,41 +278,9 @@ private fun DonutBar(
         )
     }
 }
-@Composable
-private fun CoverageDonut(
-    fraction: Float,
-    modifier: Modifier = Modifier,
-) {
-    Canvas(modifier = modifier.size(104.dp)) {
-        val strokeWidth = 24    .dp.toPx()
-        val arcSize = Size(size.width-strokeWidth, size.height-strokeWidth)
-        val arcTopLeft = Offset(strokeWidth/2, strokeWidth/2)
 
-        drawArc(
-            color = InkFaint.copy(alpha = 0.3f),
-            startAngle = 0f,
-            sweepAngle = 360f,
-            useCenter = false,
-            topLeft = arcTopLeft,
-            size = arcSize,
-            style = Stroke(width = strokeWidth),
-        )
-        drawArc(
-            color = BrandPurple,
-            startAngle = -90f,
-            sweepAngle = 360f*fraction.coerceIn(0f, 1f),
-            useCenter = false,
-            topLeft = arcTopLeft,
-            size = arcSize,
-            style = Stroke(width = strokeWidth),
-        )
-        drawCircle(
-            color = SurfaceLilac,
-            radius = (size.minDimension-2*strokeWidth)/2,
-        )
-    }
-}
-
+//mejoramiento de diseño ideono
+//quedo mejor el de erik que el de nicte saludos xd
 @Composable
 private fun StayAlertRow(
     alert: StayAlert,
@@ -323,37 +289,42 @@ private fun StayAlertRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = Spacing.lg),
+            .heightIn(min = 64.dp)
+            .padding(horizontal = Spacing.lg, vertical = Spacing.md),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = alert.stayName,
-                style = SonrisasTextStyle.Body,
+                style = SonrisasTextStyle.Body.copy(fontWeight = FontWeight.SemiBold),
                 color = InkPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
-            //AccentRed no era para texto
+            Spacer(Modifier.height(2.dp))
             Text(
                 text = alert.message,
-                style = SonrisasTextStyle.Body,
+                style = SonrisasTextStyle.Caption,
                 color = StatusRedInk,
             )
         }
+        Spacer(Modifier.width(Spacing.sm))
         Icon(
             imageVector = Icons.Outlined.ErrorOutline,
             contentDescription = null,
             tint = AccentRed,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(20.dp),
         )
     }
 }
+
 private val sampleAlerts = listOf(
     StayAlert("Estancia arcoíris", "Personal insuficiente"),
     StayAlert("Estancia Las Rosas", "Personal insuficiente"),
     StayAlert("Estancia Los Girasoles", "Personal insuficiente"),
 )
 
-@Preview(showBackground = true, heightDp = 1000)
+@Preview(name = "Estadísticas dirección", showBackground = true, widthDp = 360, heightDp = 1000)
 @Composable
 private fun StatisticsPreview() {
     SonrisasAsistenciasTheme {
@@ -368,5 +339,3 @@ private fun StatisticsPreview() {
         )
     }
 }
-
-

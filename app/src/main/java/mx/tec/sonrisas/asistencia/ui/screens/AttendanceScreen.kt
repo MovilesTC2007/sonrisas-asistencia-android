@@ -1,7 +1,6 @@
 package mx.tec.sonrisas.asistencia.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,20 +8,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.WifiOff
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,23 +32,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasNoticeBanner
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
-import mx.tec.sonrisas.asistencia.ui.theme.AccentOrange
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
-import mx.tec.sonrisas.asistencia.ui.theme.LineColor
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceLilac
-import mx.tec.sonrisas.asistencia.ui.theme.SurfacePeach
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
 enum class ShiftStatus { NotClockedIn, OnShift }
@@ -58,6 +59,9 @@ data class AttendanceRecord(
     val status: AttendanceStatus,
 )
 
+//Restructuracion de las good
+//se editan los orden de parametros donde primero los obligatorios, despues opcionales, cambio del boton para accion,
+/se elimina el Scaffold propio ya que despues cuando se agregue la navbar puede que los margenes se multipliquen 
 @Composable
 fun AttendanceScreen(
     userName: String,
@@ -65,73 +69,67 @@ fun AttendanceScreen(
     shiftRole: String,
     shiftStatus: ShiftStatus,
     recentRecords: List<AttendanceRecord>,
-    onClockActionClick: () -> Unit,
+    modifier: Modifier = Modifier,
     isOnline: Boolean = true,
     pendingRecordsCount: Int = 0,
-    modifier: Modifier = Modifier,
+    onClockActionClick: () -> Unit = {},
 ) {
     val visibleRecords = recentRecords.take(5)
 
-    Scaffold(
-        modifier = modifier,
-        containerColor = BgCream,
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = Spacing.xxl),
-        ) {
-            Spacer(modifier = Modifier.height(Spacing.xxl))
-            SonrisasTopBar(title = "Hola, $userName", onBack = {})
-            Spacer(modifier = Modifier.height(Spacing.xl))
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(BgCream)
+            .statusBarsPadding()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = Spacing.xl),
+    ) {
+        Spacer(Modifier.height(Spacing.md))
+        SonrisasTopBar(title = "Hola, $userName")
+        Spacer(Modifier.height(Spacing.lg))
 
-            if (!isOnline) {
-                OfflineBanner(pendingRecordsCount = pendingRecordsCount)
-                Spacer(modifier = Modifier.height(Spacing.md))
-            }
-
-            TodayShiftCard(schedule = shiftSchedule, role = shiftRole)
-            Spacer(modifier = Modifier.height(Spacing.xxl))
-            ClockActionButton(
-                shiftStatus = shiftStatus,
-                onClick = onClockActionClick,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-            )
-            Spacer(modifier = Modifier.height(Spacing.md))
-            Row(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Check,
-                    contentDescription = null,
-                    tint = AccentGreen,
-                    modifier = Modifier.size(20.dp),
-                )
-                Text(
-                    text = "Estás en la estancia",
-                    style = SonrisasTextStyle.Body.copy(fontWeight = FontWeight.SemiBold),
-                    color = InkSoft,
-                )
-            }
-            Spacer(modifier = Modifier.height(Spacing.xxl))
-            Text(
-                text = "Últimos 5 registros",
-                style = SonrisasTextStyle.Title,  //mucha combinacion de estilos indiferentes como isabela
-                color = InkPrimary,
-            )
-            Spacer(modifier = Modifier.height(Spacing.sm))
-            visibleRecords.forEachIndexed { index, record ->
-                RecordRow(record = record)
-                if (index<visibleRecords.lastIndex) {
-                    HorizontalDivider(color = LineColor)
-                }
-            }
-            Spacer(modifier = Modifier.height(Spacing.xxl))
+        if (!isOnline) {
+            OfflineBanner(pendingRecordsCount = pendingRecordsCount)
+            Spacer(Modifier.height(Spacing.md))
         }
+
+        TodayShiftCard(schedule = shiftSchedule, role = shiftRole)
+        Spacer(Modifier.height(Spacing.xxl))
+        ClockActionButton(
+            shiftStatus = shiftStatus,
+            onClick = onClockActionClick,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        )
+        Spacer(Modifier.height(Spacing.md))
+        Row(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+        ) {
+            //uso correcto icono good
+            Icon(
+                imageVector = Icons.Outlined.CheckCircle,
+                contentDescription = null,
+                tint = AccentGreen,
+                modifier = Modifier.size(20.dp),
+            )
+            Text(
+                text = "Estás en la estancia",
+                style = SonrisasTextStyle.Body.copy(fontWeight = FontWeight.SemiBold),
+                color = InkSoft,
+            )
+        }
+        Spacer(Modifier.height(Spacing.xxl))
+        Text(
+            text = "Últimos 5 registros",
+            style = SonrisasTextStyle.Title,
+            color = InkPrimary,
+        )
+        Spacer(Modifier.height(Spacing.md))
+        SonrisasListCard(items = visibleRecords) { record ->
+            RecordRow(record = record)
+        }
+        Spacer(Modifier.height(Spacing.xxl))
     }
 }
 
@@ -145,30 +143,13 @@ private fun OfflineBanner(
         1 -> "Sin conexión · 1 registro se enviará al reconectar"
         else -> "Sin conexión · $pendingRecordsCount registros se enviarán al reconectar"
     }
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RadiusLg)
-            .background(SurfacePeach)
-            .padding(horizontal = Spacing.lg, vertical = Spacing.md),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.WifiOff,
-            contentDescription = null,
-            tint = AccentOrange,
-            modifier = Modifier.size(20.dp),
-        )
-        Text(
-            text = message,
-            style = SonrisasTextStyle.Body,
-            color = InkPrimary,
-            modifier = Modifier.weight(1f),
-        )
-    }
+    SonrisasNoticeBanner(
+        icon = Icons.Outlined.WifiOff,
+        message = message,
+        modifier = modifier,
+    )
 }
+
 @Composable
 private fun TodayShiftCard(
     schedule: String,
@@ -189,7 +170,7 @@ private fun TodayShiftCard(
                 style = SonrisasTextStyle.Label,
                 color = BrandPurple,
             )
-            Spacer(modifier = Modifier.height(Spacing.xs))
+            Spacer(Modifier.height(Spacing.xs))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Outlined.Info,
@@ -197,7 +178,8 @@ private fun TodayShiftCard(
                     tint = BrandPurple,
                     modifier = Modifier.size(16.dp),
                 )
-                Spacer(modifier = Modifier.size(Spacing.sm))
+                //el spacer size pasa a width porque esta dentro del row
+                Spacer(Modifier.width(Spacing.sm))
                 Text(
                     text = schedule,
                     style = SonrisasTextStyle.Title,
@@ -214,17 +196,23 @@ private fun TodayShiftCard(
     }
 }
 
+//Se cambia la estructura de columna ya que no se consideraba un boton completo para accion
+//cambiando el surface para el role de button
 @Composable
 private fun ClockActionButton(
     shiftStatus: ShiftStatus,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val isClockIn = shiftStatus==ShiftStatus.NotClockedIn
+    val isClockIn = shiftStatus == ShiftStatus.NotClockedIn
     val icon = if (isClockIn) Icons.AutoMirrored.Filled.Login else Icons.AutoMirrored.Filled.Logout
     val text = if (isClockIn) "Registrar entrada" else "Registrar salida"
 
-    Column(
+    Surface(
+        onClick = onClick,
+        shape = CircleShape,
+        color = BrandPurple,
+        contentColor = SurfaceWhite,
         modifier = modifier
             .size(150.dp)
             .shadow(
@@ -232,27 +220,25 @@ private fun ClockActionButton(
                 shape = CircleShape,
                 ambientColor = BrandPurple.copy(alpha = 0.35f),
                 spotColor = BrandPurple.copy(alpha = 0.45f),
-            )
-            .clip(CircleShape)
-            .background(BrandPurple)
-            .clickable(onClick = onClick)
-            .padding(Spacing.lg),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+            ),
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = SurfaceWhite,
-            modifier = Modifier.size(28.dp),
-        )
-        Spacer(modifier = Modifier.height(Spacing.sm))
-        Text(
-            text = text,
-            style = SonrisasTextStyle.Button.copy(fontWeight = FontWeight.Bold),
-            color = SurfaceWhite,
-            textAlign = TextAlign.Center,
-        )
+        Column(
+            modifier = Modifier.padding(Spacing.lg),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(28.dp),
+            )
+            Spacer(Modifier.height(Spacing.sm))
+            Text(
+                text = text,
+                style = SonrisasTextStyle.Button,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
 
@@ -264,21 +250,28 @@ private fun RecordRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = Spacing.md),
+            .heightIn(min = 64.dp)
+            .padding(horizontal = Spacing.lg, vertical = Spacing.md),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = record.title,
-                style = SonrisasTextStyle.Body,
+                style = SonrisasTextStyle.Body.copy(fontWeight = FontWeight.SemiBold),
                 color = InkPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
+            Spacer(Modifier.height(2.dp))
             Text(
                 text = record.detail,
-                style = SonrisasTextStyle.Body,
+                style = SonrisasTextStyle.Caption,
                 color = InkSoft,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
+        Spacer(Modifier.width(Spacing.sm))
         Icon(
             imageVector = record.status.icon,
             contentDescription = record.status.label,
@@ -305,7 +298,8 @@ private val sampleClockOutRecords = listOf(
     AttendanceRecord("Vie 2 oct", "Sin registro", AttendanceStatus.Absent),
 )
 
-@Preview(showBackground = true, heightDp = 780)
+// AUDITORÍA: previews con widthDp = 360 como la Familia A, para comparar pantallas al mismo ancho.
+@Preview(name = "Inicio empleado · entrada", showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 private fun ClockInPreview() {
     SonrisasAsistenciasTheme {
@@ -315,12 +309,11 @@ private fun ClockInPreview() {
             shiftRole = "Maestra · Lactantes",
             shiftStatus = ShiftStatus.NotClockedIn,
             recentRecords = sampleClockInRecords,
-            onClockActionClick = {},
         )
     }
 }
 
-@Preview(showBackground = true, heightDp = 780)
+@Preview(name = "Inicio empleado · salida", showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 private fun ClockOutPreview() {
     SonrisasAsistenciasTheme {
@@ -330,12 +323,11 @@ private fun ClockOutPreview() {
             shiftRole = "Maestra · Lactantes",
             shiftStatus = ShiftStatus.OnShift,
             recentRecords = sampleClockOutRecords,
-            onClockActionClick = {},
         )
     }
 }
 
-@Preview(showBackground = true, heightDp = 780)
+@Preview(name = "Inicio empleado · sin conexión", showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 private fun OfflinePreview() {
     SonrisasAsistenciasTheme {
@@ -345,7 +337,6 @@ private fun OfflinePreview() {
             shiftRole = "Maestra · Lactantes",
             shiftStatus = ShiftStatus.NotClockedIn,
             recentRecords = sampleClockInRecords,
-            onClockActionClick = {},
             isOnline = false,
             pendingRecordsCount = 3,
         )
