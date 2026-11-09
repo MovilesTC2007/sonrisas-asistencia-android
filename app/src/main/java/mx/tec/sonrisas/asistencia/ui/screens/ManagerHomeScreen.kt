@@ -50,7 +50,6 @@ data class AreaCoverage(
     val requiredCount: Int,
 )
 
-
 @Composable
 fun ManagerHomeScreen(
     managerName: String,
@@ -94,7 +93,6 @@ fun ManagerHomeScreen(
                 status = AttendanceStatus.MinorDelay,
                 modifier = Modifier.weight(1f),
             )
-            //considerar que vamos a hablar en plural 
             SonrisasStatCard(
                 value = absentCount,
                 label = "Faltas",
@@ -156,7 +154,6 @@ fun ManagerHomeScreen(
     }
 }
 
-//con pruebas la parte de solicitud se cortaba y se reutilizo el surface onClick para no fallar esto
 @Composable
 private fun ShortcutTile(
     icon: ImageVector,
@@ -198,7 +195,7 @@ private val sampleCoverage = listOf(
     AreaCoverage("Apoyo", 7, 8),
 )
 
-@Preview(name = "Inicio responsable", showBackground = true, widthDp = 360, heightDp = 900)
+@Preview(showBackground = true)
 @Composable
 private fun ManagerHomeScreenPreview() {
     SonrisasAsistenciasTheme {

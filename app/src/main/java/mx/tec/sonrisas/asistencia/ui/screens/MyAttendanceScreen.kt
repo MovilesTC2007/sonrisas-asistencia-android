@@ -198,28 +198,7 @@ fun MyAttendanceScreen(
             SelectedDayRow(date = selectedDate)
             Spacer(Modifier.height(Spacing.xxl))
         }
-
-        SonrisasBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
-    }
-}
-
-@Composable
-private fun ScreenHeader(title: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        Text(
-            text = title,
-            style = SonrisasTextStyle.Display,
-            color = InkPrimary,
-            modifier = Modifier.semantics { heading() },
-        )
+        //eliminacion de la navbar
     }
 }
 

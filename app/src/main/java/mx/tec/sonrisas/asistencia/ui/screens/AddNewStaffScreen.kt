@@ -15,14 +15,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Info
@@ -30,8 +30,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,13 +41,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
@@ -81,73 +79,25 @@ fun AddNewStaffScreen(
     onBackClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
 ) {
-    Scaffold(
-        modifier = modifier,
-        containerColor = BgCream,
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(BgCream),
-            ) {
-                HorizontalDivider(color = LineColor)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Spacing.xxl, vertical = Spacing.lg),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(54.dp)
-                            .clip(RadiusPill)
-                            .background(BrandPurple)
-                            .clickable(onClick = onSaveClick),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = "Guardar y generar código",
-                            style = SonrisasTypography.titleLarge,
-                            color = SurfaceWhite,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
-            }
-        },
-    ) { innerPadding ->
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(BgCream)
+            .systemBarsPadding()
+            .imePadding(),
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+                .weight(1f)
+                .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = Spacing.xxl),
         ) {
             Spacer(modifier = Modifier.height(Spacing.xxl))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = onBackClick, modifier = Modifier.size(48.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .background(BrandPurpleLight),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = BrandPurple,
-                            modifier = Modifier.size(20.dp),
-                        )
-                    }
-                }
-                Spacer(Modifier.size(Spacing.sm))
-                Text(
-                    text = "Nueva persona",
-                    style = SonrisasTypography.displayMedium,
-                    color = InkPrimary,
-                )
-            }
+            SonrisasTopBar(
+                title = "Nueva persona",
+                onBack = onBackClick,
+            )
             Spacer(modifier = Modifier.height(Spacing.xl))
             FieldLabel(text = "Nombre completo")
             Spacer(modifier = Modifier.height(Spacing.sm))
@@ -198,6 +148,12 @@ fun AddNewStaffScreen(
             InvitationInfoBanner(facilityName = facilityName)
             Spacer(modifier = Modifier.height(Spacing.xxl))
         }
+        HorizontalDivider(color = LineColor)
+        SonrisasPrimaryButton(
+            text = "Guardar y generar código",
+            onClick = onSaveClick,
+            modifier = Modifier.padding(horizontal = Spacing.xxl, vertical = Spacing.lg),
+        )
     }
 }
 
