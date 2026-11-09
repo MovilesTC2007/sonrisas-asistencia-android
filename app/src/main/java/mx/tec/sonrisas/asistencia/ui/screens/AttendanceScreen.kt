@@ -61,7 +61,7 @@ data class AttendanceRecord(
 
 //Restructuracion de las good
 //se editan los orden de parametros donde primero los obligatorios, despues opcionales, cambio del boton para accion,
-/se elimina el Scaffold propio ya que despues cuando se agregue la navbar puede que los margenes se multipliquen
+//se elimina el Scaffold propio ya que despues cuando se agregue la navbar puede que los margenes no se multipliquen
 @Composable
 fun AttendanceScreen(
     userName: String,
@@ -149,6 +149,7 @@ private fun OfflineBanner(
         modifier = modifier,
     )
 }
+
 @Composable
 private fun TodayShiftCard(
     schedule: String,

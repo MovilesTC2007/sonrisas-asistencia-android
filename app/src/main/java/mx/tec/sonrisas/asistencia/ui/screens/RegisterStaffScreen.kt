@@ -32,8 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mx.tec.sonrisas.asistencia.ui.components.ResponsableBottomBar
-import mx.tec.sonrisas.asistencia.ui.components.ResponsableTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasCheckbox
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSearchField
@@ -78,7 +76,6 @@ fun RegisterStaffScreen(
     var selectedIds by rememberSaveable {
         mutableStateOf<Set<Int>>(SampleStaff.take(initialSelectedCount).map { it.id }.toSet())
     }
-    var selectedTab by rememberSaveable { mutableStateOf(ResponsableTab.Inicio) }
 
     val total = SampleStaff.size
     val count = selectedIds.size
@@ -142,11 +139,7 @@ fun RegisterStaffScreen(
                 bottom = Spacing.lg,
             ),
         )
-
-        ResponsableBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
+        //se quita barra idea
     }
 }
 

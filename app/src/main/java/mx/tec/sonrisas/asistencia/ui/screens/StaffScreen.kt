@@ -33,8 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mx.tec.sonrisas.asistencia.ui.components.ResponsableBottomBar
-import mx.tec.sonrisas.asistencia.ui.components.ResponsableTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAddButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSearchField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTextLink
@@ -76,7 +74,6 @@ fun StaffScreen(
     onAddStaff: () -> Unit = {},
 ) {
     var query by rememberSaveable { mutableStateOf("") }
-    var selectedTab by rememberSaveable { mutableStateOf(ResponsableTab.Personal) }
 
     Column(
         modifier = modifier
@@ -115,11 +112,7 @@ fun StaffScreen(
                 bottom = Spacing.lg,
             ),
         )
-
-        ResponsableBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
+        //se quita barra
     }
 }
 
@@ -190,7 +183,6 @@ private fun StaffActionsRow(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        // AUDITORÍA: Text+clickable → SonrisasTextLink (TextButton nativo: rol de botón, ripple y área táctil correctos, mismo estilo visual).
         SonrisasTextLink(
             text = "Generar código de invitación",
             onClick = onGenerateInviteCode,

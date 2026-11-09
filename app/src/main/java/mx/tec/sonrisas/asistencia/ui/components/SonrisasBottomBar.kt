@@ -1,14 +1,14 @@
 package mx.tec.sonrisas.asistencia.ui.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Groups
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -16,13 +16,25 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.navigation.SonrisasTab
+import mx.tec.sonrisas.asistencia.ui.navigation.UserRole
+import mx.tec.sonrisas.asistencia.ui.theme.BgCream
+import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
@@ -34,65 +46,25 @@ interface SonrisasNavItem {
     val icon: ImageVector
 }
 
-enum class SonrisasTab(
-    override val label: String,
-    override val icon: ImageVector,
-) : SonrisasNavItem {
-    Inicio("Inicio", Icons.Outlined.Home),
-    Asistencias("Asistencias", Icons.Outlined.CalendarMonth),
-    Solicitudes("Solicitudes", Icons.Outlined.Description),
-    Perfil("Perfil", Icons.Outlined.Person),
-}
-
-enum class ResponsableTab(
-    override val label: String,
-    override val icon: ImageVector,
-) : SonrisasNavItem {
-    Inicio("Inicio", Icons.Outlined.Home),
-    Personal("Personal", Icons.Outlined.Groups),
-    Turnos("Turnos", Icons.Outlined.Schedule),
-    Solicitudes("Solicitudes", Icons.Outlined.Description),
-}
-
+//esta barra de navegacion no sabe nada en posiciones o rutas, es solamente componente de front y diseseños
+//con IA se agregaron las transciones entre cada item de la NavigationBarItem 
+//se pone un role.tab para la seleccion de una pestaña y su pocion para correcto consumo
 @Composable
-fun SonrisasBottomBar(
-    selected: SonrisasTab,
-    modifier: Modifier = Modifier,
-    onTabClick: (SonrisasTab) -> Unit = {},
-) {
-    SonrisasNavBar(
-        items = SonrisasTab.entries,
-        selected = selected,
-        modifier = modifier,
-        onItemClick = onTabClick,
-    )
-}
-
-@Composable
-fun ResponsableBottomBar(
-    selected: ResponsableTab,
-    modifier: Modifier = Modifier,
-    onTabClick: (ResponsableTab) -> Unit = {},
-) {
-    SonrisasNavBar(
-        items = ResponsableTab.entries,
-        selected = selected,
-        modifier = modifier,
-        onItemClick = onTabClick,
-    )
-}
-
-@Composable
-private fun <T : SonrisasNavItem> SonrisasNavBar(
+fun <T : SonrisasNavItem> SonrisasBottomBar(
     items: List<T>,
-    selected: T,
+    selected: T?,
+    onItemClick: (T) -> Unit,
     modifier: Modifier = Modifier,
-    onItemClick: (T) -> Unit = {},
+    badgeCount: (T) -> Int = { 0 },
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(BgCream),
+    ) {
         HorizontalDivider(color = LineColor)
         NavigationBar(
-            containerColor = SurfaceWhite,
+            containerColor = BgCream,
             contentColor = InkSoft,
             tonalElevation = 0.dp,
         ) {
@@ -101,7 +73,13 @@ private fun <T : SonrisasNavItem> SonrisasNavBar(
                 NavigationBarItem(
                     selected = isSelected,
                     onClick = { onItemClick(item) },
-                    icon = { Icon(imageVector = item.icon, contentDescription = null) },
+                    icon = {
+                        TabIcon(
+                            icon = item.icon,
+                            selected = isSelected,
+                            badgeCount = badgeCount(item),
+                        )
+                    },
                     label = {
                         Text(
                             text = item.label,
@@ -111,12 +89,13 @@ private fun <T : SonrisasNavItem> SonrisasNavBar(
                             maxLines = 1,
                         )
                     },
+                    alwaysShowLabel = true,
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = BrandPurpleDeepText,
                         selectedTextColor = BrandPurpleDeepText,
-                        indicatorColor = BrandPurpleLight,
                         unselectedIconColor = InkSoft,
                         unselectedTextColor = InkSoft,
+                        indicatorColor = Color.Transparent,
                     ),
                 )
             }
@@ -124,18 +103,95 @@ private fun <T : SonrisasNavItem> SonrisasNavBar(
     }
 }
 
-@Preview(name = "Personal", showBackground = true, widthDp = 360)
 @Composable
-private fun SonrisasBottomBarPreview() {
-    SonrisasAsistenciasTheme {
-        SonrisasBottomBar(selected = SonrisasTab.Inicio)
+private fun TabIcon(
+    icon: ImageVector,
+    selected: Boolean,
+    badgeCount: Int,
+) {
+    //`Animatable` para animacion manual
+    val scale = remember { Animatable(1f) }
+    var wasSelected by remember { mutableStateOf(selected) } //mutable tambien para que no se mueva varias veces
+
+    LaunchedEffect(selected) {
+        val justSelected = selected && !wasSelected
+        wasSelected = selected
+        if (justSelected) {
+            scale.animateTo(1.2f, animationSpec = tween(durationMillis = 110))   
+            scale.animateTo(
+                1f,
+                animationSpec = spring(                                           
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessMedium,
+                ),
+            )
+        } else {
+            scale.snapTo(1f) //para media animacion
+        }
+    }
+
+    BadgedBox(
+        badge = {
+            if (badgeCount > 0) {
+                Badge(
+                    containerColor = BrandPurple,
+                    contentColor = SurfaceWhite,
+                ) {
+                    val text = if (badgeCount > 9) "9+" else badgeCount.toString()
+                    Text(
+                        text = text,
+                        modifier = Modifier.semantics { contentDescription = "$badgeCount pendientes" },
+                    )
+                }
+            }
+        },
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.graphicsLayer {
+                scaleX = scale.value
+                scaleY = scale.value
+            },
+        )
     }
 }
 
-@Preview(name = "Responsable de estancia", showBackground = true, widthDp = 360)
+//roles 
+
+@Preview(name = "Barra · Empleado", showBackground = true, widthDp = 360)
+@Composable
+private fun EmpleadoBottomBarPreview() {
+    SonrisasAsistenciasTheme {
+        SonrisasBottomBar(
+            items = UserRole.Empleado.tabs,
+            selected = SonrisasTab.Inicio,
+            onItemClick = {},
+        )
+    }
+}
+
+@Preview(name = "Barra · Responsable (con pendientes)", showBackground = true, widthDp = 360)
 @Composable
 private fun ResponsableBottomBarPreview() {
     SonrisasAsistenciasTheme {
-        ResponsableBottomBar(selected = ResponsableTab.Inicio)
+        SonrisasBottomBar(
+            items = UserRole.Responsable.tabs,
+            selected = SonrisasTab.Personal,
+            onItemClick = {},
+            badgeCount = { if (it == SonrisasTab.Solicitudes) 2 else 0 },
+        )
+    }
+}
+
+@Preview(name = "Barra · Dirección", showBackground = true, widthDp = 360)
+@Composable
+private fun DireccionBottomBarPreview() {
+    SonrisasAsistenciasTheme {
+        SonrisasBottomBar(
+            items = UserRole.Direccion.tabs,
+            selected = SonrisasTab.Estadisticas,
+            onItemClick = {},
+        )
     }
 }
