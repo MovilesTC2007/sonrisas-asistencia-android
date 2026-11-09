@@ -91,7 +91,7 @@ fun AddNewStaffScreen(
                 .weight(1f)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = Spacing.xxl),
+                .padding(horizontal = Spacing.xl),
         ) {
             Spacer(modifier = Modifier.height(Spacing.xxl))
             SonrisasTopBar(
@@ -152,7 +152,7 @@ fun AddNewStaffScreen(
         SonrisasPrimaryButton(
             text = "Guardar y generar código",
             onClick = onSaveClick,
-            modifier = Modifier.padding(horizontal = Spacing.xxl, vertical = Spacing.lg),
+            modifier = Modifier.padding(horizontal = Spacing.xl, vertical = Spacing.lg),
         )
     }
 }

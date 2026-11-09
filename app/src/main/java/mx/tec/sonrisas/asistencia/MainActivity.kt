@@ -8,6 +8,12 @@ import mx.tec.sonrisas.asistencia.ui.navigation.SonrisasApp
 import mx.tec.sonrisas.asistencia.ui.navigation.UserRole
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 
+//ROL CON EL QUE ENTRA LA APP (temporal mientras no hay backend)
+//Aqui se cambia para probar cada rol, las opciones son:
+//  UserRole.Empleado     -> Inicio | Asistencias | Solicitudes | Perfil
+//  UserRole.Responsable  -> Inicio | Personal | Turnos | Solicitudes
+//  UserRole.Direccion    -> Inicio | Estancias | Reportes | Historial
+//Cuando el login sea real, el rol vendra del servidor y esta variable se elimina
 private val DEV_ROLE = UserRole.Empleado
 //por eliminar
 class MainActivity : ComponentActivity() {
@@ -16,7 +22,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SonrisasAsistenciasTheme {
-                //para pruebas directas sin manejo de rol por ahora
                 SonrisasApp(role = DEV_ROLE)
             }
         }

@@ -190,7 +190,7 @@ private fun DireccionBottomBarPreview() {
     SonrisasAsistenciasTheme {
         SonrisasBottomBar(
             items = UserRole.Direccion.tabs,
-            selected = SonrisasTab.Estadisticas,
+            selected = SonrisasTab.Reportes,
             onItemClick = {},
         )
     }
