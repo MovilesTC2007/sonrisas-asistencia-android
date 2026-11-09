@@ -53,7 +53,7 @@ fun AccountReadyScreen(
             .fillMaxSize()
             .background(BgCream)
             .systemBarsPadding()
-            .padding(horizontal = Spacing.xxl),
+            .padding(horizontal = Spacing.xl),
     ) {
         Column(
             modifier = Modifier

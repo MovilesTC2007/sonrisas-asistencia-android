@@ -16,6 +16,8 @@ internal object MockData {
     const val EMPLOYEE_NAME = "Fernando"
     const val SHIFT_SCHEDULE = "8:00 – 16:00"
     const val SHIFT_ROLE = "Maestra · Lactantes"
+    const val IS_ONLINE = true
+    const val PENDING_RECORDS = 0
     val recentRecords = listOf(
         AttendanceRecord("Mié 7 oct", "7:58 – 16:02", AttendanceStatus.OnTime),
         AttendanceRecord("Mar 6 oct", "8:08 – 16:01", AttendanceStatus.MinorDelay),

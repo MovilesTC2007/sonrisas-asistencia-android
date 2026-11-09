@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,9 +39,12 @@ import androidx.navigation.navArgument
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceConfirmationScreen
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceScreen
+import mx.tec.sonrisas.asistencia.ui.screens.ChangeHistoryScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ComingSoonScreen
 import mx.tec.sonrisas.asistencia.ui.screens.CreateAccountScreen
 import mx.tec.sonrisas.asistencia.ui.screens.DetailStaffScreen
+import mx.tec.sonrisas.asistencia.ui.screens.EstanciaDetailScreen
+import mx.tec.sonrisas.asistencia.ui.screens.ExportReportScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LocationRequestScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LoginScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ManagementDashboardScreen
@@ -185,6 +189,8 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     shiftRole = MockData.SHIFT_ROLE,
                     shiftStatus = ShiftStatus.NotClockedIn,
                     recentRecords = MockData.recentRecords,
+                    isOnline = MockData.IS_ONLINE,
+                    pendingRecordsCount = MockData.PENDING_RECORDS,
                     onClockActionClick = {
                         entry.ifResumed { navController.navigate(SonrisasRoutes.ATTENDANCE_CONFIRMATION) }
                     },
@@ -198,6 +204,7 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     coverage = MockData.areaCoverage,
                     pendingRequestsCount = MockData.PENDING_REQUESTS,
                     onStaffClick = { navController.navigateToTab(SonrisasTab.Personal) },
+                    onShiftsClick = { navController.navigateToTab(SonrisasTab.Turnos) },
                     onRequestsClick = { navController.navigateToTab(SonrisasTab.Solicitudes) },
                     onRegisterMultipleClick = {
                         entry.ifResumed { navController.navigate(SonrisasRoutes.REGISTER_STAFF) }
@@ -228,6 +235,14 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
             )
         }
 
+        composable(SonrisasTab.Turnos.route) {
+            ComingSoonScreen(
+                title = "Turnos",
+                icon = Icons.Outlined.Schedule,
+                message = "Aquí verás las áreas, los mínimos de personal y los horarios de tu estancia.",
+            )
+        }
+
         composable(SonrisasTab.Solicitudes.route) {
             when (role) {
                 UserRole.Responsable -> ComingSoonScreen(
@@ -239,7 +254,15 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
             }
         }
 
-        composable(SonrisasTab.Estadisticas.route) {
+        composable(SonrisasTab.Estancias.route) {
+            EstanciaDetailScreen()
+        }
+
+        composable(SonrisasTab.Historial.route) {
+            ChangeHistoryScreen()
+        }
+
+        composable(SonrisasTab.Reportes.route) {
             StatisticsScreen(
                 presentCount = MockData.STATS_PRESENT,
                 expectedCount = MockData.STATS_EXPECTED,
@@ -266,6 +289,10 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     }
                 },
             )
+        }
+
+        pushComposable(SonrisasRoutes.EXPORT_REPORT) {
+            ExportReportScreen()
         }
 
         pushComposable(SonrisasRoutes.REGISTER_STAFF) { entry ->

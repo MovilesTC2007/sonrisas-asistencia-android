@@ -1,12 +1,15 @@
 package mx.tec.sonrisas.asistencia.ui.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Apartment
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.ui.graphics.vector.ImageVector
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasNavItem
 
@@ -30,13 +33,14 @@ enum class UserRole {
             Responsable -> listOf(
                 SonrisasTab.Inicio,
                 SonrisasTab.Personal,
+                SonrisasTab.Turnos,
                 SonrisasTab.Solicitudes,
-                SonrisasTab.Perfil,
             )
             Direccion -> listOf(
                 SonrisasTab.Inicio,
-                SonrisasTab.Estadisticas,
-                SonrisasTab.Perfil,
+                SonrisasTab.Estancias,
+                SonrisasTab.Reportes,
+                SonrisasTab.Historial,
             )
         }
 }
@@ -50,8 +54,11 @@ enum class SonrisasTab(
     Inicio("Inicio", Icons.Outlined.Home, "inicio"),
     Asistencias("Asistencias", Icons.Outlined.CalendarMonth, "asistencias"),
     Personal("Personal", Icons.Outlined.People, "personal"),
+    Turnos("Turnos", Icons.Outlined.Schedule, "turnos"),
     Solicitudes("Solicitudes", Icons.Outlined.Description, "solicitudes"),
-    Estadisticas("Estadísticas", Icons.Outlined.BarChart, "estadisticas"),
+    Estancias("Estancias", Icons.Outlined.Apartment, "estancias"),
+    Reportes("Reportes", Icons.Outlined.BarChart, "reportes"),
+    Historial("Historial", Icons.Outlined.History, "historial"),
     Perfil("Perfil", Icons.Outlined.Person, "perfil"),
 }
 
@@ -67,6 +74,7 @@ object SonrisasRoutes {
     const val LOCATION_PERMISSION = "permiso-ubicacion"
     const val ATTENDANCE_CONFIRMATION = "confirmacion-registro"
     const val REGISTER_STAFF = "registrar-personal"
+    const val EXPORT_REPORT = "reportes/exportar"
 
     //el staffID van vacias se llenan al pasar las pantallas con las rutas
     const val STAFF_ID_ARG = "staffId"
