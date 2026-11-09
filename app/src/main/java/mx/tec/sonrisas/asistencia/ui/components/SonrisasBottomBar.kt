@@ -3,9 +3,12 @@ package mx.tec.sonrisas.asistencia.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Apartment
+import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Groups
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Schedule
@@ -54,6 +57,16 @@ enum class ResponsableTab(
     Solicitudes("Solicitudes", Icons.Outlined.Description),
 }
 
+enum class DireccionTab(
+    override val label: String,
+    override val icon: ImageVector,
+) : SonrisasNavItem {
+    Inicio("Inicio", Icons.Outlined.Home),
+    Estancias("Estancias", Icons.Outlined.Apartment),
+    Reportes("Reportes", Icons.Outlined.BarChart),
+    Historial("Historial", Icons.Outlined.History),
+}
+
 @Composable
 fun SonrisasBottomBar(
     selected: SonrisasTab,
@@ -76,6 +89,20 @@ fun ResponsableBottomBar(
 ) {
     SonrisasNavBar(
         items = ResponsableTab.entries,
+        selected = selected,
+        modifier = modifier,
+        onItemClick = onTabClick,
+    )
+}
+
+@Composable
+fun DireccionBottomBar(
+    selected: DireccionTab,
+    modifier: Modifier = Modifier,
+    onTabClick: (DireccionTab) -> Unit = {},
+) {
+    SonrisasNavBar(
+        items = DireccionTab.entries,
         selected = selected,
         modifier = modifier,
         onItemClick = onTabClick,
@@ -137,5 +164,13 @@ private fun SonrisasBottomBarPreview() {
 private fun ResponsableBottomBarPreview() {
     SonrisasAsistenciasTheme {
         ResponsableBottomBar(selected = ResponsableTab.Inicio)
+    }
+}
+
+@Preview(name = "Dirección", showBackground = true, widthDp = 360)
+@Composable
+private fun DireccionBottomBarPreview() {
+    SonrisasAsistenciasTheme {
+        DireccionBottomBar(selected = DireccionTab.Estancias)
     }
 }

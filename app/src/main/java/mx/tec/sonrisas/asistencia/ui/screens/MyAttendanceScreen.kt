@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Calendar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasSegmentedControl
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTab
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
@@ -63,6 +64,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
+import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusMd
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusSm
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
@@ -74,6 +76,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.StatusRedInk
 import mx.tec.sonrisas.asistencia.ui.theme.StatusRedTint
 import mx.tec.sonrisas.asistencia.ui.theme.StatusYellowInk
 import mx.tec.sonrisas.asistencia.ui.theme.StatusYellowTint
+import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
 private val StatNumberStyle = SonrisasTextStyle.Display.copy(
     fontSize = 30.sp,
@@ -87,6 +90,11 @@ private enum class DayStatus(val label: String, val icon: ImageVector, val accen
     OnTime("A tiempo", Icons.Outlined.CheckCircle, AccentGreen),
     Delay("Retardo", Icons.Outlined.Schedule, AccentYellow),
     Absence("Falta", Icons.Outlined.Cancel, AccentRed),
+}
+
+private enum class AttendanceView(val label: String) {
+    Asistencias("Asistencias"),
+    Horario("Horario"),
 }
 
 private data class DayRecord(val status: DayStatus, val detail: String)
@@ -115,6 +123,11 @@ private val WeekdayInitials = listOf("L", "M", "M", "J", "V", "S", "D")
 private val WeekdayNames = listOf("lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo")
 private val WeekdayAbbr = listOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom")
 
+// Turno semanal de muestra (índice 0 = lunes). null = día de descanso.
+private val SampleSchedule: List<String?> = listOf(
+    "8:00 – 16:00", "8:00 – 16:00", "8:00 – 16:00", "8:00 – 16:00", "8:00 – 16:00", null, null,
+)
+
 private fun firstWeekdayOffset(year: Int, month: Int): Int {
     val cal = Calendar.getInstance().apply { clear(); set(year, month - 1, 1) }
     return (cal.get(Calendar.DAY_OF_WEEK) + 5) % 7
@@ -128,8 +141,12 @@ private fun daysInMonth(year: Int, month: Int): Int =
 fun MyAttendanceScreen(
     modifier: Modifier = Modifier,
     initialSelectedDay: Int = 8,
+    initialShowSchedule: Boolean = false,
 ) {
     var selectedTab by rememberSaveable { mutableStateOf(SonrisasTab.Asistencias) }
+    var selectedView by rememberSaveable {
+        mutableStateOf(if (initialShowSchedule) AttendanceView.Horario else AttendanceView.Asistencias)
+    }
     var year by rememberSaveable { mutableIntStateOf(2026) }
     var month by rememberSaveable { mutableIntStateOf(10) }
     var selectedDate by rememberSaveable { mutableIntStateOf(dateKey(2026, 10, initialSelectedDay)) }
@@ -155,69 +172,83 @@ fun MyAttendanceScreen(
             Spacer(Modifier.height(Spacing.md))
             ScreenHeader(title = "Mis asistencias")
 
-            Spacer(Modifier.height(Spacing.lg))
-            MonthSelector(
-                label = "${MonthNames[month - 1]} $year",
-                onPrevious = {
-                    if (month == 1) {
-                        month = 12
-                        year -= 1
-                    } else {
-                        month -= 1
-                    }
-                },
-                onNext = {
-                    if (month == 12) {
-                        month = 1
-                        year += 1
-                    } else {
-                        month += 1
-                    }
-                },
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasSegmentedControl(
+                options = AttendanceView.entries,
+                selected = selectedView,
+                onSelect = { selectedView = it },
+                label = { it.label },
             )
 
-            Spacer(Modifier.height(Spacing.sm))
-            AttendanceCalendar(
-                year = year,
-                month = month,
-                selectedDate = selectedDate,
-                onDayClick = { selectedDate = it },
-            )
+            if (selectedView == AttendanceView.Horario) {
+                Spacer(Modifier.height(Spacing.xl))
+                WeeklySchedule()
+                Spacer(Modifier.height(Spacing.xxl))
+            } else {
+                Spacer(Modifier.height(Spacing.lg))
+                MonthSelector(
+                    label = "${MonthNames[month - 1]} $year",
+                    onPrevious = {
+                        if (month == 1) {
+                            month = 12
+                            year -= 1
+                        } else {
+                            month -= 1
+                        }
+                    },
+                    onNext = {
+                        if (month == 12) {
+                            month = 1
+                            year += 1
+                        } else {
+                            month += 1
+                        }
+                    },
+                )
 
-            Spacer(Modifier.height(Spacing.lg))
-            StatusLegend()
+                Spacer(Modifier.height(Spacing.sm))
+                AttendanceCalendar(
+                    year = year,
+                    month = month,
+                    selectedDate = selectedDate,
+                    onDayClick = { selectedDate = it },
+                )
 
-            Spacer(Modifier.height(Spacing.lg))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
-            ) {
-                SummaryCard(
-                    count = attended,
-                    label = if (attended == 1) "Asistencia" else "Asistencias",
-                    tint = StatusGreenTint,
-                    ink = StatusGreenInk,
-                    modifier = Modifier.weight(1f),
-                )
-                SummaryCard(
-                    count = delays,
-                    label = if (delays == 1) "Retardo" else "Retardos",
-                    tint = StatusYellowTint,
-                    ink = StatusYellowInk,
-                    modifier = Modifier.weight(1f),
-                )
-                SummaryCard(
-                    count = absences,
-                    label = if (absences == 1) "Falta" else "Faltas",
-                    tint = StatusRedTint,
-                    ink = StatusRedInk,
-                    modifier = Modifier.weight(1f),
-                )
+                Spacer(Modifier.height(Spacing.lg))
+                StatusLegend()
+
+                Spacer(Modifier.height(Spacing.lg))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+                ) {
+                    SummaryCard(
+                        count = attended,
+                        label = if (attended == 1) "Asistencia" else "Asistencias",
+                        tint = StatusGreenTint,
+                        ink = StatusGreenInk,
+                        modifier = Modifier.weight(1f),
+                    )
+                    SummaryCard(
+                        count = delays,
+                        label = if (delays == 1) "Retardo" else "Retardos",
+                        tint = StatusYellowTint,
+                        ink = StatusYellowInk,
+                        modifier = Modifier.weight(1f),
+                    )
+                    SummaryCard(
+                        count = absences,
+                        label = if (absences == 1) "Falta" else "Faltas",
+                        tint = StatusRedTint,
+                        ink = StatusRedInk,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+
+                Spacer(Modifier.height(Spacing.xl))
+                SelectedDayRow(date = selectedDate)
+                Spacer(Modifier.height(Spacing.xxl))
             }
-
-            Spacer(Modifier.height(Spacing.xl))
-            SelectedDayRow(date = selectedDate)
-            Spacer(Modifier.height(Spacing.xxl))
         }
 
         SonrisasBottomBar(
@@ -497,6 +528,68 @@ private fun SelectedDayRow(date: Int) {
     }
 }
 
+/**
+ * Vista "Horario": turno semanal en una tarjeta blanca. El día de hoy se marca con
+ * morado claro + [BrandPurpleDeepText] (regla "texto sobre fondos tintados"); los días
+ * de descanso van en [InkFaint]. Sin colores de estado: aquí no hay a tiempo/retardo/falta.
+ */
+@Composable
+private fun WeeklySchedule() {
+    val todayIndex = (firstWeekdayOffset(Today / 10_000, Today / 100 % 100) + Today % 100 - 1) % 7
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "TU TURNO SEMANAL",
+            style = SonrisasTextStyle.Label,
+            color = InkFaint,
+            modifier = Modifier
+                .padding(horizontal = Spacing.xs)
+                .semantics { heading() },
+        )
+        Spacer(Modifier.height(Spacing.sm))
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RadiusLg)
+                .background(SurfaceWhite)
+                .padding(Spacing.sm),
+        ) {
+            WeekdayNames.forEachIndexed { index, name ->
+                val hours = SampleSchedule[index]
+                val isToday = index == todayIndex
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp)
+                        .clip(RadiusMd)
+                        .background(if (isToday) BrandPurpleLight else Color.Transparent)
+                        .padding(horizontal = Spacing.md)
+                        .semantics(mergeDescendants = true) {},
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = name.replaceFirstChar { it.uppercase() } + if (isToday) " · Hoy" else "",
+                        style = SonrisasTextStyle.Body.copy(
+                            fontWeight = if (isToday) FontWeight.SemiBold else FontWeight.Medium,
+                        ),
+                        color = if (isToday) BrandPurpleDeepText else InkPrimary,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        text = hours ?: "Descanso",
+                        style = SonrisasTextStyle.Body,
+                        color = when {
+                            isToday -> BrandPurpleDeepText
+                            hours == null -> InkFaint
+                            else -> InkSoft
+                        },
+                    )
+                }
+            }
+        }
+    }
+}
+
 @Preview(name = "Mis asistencias · hoy (p. 9)", showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 private fun MyAttendanceTodayPreview() {
@@ -510,5 +603,13 @@ private fun MyAttendanceTodayPreview() {
 private fun MyAttendanceDelayPreview() {
     SonrisasAsistenciasTheme {
         MyAttendanceScreen(initialSelectedDay = 6)
+    }
+}
+
+@Preview(name = "Mis asistencias · Horario", showBackground = true, widthDp = 360, heightDp = 800)
+@Composable
+private fun MyAttendanceSchedulePreview() {
+    SonrisasAsistenciasTheme {
+        MyAttendanceScreen(initialShowSchedule = true)
     }
 }

@@ -28,7 +28,7 @@ fun SonrisasAsistenciasTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = SonrisasLightColorScheme // swap in a dark scheme once one exists
+    val colorScheme = SonrisasLightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,
