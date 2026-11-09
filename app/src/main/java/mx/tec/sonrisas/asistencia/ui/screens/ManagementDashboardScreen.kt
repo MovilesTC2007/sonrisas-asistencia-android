@@ -47,7 +47,6 @@ data class WeekdayAbsenteeism(
     val absencePercent: Float,
 )
 
-//se quita flecha de regresar y su Scaffold
 @Composable
 fun ManagementDashboardScreen(
     totalStaff: Int,
@@ -110,7 +109,6 @@ fun ManagementDashboardScreen(
             IncompleteCoverageBanner(incompleteCount = incompleteCount)
         }
         Spacer(Modifier.height(Spacing.xxl))
-        //reacomodacion de texto para que no ocupe tanto espacio como ella en mi corazon
         Text(
             text = "Cobertura de hoy",
             style = SonrisasTextStyle.Title,
@@ -173,10 +171,6 @@ private fun IncompleteCoverageBanner(
     )
 }
 
-
-//aqui se cambia ya que existe un bug porque se sobreponian dos colores crema en un solo punto uno siendo el porcentaje
-//y luego las brarras de texto. se cambia grafica para que sea una descripcion solamente, cambio de indentación (al chile muy IA ese pedo que habia antes aqui)
-//habia un tofloat incluso donde ya habia un float que rollo
 @Composable
 private fun WeeklyAbsenteeismChart(
     data: List<WeekdayAbsenteeism>,
@@ -184,7 +178,7 @@ private fun WeeklyAbsenteeismChart(
 ) {
     val maxPercent = (data.maxOfOrNull { it.absencePercent } ?: 1f).coerceAtLeast(1f)
     val chartDescription = "Ausentismo promedio semanal: " +
-        data.joinToString { "${it.dayLabel} ${it.absencePercent.roundToInt()} por ciento" }
+            data.joinToString { "${it.dayLabel} ${it.absencePercent.roundToInt()} por ciento" }
 
     Row(
         modifier = modifier
@@ -245,7 +239,7 @@ private val sampleAbsenteeism = listOf(
     WeekdayAbsenteeism("Vie", 7.1f),
 )
 
-@Preview(name = "Inicio dirección", showBackground = true, widthDp = 360, heightDp = 1000)
+@Preview(showBackground = true)
 @Composable
 private fun ManagementDashboardScreenPreview() {
     SonrisasAsistenciasTheme {

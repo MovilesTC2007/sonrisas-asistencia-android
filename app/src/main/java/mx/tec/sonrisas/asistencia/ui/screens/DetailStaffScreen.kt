@@ -132,7 +132,7 @@ fun DetailStaffScreen(
                 text = "Dar de baja",
                 onClick = onDeactivate,
                 leadingIcon = Icons.Outlined.PersonRemove,
-                destructive = true, //para mejoramiento de visualizacion 
+                destructive = true, //para mejoramiento de visualizacion
             )
             Spacer(Modifier.height(Spacing.xxl))
         }

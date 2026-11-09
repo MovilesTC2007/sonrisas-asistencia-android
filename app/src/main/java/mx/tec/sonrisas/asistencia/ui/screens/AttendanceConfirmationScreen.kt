@@ -117,7 +117,7 @@ fun AttendanceConfirmationScreen(
                 bottom = Spacing.lg,
             ),
         )
-        //se quita la barra de aqui 
+        //se quita la barra de aqui
     }
 }
 

@@ -42,6 +42,7 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
+import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
@@ -59,9 +60,6 @@ data class AttendanceRecord(
     val status: AttendanceStatus,
 )
 
-//Restructuracion de las good
-//se editan los orden de parametros donde primero los obligatorios, despues opcionales, cambio del boton para accion,
-//se elimina el Scaffold propio ya que despues cuando se agregue la navbar puede que los margenes no se multipliquen 
 @Composable
 fun AttendanceScreen(
     userName: String,
@@ -72,6 +70,8 @@ fun AttendanceScreen(
     modifier: Modifier = Modifier,
     isOnline: Boolean = true,
     pendingRecordsCount: Int = 0,
+    isWithinRange: Boolean = true,
+    distanceMeters: Int? = null,
     onClockActionClick: () -> Unit = {},
 ) {
     val visibleRecords = recentRecords.take(5)
@@ -101,23 +101,26 @@ fun AttendanceScreen(
             modifier = Modifier.align(Alignment.CenterHorizontally),
         )
         Spacer(Modifier.height(Spacing.md))
-        Row(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
-        ) {
-            //uso correcto icono good
-            Icon(
-                imageVector = Icons.Outlined.CheckCircle,
-                contentDescription = null,
-                tint = AccentGreen,
-                modifier = Modifier.size(20.dp),
-            )
-            Text(
-                text = "Estás en la estancia",
-                style = SonrisasTextStyle.Body.copy(fontWeight = FontWeight.SemiBold),
-                color = InkSoft,
-            )
+        if (isWithinRange) {
+            Row(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.CheckCircle,
+                    contentDescription = null,
+                    tint = AccentGreen,
+                    modifier = Modifier.size(20.dp),
+                )
+                Text(
+                    text = "Estás en la estancia",
+                    style = SonrisasTextStyle.Body.copy(fontWeight = FontWeight.SemiBold),
+                    color = InkSoft,
+                )
+            }
+        } else {
+            OutOfRangeNote(distanceMeters = distanceMeters)
         }
         Spacer(Modifier.height(Spacing.xxl))
         Text(
@@ -151,6 +154,41 @@ private fun OfflineBanner(
 }
 
 @Composable
+private fun OutOfRangeNote(
+    distanceMeters: Int?,
+    modifier: Modifier = Modifier,
+) {
+    val distanceText = if (distanceMeters != null) {
+        "Estás a $distanceMeters m de la estancia."
+    } else {
+        "Estás lejos de la estancia."
+    }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RadiusLg)
+            .background(BrandPurpleLight)
+            .padding(horizontal = Spacing.lg, vertical = Spacing.md),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Info,
+            contentDescription = null,
+            tint = BrandPurple,
+            modifier = Modifier.size(20.dp),
+        )
+        Text(
+            text = "$distanceText Tu registro se guardará y se notificará a tu responsable.",
+            style = SonrisasTextStyle.Body,
+            color = InkPrimary,
+            modifier = Modifier.weight(1f),
+        )
+    }
+}
+
+@Composable
 private fun TodayShiftCard(
     schedule: String,
     role: String,
@@ -178,7 +216,6 @@ private fun TodayShiftCard(
                     tint = BrandPurple,
                     modifier = Modifier.size(16.dp),
                 )
-                //el spacer size pasa a width porque esta dentro del row
                 Spacer(Modifier.width(Spacing.sm))
                 Text(
                     text = schedule,
@@ -196,8 +233,6 @@ private fun TodayShiftCard(
     }
 }
 
-//Se cambia la estructura de columna ya que no se consideraba un boton completo para accion
-//cambiando el surface para el role de button
 @Composable
 private fun ClockActionButton(
     shiftStatus: ShiftStatus,
@@ -281,7 +316,6 @@ private fun RecordRow(
     }
 }
 
-
 private val sampleClockInRecords = listOf(
     AttendanceRecord("Mié 7 oct", "7:58 – 16:02", AttendanceStatus.OnTime),
     AttendanceRecord("Mar 6 oct", "8:08 – 16:01", AttendanceStatus.MinorDelay),
@@ -298,8 +332,7 @@ private val sampleClockOutRecords = listOf(
     AttendanceRecord("Vie 2 oct", "Sin registro", AttendanceStatus.Absent),
 )
 
-// AUDITORÍA: previews con widthDp = 360 como la Familia A, para comparar pantallas al mismo ancho.
-@Preview(name = "Inicio empleado · entrada", showBackground = true, widthDp = 360, heightDp = 800)
+@Preview(showBackground = true)
 @Composable
 private fun ClockInPreview() {
     SonrisasAsistenciasTheme {
@@ -313,7 +346,7 @@ private fun ClockInPreview() {
     }
 }
 
-@Preview(name = "Inicio empleado · salida", showBackground = true, widthDp = 360, heightDp = 800)
+@Preview(showBackground = true)
 @Composable
 private fun ClockOutPreview() {
     SonrisasAsistenciasTheme {
@@ -327,7 +360,7 @@ private fun ClockOutPreview() {
     }
 }
 
-@Preview(name = "Inicio empleado · sin conexión", showBackground = true, widthDp = 360, heightDp = 800)
+@Preview(showBackground = true)
 @Composable
 private fun OfflinePreview() {
     SonrisasAsistenciasTheme {
@@ -339,6 +372,22 @@ private fun OfflinePreview() {
             recentRecords = sampleClockInRecords,
             isOnline = false,
             pendingRecordsCount = 3,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun OutOfRangePreview() {
+    SonrisasAsistenciasTheme {
+        AttendanceScreen(
+            userName = "Fernando",
+            shiftSchedule = "8:00 – 16:00",
+            shiftRole = "Maestra · Lactantes",
+            shiftStatus = ShiftStatus.NotClockedIn,
+            recentRecords = sampleClockInRecords,
+            isWithinRange = false,
+            distanceMeters = 350,
         )
     }
 }
