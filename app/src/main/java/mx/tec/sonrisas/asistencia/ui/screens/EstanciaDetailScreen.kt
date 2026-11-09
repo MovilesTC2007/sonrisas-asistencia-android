@@ -25,10 +25,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,8 +37,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import mx.tec.sonrisas.asistencia.ui.components.DireccionBottomBar
-import mx.tec.sonrisas.asistencia.ui.components.DireccionTab
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.AccentOrange
 import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
@@ -114,7 +108,6 @@ private val MetricNumberStyle = SonrisasTextStyle.Display.copy(fontSize = 22.sp,
 
 @Composable
 fun EstanciaDetailScreen(modifier: Modifier = Modifier) {
-    var selectedTab by rememberSaveable { mutableStateOf(DireccionTab.Estancias) }
     val estancia = SampleEstancia
 
     Column(
@@ -153,11 +146,6 @@ fun EstanciaDetailScreen(modifier: Modifier = Modifier) {
             }
             Spacer(Modifier.height(Spacing.xxl))
         }
-
-        DireccionBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
     }
 }
 

@@ -42,8 +42,6 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mx.tec.sonrisas.asistencia.ui.components.DireccionBottomBar
-import mx.tec.sonrisas.asistencia.ui.components.DireccionTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasDropdownMenu
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasFilterChip
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
@@ -96,7 +94,6 @@ private val KindOptions = listOf(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ChangeHistoryScreen(modifier: Modifier = Modifier) {
-    var selectedTab by rememberSaveable { mutableStateOf(DireccionTab.Historial) }
     var estancia by rememberSaveable { mutableStateOf(EstanciaOptions[0]) }
     var period by rememberSaveable { mutableStateOf("Esta semana") }
     var kind by rememberSaveable { mutableStateOf(AllKinds) }
@@ -148,11 +145,6 @@ fun ChangeHistoryScreen(modifier: Modifier = Modifier) {
             ChangeLogCard(entries = SampleChanges)
             Spacer(Modifier.height(Spacing.xxl))
         }
-
-        DireccionBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
     }
 }
 

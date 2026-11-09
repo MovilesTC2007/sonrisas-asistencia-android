@@ -40,8 +40,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mx.tec.sonrisas.asistencia.ui.components.DireccionBottomBar
-import mx.tec.sonrisas.asistencia.ui.components.DireccionTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasDropdownField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasFilterChip
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
@@ -78,7 +76,6 @@ private val EstanciaChoices = listOf("Todas (62)", "Arcoíris", "Los Girasoles",
 
 @Composable
 fun ExportReportScreen(modifier: Modifier = Modifier) {
-    var selectedTab by rememberSaveable { mutableStateOf(DireccionTab.Reportes) }
     var reportType by rememberSaveable { mutableStateOf(ReportType.Turnover) }
     var estancias by rememberSaveable { mutableStateOf(EstanciaChoices[0]) }
     var period by rememberSaveable { mutableStateOf(ReportPeriod.Month) }
@@ -166,11 +163,6 @@ fun ExportReportScreen(modifier: Modifier = Modifier) {
             )
             Spacer(Modifier.height(Spacing.xxl))
         }
-
-        DireccionBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
     }
 }
 
