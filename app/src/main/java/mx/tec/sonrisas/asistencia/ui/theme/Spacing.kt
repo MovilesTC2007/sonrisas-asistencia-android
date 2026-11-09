@@ -10,4 +10,6 @@ object Spacing {
     val lg: Dp = 16.dp
     val xl: Dp = 20.dp
     val xxl: Dp = 24.dp
+    // AUDITORÍA: espacio entre la TopBar y el icono grande (Ubicación y Confirmación usaban 88dp y 64dp sueltos).
+    val hero: Dp = 64.dp
 }

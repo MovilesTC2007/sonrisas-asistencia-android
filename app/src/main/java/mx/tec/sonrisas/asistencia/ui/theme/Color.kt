@@ -38,3 +38,6 @@ val StatusYellowTint = Color(0xFFFFF6DC)
 val StatusYellowInk = Color(0xFF8A6410)
 val StatusRedTint = Color(0xFFFFECEC)
 val StatusRedInk = Color(0xFFB0383A)
+//filtrado para color claro en texto y box
+val StatusOrangeTint = Color(0xFFFFF0E3)
+val StatusOrangeInk = Color(0xFF9A4A0C)
