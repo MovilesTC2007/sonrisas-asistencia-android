@@ -28,6 +28,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
+import mx.tec.sonrisas.asistencia.ui.theme.StatusRedInk
 
 @Composable
 fun SonrisasOutlinedButton(
@@ -36,27 +37,31 @@ fun SonrisasOutlinedButton(
     modifier: Modifier = Modifier,
     leadingIcon: ImageVector? = null,
     enabled: Boolean = true,
+    //para acciones importantes como dar de baja y cosas asi conviene este tipo de diseseños y contraste
+    destructive: Boolean = false,
 ) {
+    val accent = if (destructive) StatusRedInk else BrandPurple
     OutlinedButton(
         onClick = onClick,
         enabled = enabled,
         shape = RadiusPill,
-        border = BorderStroke(1.5.dp, if (enabled) BrandPurple else LineColor),
+        border = BorderStroke(1.5.dp, if (enabled) accent else LineColor),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = Color.Transparent,
-            contentColor = BrandPurple,
+            contentColor = accent,
             disabledContainerColor = Color.Transparent,
             disabledContentColor = InkFaint,
         ),
+        //medidas correctas para boton
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(SonrisasButtonHeight),
     ) {
         if (leadingIcon != null) {
             Icon(
                 imageVector = leadingIcon,
                 contentDescription = null,
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(SonrisasButtonIconSize),
             )
             Spacer(Modifier.width(Spacing.sm))
         }
@@ -71,7 +76,7 @@ private fun SonrisasOutlinedButtonPreview() {
         Column(Modifier.padding(Spacing.xl)) {
             SonrisasOutlinedButton(text = "Trasladar", onClick = {}, leadingIcon = Icons.Outlined.SwapHoriz)
             Spacer(Modifier.height(Spacing.md))
-            SonrisasOutlinedButton(text = "Dar de baja", onClick = {}, leadingIcon = Icons.Outlined.PersonRemove)
+            SonrisasOutlinedButton(text = "Dar de baja", onClick = {}, leadingIcon = Icons.Outlined.PersonRemove, destructive = true)
             Spacer(Modifier.height(Spacing.md))
             SonrisasOutlinedButton(text = "Deshabilitado", onClick = {}, enabled = false)
         }

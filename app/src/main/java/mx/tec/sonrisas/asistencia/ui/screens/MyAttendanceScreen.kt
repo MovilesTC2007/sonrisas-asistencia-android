@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,9 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material.icons.outlined.Cancel
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,7 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,21 +38,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import java.util.Calendar
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasTab
-import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
-import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
-import mx.tec.sonrisas.asistencia.ui.theme.AccentYellow
+import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
@@ -63,45 +57,27 @@ import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
-import mx.tec.sonrisas.asistencia.ui.theme.RadiusMd
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusSm
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
-import mx.tec.sonrisas.asistencia.ui.theme.StatusGreenInk
-import mx.tec.sonrisas.asistencia.ui.theme.StatusGreenTint
-import mx.tec.sonrisas.asistencia.ui.theme.StatusRedInk
-import mx.tec.sonrisas.asistencia.ui.theme.StatusRedTint
-import mx.tec.sonrisas.asistencia.ui.theme.StatusYellowInk
-import mx.tec.sonrisas.asistencia.ui.theme.StatusYellowTint
 
-private val StatNumberStyle = SonrisasTextStyle.Display.copy(
-    fontSize = 30.sp,
-    lineHeight = 36.sp,
-    letterSpacing = (-0.3).sp,
-)
-
+//el enum y textStyle se añadio a AttendanceStatus
 private val CalendarDayStyle = SonrisasTextStyle.Body.copy(fontSize = 16.sp, lineHeight = 20.sp)
 
-private enum class DayStatus(val label: String, val icon: ImageVector, val accent: Color) {
-    OnTime("A tiempo", Icons.Outlined.CheckCircle, AccentGreen),
-    Delay("Retardo", Icons.Outlined.Schedule, AccentYellow),
-    Absence("Falta", Icons.Outlined.Cancel, AccentRed),
-}
-
-private data class DayRecord(val status: DayStatus, val detail: String)
+private data class DayRecord(val status: AttendanceStatus, val detail: String)
 
 private fun dateKey(year: Int, month: Int, day: Int) = year * 10_000 + month * 100 + day
 
 private val Today = dateKey(2026, 10, 8)
 
 private val SampleRecords: Map<Int, DayRecord> = mapOf(
-    dateKey(2026, 10, 1) to DayRecord(DayStatus.OnTime, "Entrada 7:52 · Salida 16:03"),
-    dateKey(2026, 10, 2) to DayRecord(DayStatus.Absence, "Sin registro de entrada"),
-    dateKey(2026, 10, 5) to DayRecord(DayStatus.OnTime, "Entrada 7:50 · Salida 16:01"),
-    dateKey(2026, 10, 6) to DayRecord(DayStatus.Delay, "Entrada 8:08 · Salida 16:05"),
-    dateKey(2026, 10, 7) to DayRecord(DayStatus.OnTime, "Entrada 7:56 · Salida 16:00"),
-    dateKey(2026, 10, 8) to DayRecord(DayStatus.OnTime, "Entrada 7:55 · En turno"),
+    dateKey(2026, 10, 1) to DayRecord(AttendanceStatus.OnTime, "Entrada 7:52 · Salida 16:03"),
+    dateKey(2026, 10, 2) to DayRecord(AttendanceStatus.Absent, "Sin registro de entrada"),
+    dateKey(2026, 10, 5) to DayRecord(AttendanceStatus.OnTime, "Entrada 7:50 · Salida 16:01"),
+    dateKey(2026, 10, 6) to DayRecord(AttendanceStatus.MinorDelay, "Entrada 8:08 · Salida 16:05"),
+    dateKey(2026, 10, 7) to DayRecord(AttendanceStatus.OnTime, "Entrada 7:56 · Salida 16:00"),
+    dateKey(2026, 10, 8) to DayRecord(AttendanceStatus.OnTime, "Entrada 7:55 · En turno"),
 )
 
 private val MonthNames = listOf(
@@ -129,16 +105,21 @@ fun MyAttendanceScreen(
     modifier: Modifier = Modifier,
     initialSelectedDay: Int = 8,
 ) {
-    var selectedTab by rememberSaveable { mutableStateOf(SonrisasTab.Asistencias) }
     var year by rememberSaveable { mutableIntStateOf(2026) }
     var month by rememberSaveable { mutableIntStateOf(10) }
     var selectedDate by rememberSaveable { mutableIntStateOf(dateKey(2026, 10, initialSelectedDay)) }
 
     // Resumen del mes mostrado. "Asistencias" cuenta los días con entrada (a tiempo + retardo).
-    val monthRecords = SampleRecords.filterKeys { it / 100 == year * 100 + month }.values
-    val delays = monthRecords.count { it.status == DayStatus.Delay }
-    val attended = monthRecords.count { it.status == DayStatus.OnTime } + delays
-    val absences = monthRecords.count { it.status == DayStatus.Absence }
+    //para este punto solo utilizar el remember y no rememberSaveable nos evita volver a filtrar los registros cuando se cambia en la recomposición
+    val monthRecords = remember(year, month) {
+        SampleRecords.filterKeys { it / 100 == year * 100 + month }.values
+    }
+    //en si solamente hay dos tipos de retardos(como el que ella hizo conmigo cuando dijo que fue mi culpa)
+    val delays = monthRecords.count {
+        it.status == AttendanceStatus.MinorDelay || it.status == AttendanceStatus.MajorDelay
+    }
+    val attended = monthRecords.count { it.status == AttendanceStatus.OnTime } + delays
+    val absences = monthRecords.count { it.status == AttendanceStatus.Absent }
 
     Column(
         modifier = modifier
@@ -153,7 +134,8 @@ fun MyAttendanceScreen(
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            ScreenHeader(title = "Mis asistencias")
+            //aplicacion de encabezado
+            SonrisasTopBar(title = "Mis asistencias")
 
             Spacer(Modifier.height(Spacing.lg))
             MonthSelector(
@@ -192,25 +174,22 @@ fun MyAttendanceScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
             ) {
-                SummaryCard(
-                    count = attended,
+                SonrisasStatCard(
+                    value = attended,
                     label = if (attended == 1) "Asistencia" else "Asistencias",
-                    tint = StatusGreenTint,
-                    ink = StatusGreenInk,
+                    status = AttendanceStatus.OnTime,
                     modifier = Modifier.weight(1f),
                 )
-                SummaryCard(
-                    count = delays,
+                SonrisasStatCard(
+                    value = delays,
                     label = if (delays == 1) "Retardo" else "Retardos",
-                    tint = StatusYellowTint,
-                    ink = StatusYellowInk,
+                    status = AttendanceStatus.MinorDelay,
                     modifier = Modifier.weight(1f),
                 )
-                SummaryCard(
-                    count = absences,
+                SonrisasStatCard(
+                    value = absences,
                     label = if (absences == 1) "Falta" else "Faltas",
-                    tint = StatusRedTint,
-                    ink = StatusRedInk,
+                    status = AttendanceStatus.Absent,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -219,28 +198,7 @@ fun MyAttendanceScreen(
             SelectedDayRow(date = selectedDate)
             Spacer(Modifier.height(Spacing.xxl))
         }
-
-        SonrisasBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
-    }
-}
-
-@Composable
-private fun ScreenHeader(title: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        Text(
-            text = title,
-            style = SonrisasTextStyle.Display,
-            color = InkPrimary,
-            modifier = Modifier.semantics { heading() },
-        )
+        //eliminacion de la navbar
     }
 }
 
@@ -393,12 +351,13 @@ private fun CalendarDayCell(
 
 @Composable
 private fun StatusLegend() {
-    Row(
+    //cambio para los estados
+    FlowRow(
         modifier = Modifier.padding(horizontal = Spacing.xs),
         horizontalArrangement = Arrangement.spacedBy(Spacing.xl),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(Spacing.sm),
     ) {
-        DayStatus.entries.forEach { status ->
+        AttendanceStatus.entries.forEach { status ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -416,37 +375,6 @@ private fun StatusLegend() {
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun SummaryCard(
-    count: Int,
-    label: String,
-    tint: Color,
-    ink: Color,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .clip(RadiusMd)
-            .background(tint)
-            .padding(horizontal = Spacing.md, vertical = Spacing.md)
-            .semantics(mergeDescendants = true) {},
-    ) {
-        Text(
-            text = count.toString(),
-            style = StatNumberStyle,
-            color = ink,
-        )
-        Spacer(Modifier.height(Spacing.xs))
-        Text(
-            text = label,
-            style = SonrisasTextStyle.Caption,
-            color = InkSoft,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
     }
 }
 

@@ -2,7 +2,6 @@ package mx.tec.sonrisas.asistencia.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,24 +29,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mx.tec.sonrisas.asistencia.ui.components.ResponsableBottomBar
-import mx.tec.sonrisas.asistencia.ui.components.ResponsableTab
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAddButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSearchField
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTextLink
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
-import mx.tec.sonrisas.asistencia.ui.theme.RadiusSm
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
@@ -70,10 +65,15 @@ private val StaffDirectory = listOf(
     StaffEntry(7, "Julia Morales Soto", "Limpieza", "Apoyo"),
 )
 
+//mismo caso para los parametros agregando el onStaffClick
 @Composable
-fun StaffScreen(modifier: Modifier = Modifier) {
+fun StaffScreen(
+    modifier: Modifier = Modifier,
+    onStaffClick: (staffId: Int) -> Unit = {},
+    onGenerateInviteCode: () -> Unit = {},
+    onAddStaff: () -> Unit = {},
+) {
     var query by rememberSaveable { mutableStateOf("") }
-    var selectedTab by rememberSaveable { mutableStateOf(ResponsableTab.Personal) }
 
     Column(
         modifier = modifier
@@ -88,7 +88,7 @@ fun StaffScreen(modifier: Modifier = Modifier) {
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            StaffHeader()
+            SonrisasTopBar(title = "Personal")
 
             Spacer(Modifier.height(Spacing.lg))
             SonrisasSearchField(
@@ -98,11 +98,13 @@ fun StaffScreen(modifier: Modifier = Modifier) {
             )
 
             Spacer(Modifier.height(Spacing.lg))
-            StaffDirectoryCard(staff = StaffDirectory)
+            StaffDirectoryCard(staff = StaffDirectory, onStaffClick = onStaffClick)
             Spacer(Modifier.height(Spacing.lg))
         }
 
         StaffActionsRow(
+            onGenerateInviteCode = onGenerateInviteCode,
+            onAddStaff = onAddStaff,
             modifier = Modifier.padding(
                 start = Spacing.xl,
                 end = Spacing.xl,
@@ -110,33 +112,12 @@ fun StaffScreen(modifier: Modifier = Modifier) {
                 bottom = Spacing.lg,
             ),
         )
-
-        ResponsableBottomBar(
-            selected = selectedTab,
-            onTabClick = { selectedTab = it },
-        )
+        //se quita barra
     }
 }
 
 @Composable
-private fun StaffHeader() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        Text(
-            text = "Personal",
-            style = SonrisasTextStyle.Display,
-            color = InkPrimary,
-            modifier = Modifier.semantics { heading() },
-        )
-    }
-}
-
-@Composable
-private fun StaffDirectoryCard(staff: List<StaffEntry>) {
+private fun StaffDirectoryCard(staff: List<StaffEntry>, onStaffClick: (Int) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -144,7 +125,7 @@ private fun StaffDirectoryCard(staff: List<StaffEntry>) {
             .background(SurfaceWhite),
     ) {
         staff.forEachIndexed { index, entry ->
-            StaffDirectoryRow(entry = entry, onClick = {})
+            StaffDirectoryRow(entry = entry, onClick = { onStaffClick(entry.id) })
             if (index < staff.lastIndex) {
                 HorizontalDivider(
                     color = LineColor,
@@ -183,7 +164,6 @@ private fun StaffDirectoryRow(entry: StaffEntry, onClick: () -> Unit) {
             )
         }
         Spacer(Modifier.width(Spacing.sm))
-        // Decorativo: la fila completa ya anuncia que es un botón.
         Icon(
             imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
             contentDescription = null,
@@ -194,24 +174,21 @@ private fun StaffDirectoryRow(entry: StaffEntry, onClick: () -> Unit) {
 }
 
 @Composable
-private fun StaffActionsRow(modifier: Modifier = Modifier) {
+private fun StaffActionsRow(
+    onGenerateInviteCode: () -> Unit,
+    onAddStaff: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
+        SonrisasTextLink(
             text = "Generar código de invitación",
-            style = SonrisasTextStyle.Button,
-            color = BrandPurple,
-            modifier = Modifier
-                .weight(1f)
-                .clip(RadiusSm)
-                .clickable(role = Role.Button, onClick = {})
-                .heightIn(min = 48.dp)
-                .padding(vertical = Spacing.md, horizontal = Spacing.xs),
+            onClick = onGenerateInviteCode,
         )
-        Spacer(Modifier.width(Spacing.lg))
-        SonrisasAddButton(contentDescription = "Agregar personal", onClick = {})
+        Spacer(Modifier.weight(1f))
+        SonrisasAddButton(contentDescription = "Agregar personal", onClick = onAddStaff)
     }
 }
 
