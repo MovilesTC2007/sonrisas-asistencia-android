@@ -19,7 +19,12 @@ import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
+import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
+
+//medidas extra para botones y acciones
+internal val SonrisasButtonHeight = 48.dp
+internal val SonrisasButtonIconSize = 20.dp
 
 @Composable
 fun SonrisasPrimaryButton(
@@ -39,15 +44,15 @@ fun SonrisasPrimaryButton(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp),
+            .height(SonrisasButtonHeight),
     ) {
         leadingIcon?.let {
             Icon(
                 imageVector = it,
                 contentDescription = null,
-                modifier = Modifier.size(18.dp),
+                modifier = Modifier.size(SonrisasButtonIconSize),
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(Spacing.sm))
         }
         Text(text = text, style = SonrisasTextStyle.Button)
     }
@@ -70,7 +75,7 @@ fun SonrisasTintedButton(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .height(46.dp),
+            .height(SonrisasButtonHeight),
     ) {
         Text(text = text, style = SonrisasTextStyle.Button)
     }
@@ -82,7 +87,8 @@ fun SonrisasTextLink(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TextButton(onClick = onClick, modifier = modifier.fillMaxWidth()) {
+    //sin forzar el fillmax
+    TextButton(onClick = onClick, modifier = modifier) {
         Text(text = text, style = SonrisasTextStyle.Button, color = BrandPurple)
     }
 }
