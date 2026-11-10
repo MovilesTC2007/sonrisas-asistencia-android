@@ -164,7 +164,7 @@ private fun FieldLabel(
 }
 
 //se cambia el tipo de cada opcion de un box que se apretaba por un selectableGroup
-//mas correcto para anunciar la seleccion a estaod 
+//mas correcto para anunciar la seleccion a estaod
 @Composable
 private fun RequestTypeSelector(
     selectedType: RequestType,
@@ -310,7 +310,7 @@ private val sampleHistory = listOf(
     RequestHistoryItem("Falta · 10 ago", RequestStatus.Rejected),
 )
 
-//s¿los previews los deje con rememberSaveable para la idea de la navegacion mas adelante 
+//s¿los previews los deje con rememberSaveable para la idea de la navegacion mas adelante
 @Preview(name = "Solicitudes · permiso", showBackground = true, widthDp = 360, heightDp = 900)
 @Composable
 private fun RequestsPermissionPreview() {

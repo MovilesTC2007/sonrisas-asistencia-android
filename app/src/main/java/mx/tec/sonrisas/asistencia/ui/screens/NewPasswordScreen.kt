@@ -59,8 +59,8 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
-private const val codeLength = 6
-private const val minPasswordLength = 8
+private const val CODE_LENGTH = 6
+private const val MIN_PASSWORD_LENGTH = 8
 
 private data class PasswordRule(
     val label: String,
@@ -81,11 +81,11 @@ fun NewPasswordScreen(
     onSaveClick: () -> Unit = {},
 ) {
     val rules = listOf(
-        PasswordRule("Al menos 8 caracteres", password.length >= minPasswordLength),
+        PasswordRule("Al menos 8 caracteres", password.length >= MIN_PASSWORD_LENGTH),
         PasswordRule("Un número", password.any { it.isDigit() }),
         PasswordRule("Un carácter especial", password.any { !it.isLetterOrDigit() }),
     )
-    val canSave = code.length == codeLength && rules.all { it.isMet }
+    val canSave = code.length == CODE_LENGTH && rules.all { it.isMet }
 
     Column(
         modifier = modifier
@@ -242,7 +242,7 @@ private fun CodeInput(
     BasicTextField(
         value = value,
         onValueChange = { input ->
-            onValueChange(input.filter { it.isDigit() }.take(codeLength))
+            onValueChange(input.filter { it.isDigit() }.take(CODE_LENGTH))
         },
         singleLine = true,
         keyboardOptions = KeyboardOptions(
@@ -255,7 +255,7 @@ private fun CodeInput(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
             ) {
-                repeat(codeLength) { index ->
+                repeat(CODE_LENGTH) { index ->
                     val digit = value.getOrNull(index)?.toString().orEmpty()
                     val isFilled = index < value.length
 
