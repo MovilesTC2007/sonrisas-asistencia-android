@@ -1,6 +1,5 @@
 package mx.tec.sonrisas.asistencia.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -25,7 +24,7 @@ private val SonrisasLightColorScheme = lightColorScheme(
 
 @Composable
 fun SonrisasAsistenciasTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    // darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
     val colorScheme = SonrisasLightColorScheme

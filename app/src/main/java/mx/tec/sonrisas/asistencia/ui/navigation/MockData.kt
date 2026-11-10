@@ -8,7 +8,7 @@ import mx.tec.sonrisas.asistencia.ui.screens.RequestStatus
 import mx.tec.sonrisas.asistencia.ui.screens.StayAlert
 import mx.tec.sonrisas.asistencia.ui.screens.WeekdayAbsenteeism
 
-//ESTO SE VA A DEJAR MIENTRAS AGREGAMOS EL BACKEND CORRECTAMENTE, MIENTRAS TANTO PARTE DE LOS DATOS SE TOMARAN DUMMY DESDE AQUI 
+//ESTO SE VA A DEJAR MIENTRAS AGREGAMOS EL BACKEND CORRECTAMENTE, MIENTRAS TANTO PARTE DE LOS DATOS SE TOMARAN DUMMY DESDE AQUI
 //generacion de data mock con IA
 internal object MockData {
 
@@ -34,7 +34,7 @@ internal object MockData {
         RequestHistoryItem("Falta · 10 ago", RequestStatus.Rejected),
     )
 
-    //Responsable 
+    //Responsable
     const val MANAGER_NAME = "Elena"
     const val PRESENT_COUNT = 17
     const val DELAYED_COUNT = 2
@@ -47,7 +47,7 @@ internal object MockData {
         AreaCoverage("Apoyo", 7, 8),
     )
 
-    //Dirección 
+    //Dirección
     const val TOTAL_STAFF = 84
     const val ABSENCES_TODAY = 6
     const val HIRES_THIS_MONTH = 4

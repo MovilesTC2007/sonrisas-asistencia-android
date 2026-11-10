@@ -47,7 +47,7 @@ interface SonrisasNavItem {
 }
 
 //esta barra de navegacion no sabe nada en posiciones o rutas, es solamente componente de front y diseseños
-//con IA se agregaron las transciones entre cada item de la NavigationBarItem 
+//con IA se agregaron las transciones entre cada item de la NavigationBarItem
 //se pone un role.tab para la seleccion de una pestaña y su pocion para correcto consumo
 @Composable
 fun <T : SonrisasNavItem> SonrisasBottomBar(
@@ -117,10 +117,10 @@ private fun TabIcon(
         val justSelected = selected && !wasSelected
         wasSelected = selected
         if (justSelected) {
-            scale.animateTo(1.2f, animationSpec = tween(durationMillis = 110))   
+            scale.animateTo(1.2f, animationSpec = tween(durationMillis = 110))
             scale.animateTo(
                 1f,
-                animationSpec = spring(                                           
+                animationSpec = spring(
                     dampingRatio = Spring.DampingRatioMediumBouncy,
                     stiffness = Spring.StiffnessMedium,
                 ),
@@ -157,7 +157,7 @@ private fun TabIcon(
     }
 }
 
-//roles 
+//roles
 
 @Preview(name = "Barra · Empleado", showBackground = true, widthDp = 360)
 @Composable

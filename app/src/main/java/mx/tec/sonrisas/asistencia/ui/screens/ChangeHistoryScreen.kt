@@ -86,9 +86,9 @@ private val SampleChanges = listOf(
 private val EstanciaOptions = listOf("Todas las estancias", "Arcoíris", "Los Girasoles", "Luna Nueva")
 private val PeriodOptions = listOf("Hoy", "Esta semana", "Este mes")
 
-private const val AllKinds = "Todos los tipos"
+private const val ALL_KINDS = "Todos los tipos"
 private val KindOptions = listOf(
-    AllKinds, "Correcciones", "Retardos", "Entradas", "Altas", "Bajas", "Ubicación",
+    ALL_KINDS, "Correcciones", "Retardos", "Entradas", "Altas", "Bajas", "Ubicación",
 )
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -96,7 +96,7 @@ private val KindOptions = listOf(
 fun ChangeHistoryScreen(modifier: Modifier = Modifier) {
     var estancia by rememberSaveable { mutableStateOf(EstanciaOptions[0]) }
     var period by rememberSaveable { mutableStateOf("Esta semana") }
-    var kind by rememberSaveable { mutableStateOf(AllKinds) }
+    var kind by rememberSaveable { mutableStateOf(ALL_KINDS) }
 
     Column(
         modifier = modifier
@@ -133,8 +133,8 @@ fun ChangeHistoryScreen(modifier: Modifier = Modifier) {
                     onSelect = { period = it },
                 )
                 MenuFilterChip(
-                    text = if (kind == AllKinds) "Tipo" else kind,
-                    active = kind != AllKinds,
+                    text = if (kind == ALL_KINDS) "Tipo" else kind,
+                    active = kind != ALL_KINDS,
                     options = KindOptions,
                     selected = kind,
                     onSelect = { kind = it },

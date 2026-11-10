@@ -35,7 +35,6 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.R
 
-
 data class AccountDetail(
     val label: String,
     val value: String,

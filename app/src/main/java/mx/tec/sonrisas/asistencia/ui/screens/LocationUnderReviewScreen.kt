@@ -99,7 +99,7 @@ fun LocationUnderReviewScreen(
             ReviewStatusChip(text = "En revisión")
             Spacer(modifier = Modifier.height(Spacing.xl))
             Text(
-                text = "La ubicación de tu teléfono no parece real. Tu registro se guardó y tu responsable lo va a revisar.",
+                text = "Ubicación sospechosa. Registro guardado y enviado a revisión de tu responsable.",
                 style = SonrisasTypography.bodyLarge,
                 color = InkPrimary,
                 textAlign = TextAlign.Center,
