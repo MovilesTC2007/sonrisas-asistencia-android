@@ -46,9 +46,9 @@ interface SonrisasNavItem {
     val icon: ImageVector
 }
 
-//esta barra de navegacion no sabe nada en posiciones o rutas, es solamente componente de front y diseseños
-//con IA se agregaron las transciones entre cada item de la NavigationBarItem
-//se pone un role.tab para la seleccion de una pestaña y su pocion para correcto consumo
+// esta barra de navegacion no sabe nada en posiciones o rutas, es solamente componente de front y diseseños
+// con IA se agregaron las transciones entre cada item de la NavigationBarItem
+// se pone un role.tab para la seleccion de una pestaña y su pocion para correcto consumo
 @Composable
 fun <T : SonrisasNavItem> SonrisasBottomBar(
     items: List<T>,
