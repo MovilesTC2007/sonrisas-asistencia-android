@@ -62,7 +62,7 @@ fun SonrisasTextField(
             )
         }
         //para que se defina su propio tamaño sin depender de calculo en el diseño
-        //como isabela que nunca supo amarme 
+        //como isabela que nunca supo amarme
         //isabela vuelve a mi porfavor (cambio de prueba)
         trailingContent?.invoke()
     }
