@@ -32,4 +32,5 @@ render.experimental.xml
 google-services.json
 
 # Android Profiling
-*.hprof
+*.hprof.DS_Store
+**/.DS_Store
