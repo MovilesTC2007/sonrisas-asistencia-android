@@ -39,3 +39,11 @@ jobs:
 
       - name: Ejecutar Detekt
         run: ./gradlew detekt
+
+      - name: Upload Detekt Report
+        uses: actions/upload-artifact@v4
+        if: always() # Subir el reporte como artifact
+        with:
+          name: detekt-report-${{ github.run_number }}
+          path: app/build/reports/detekt/detekt.html
+          retention-days: 1 # Tiempo de vida del reporte
