@@ -7,6 +7,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+
  val PoppinsFamily = FontFamily(
      Font(R.font.poppins_semibold, FontWeight.SemiBold),
      Font(R.font.poppins_bold, FontWeight.Bold),

@@ -62,7 +62,7 @@ enum class SonrisasTab(
     Perfil("Perfil", Icons.Outlined.Person, "perfil"),
 }
 
-//estas son para las patallas que no llevan la navbar osea las que son pestañas de una pantalla ya hecha 
+//estas son para las patallas que no llevan la navbar osea las que son pestañas de una pantalla ya hecha
 object SonrisasRoutes {
     //con grafos para animar mas nuestra vida
     const val ACCESS_GRAPH = "acceso"
