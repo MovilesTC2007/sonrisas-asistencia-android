@@ -65,7 +65,7 @@ private val SampleProfile = StaffProfile(
     center = "Arcoíris · Lactantes",
 )
 
-//cambio de nombre de la funcion, se confunde para la llamada directa de la pantalla en el mainactivity
+// cambio de nombre de la funcion, se confunde para la llamada directa de la pantalla en el mainactivity
 @Composable
 fun DetailStaffScreen(
     modifier: Modifier = Modifier,
@@ -89,7 +89,7 @@ fun DetailStaffScreen(
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            SonrisasTopBar(title = "Detalle de personal", onBack = onBack) //encabezado componentes
+            SonrisasTopBar(title = "Detalle de personal", onBack = onBack) // encabezado componentes
 
             Spacer(Modifier.height(Spacing.lg))
             ProfileCard(profile = profile)
@@ -132,11 +132,11 @@ fun DetailStaffScreen(
                 text = "Dar de baja",
                 onClick = onDeactivate,
                 leadingIcon = Icons.Outlined.PersonRemove,
-                destructive = true, //para mejoramiento de visualizacion
+                destructive = true, // para mejoramiento de visualizacion
             )
             Spacer(Modifier.height(Spacing.xxl))
         }
-        //se quita navabar
+        // se quita navabar
     }
 }
 

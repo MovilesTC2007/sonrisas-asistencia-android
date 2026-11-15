@@ -25,8 +25,8 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 
 
-//esto es la fila de cobertura, es la que se encontraba copiada entre ManagerHome y en el panel para direccion
-//la idea es solo tenerla directamente en una fila para que pueda ir dentro de la SonrisasListCard
+// esto es la fila de cobertura, es la que se encontraba copiada entre ManagerHome y en el panel para direccion
+// la idea es solo tenerla directamente en una fila para que pueda ir dentro de la SonrisasListCard
 @Composable
 fun SonrisasCoverageRow(
     label: String,

@@ -109,9 +109,9 @@ private fun TabIcon(
     selected: Boolean,
     badgeCount: Int,
 ) {
-    //`Animatable` para animacion manual
+    // `Animatable` para animacion manual
     val scale = remember { Animatable(1f) }
-    var wasSelected by remember { mutableStateOf(selected) } //mutable tambien para que no se mueva varias veces
+    var wasSelected by remember { mutableStateOf(selected) } // mutable tambien para que no se mueva varias veces
 
     LaunchedEffect(selected) {
         val justSelected = selected && !wasSelected
@@ -126,7 +126,7 @@ private fun TabIcon(
                 ),
             )
         } else {
-            scale.snapTo(1f) //para media animacion
+            scale.snapTo(1f) // para media animacion
         }
     }
 
@@ -157,7 +157,7 @@ private fun TabIcon(
     }
 }
 
-//roles
+// roles
 
 @Preview(name = "Barra · Empleado", showBackground = true, widthDp = 360)
 @Composable

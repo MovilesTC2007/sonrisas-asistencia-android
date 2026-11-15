@@ -31,8 +31,8 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 
-//topbar para encabezado, se comparte en varias pantallas
-//para desaparecer formuato null y mantener componentes guardados compartidos
+// topbar para encabezado, se comparte en varias pantallas
+// para desaparecer formuato null y mantener componentes guardados compartidos
 @Composable
 fun SonrisasTopBar(
     title: String,

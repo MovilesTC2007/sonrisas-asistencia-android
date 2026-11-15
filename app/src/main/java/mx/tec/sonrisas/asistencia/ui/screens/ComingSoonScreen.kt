@@ -28,9 +28,9 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 
-//pantalla por lo menos provisional
-//faltan algunas pantallas por agregar en el navbar entonces le delegamos esta en sonrisas app mientras tanto
-//IA SLOP EN SU MAYORIA ESTO SE VA A BORRAR
+// pantalla por lo menos provisional
+// faltan algunas pantallas por agregar en el navbar entonces le delegamos esta en sonrisas app mientras tanto
+// IA SLOP EN SU MAYORIA ESTO SE VA A BORRAR
 @Composable
 fun ComingSoonScreen(
     title: String,

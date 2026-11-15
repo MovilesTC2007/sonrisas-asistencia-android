@@ -50,7 +50,7 @@ private fun label(size: Double) = TextStyle(
 
 object SonrisasTextStyle {
     val Display = display(23)
-    //mantener estilo unico
+    // mantener estilo unico
     val Stat = display(30)
     val Hero = display(48)
     val Title = title(17)

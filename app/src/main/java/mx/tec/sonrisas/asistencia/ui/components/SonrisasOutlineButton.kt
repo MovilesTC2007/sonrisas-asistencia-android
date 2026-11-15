@@ -37,7 +37,7 @@ fun SonrisasOutlinedButton(
     modifier: Modifier = Modifier,
     leadingIcon: ImageVector? = null,
     enabled: Boolean = true,
-    //para acciones importantes como dar de baja y cosas asi conviene este tipo de diseseños y contraste
+    // para acciones importantes como dar de baja y cosas asi conviene este tipo de diseseños y contraste
     destructive: Boolean = false,
 ) {
     val accent = if (destructive) StatusRedInk else BrandPurple
@@ -52,7 +52,7 @@ fun SonrisasOutlinedButton(
             disabledContainerColor = Color.Transparent,
             disabledContentColor = InkFaint,
         ),
-        //medidas correctas para boton
+        // medidas correctas para boton
         modifier = modifier
             .fillMaxWidth()
             .height(SonrisasButtonHeight),
