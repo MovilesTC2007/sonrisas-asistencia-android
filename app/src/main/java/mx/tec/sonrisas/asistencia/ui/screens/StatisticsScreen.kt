@@ -66,7 +66,7 @@ private data class AttendanceSlice(
     val color: Color,
 )
 
-//igual Restructuracion sin Scaffold se quita flecha de regresar y existia un coveragedonut doble que no se usaba pero ya elimiando
+// igual Restructuracion sin Scaffold se quita flecha de regresar y existia un coveragedonut doble que no se usaba pero ya elimiando
 @Composable
 fun StatisticsScreen(
     presentCount: Int,
@@ -152,7 +152,7 @@ fun StatisticsScreen(
                 color = InkPrimary,
             )
             Spacer(Modifier.height(Spacing.md))
-            //alertas para la tarjeta
+            // alertas para la tarjeta
             SonrisasListCard(items = alerts) { alert ->
                 StayAlertRow(alert = alert)
             }
@@ -279,8 +279,8 @@ private fun DonutBar(
     }
 }
 
-//mejoramiento de diseño ideono
-//quedo mejor el de erik que el de nicte saludos xd
+// mejoramiento de diseño ideono
+// quedo mejor el de erik que el de nicte saludos xd
 @Composable
 private fun StayAlertRow(
     alert: StayAlert,

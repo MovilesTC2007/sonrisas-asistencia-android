@@ -7,6 +7,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+
  val PoppinsFamily = FontFamily(
      Font(R.font.poppins_semibold, FontWeight.SemiBold),
      Font(R.font.poppins_bold, FontWeight.Bold),
@@ -49,7 +50,7 @@ private fun label(size: Double) = TextStyle(
 
 object SonrisasTextStyle {
     val Display = display(23)
-    //mantener estilo unico
+    // mantener estilo unico
     val Stat = display(30)
     val Hero = display(48)
     val Title = title(17)

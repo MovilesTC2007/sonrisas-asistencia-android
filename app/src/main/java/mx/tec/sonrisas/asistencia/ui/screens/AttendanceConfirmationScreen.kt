@@ -39,9 +39,9 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
-//cambio para uso de componentes
+// cambio para uso de componentes
 
-//los botones se cambiaron para permitir acciones y navegacion
+// los botones se cambiaron para permitir acciones y navegacion
 @Composable
 fun AttendanceConfirmationScreen(
     modifier: Modifier = Modifier,
@@ -117,13 +117,13 @@ fun AttendanceConfirmationScreen(
                 bottom = Spacing.lg,
             ),
         )
-        //se quita la barra de aqui
+        // se quita la barra de aqui
     }
 }
 
 @Composable
 private fun StatusIndicator(status: AttendanceStatus) {
-    //por ser un enum compartido no hay necesidad de usar when locales
+    // por ser un enum compartido no hay necesidad de usar when locales
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.sm),

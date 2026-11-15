@@ -27,8 +27,8 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfacePeach
 
-//generado para la parte de anuncios como el de sin conexcion y el de cobertura completa
-//se utilizaba asi para Attendance y Dashboard para unificarlos
+// generado para la parte de anuncios como el de sin conexcion y el de cobertura completa
+// se utilizaba asi para Attendance y Dashboard para unificarlos
 @Composable
 fun SonrisasNoticeBanner(
     icon: ImageVector,

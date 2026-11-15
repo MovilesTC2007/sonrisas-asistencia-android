@@ -14,8 +14,8 @@ import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
 
-//en staff se utiliza una tarjeta blanca pero con divisores sin embargo se estaba agreango divisores de borde con otro color y espciado
-//este compoente es para que cada fila agregada tenga su propio padding y asi no perder texto
+// en staff se utiliza una tarjeta blanca pero con divisores sin embargo se estaba agreango divisores de borde con otro color y espciado
+// este compoente es para que cada fila agregada tenga su propio padding y asi no perder texto
 @Composable
 fun <T> SonrisasListCard(
     items: List<T>,

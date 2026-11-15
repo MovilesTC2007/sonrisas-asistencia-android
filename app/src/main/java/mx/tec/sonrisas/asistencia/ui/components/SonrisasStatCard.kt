@@ -24,7 +24,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 
-//Cards anteriores tenian padding y valores diferentes (no respetaban la theme)
+// Cards anteriores tenian padding y valores diferentes (no respetaban la theme)
 @Composable
 fun SonrisasStatCard(
     value: Int,
@@ -56,7 +56,7 @@ fun SonrisasStatCard(
     }
 }
 
-//cambio para tint (Utilizado para cambio de colores repetidos entre misma pantalla)
+// cambio para tint (Utilizado para cambio de colores repetidos entre misma pantalla)
 @Composable
 fun SonrisasStatCard(
     value: Int,

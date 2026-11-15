@@ -29,7 +29,7 @@ fun SonrisasTextField(
     icon: ImageVector,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    //keyboardActions sirve para ejecutar accion como su nombre lo indica por supuesto
+    // keyboardActions sirve para ejecutar accion como su nombre lo indica por supuesto
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     singleLine: Boolean = true,
@@ -61,8 +61,9 @@ fun SonrisasTextField(
                 modifier = Modifier.fillMaxWidth(),
             )
         }
-        //para que se defina su propio tamaño sin depender de calculo en el diseño
-        //como isabela que nunca supo amarme 
+        // para que se defina su propio tamaño sin depender de calculo en el diseño
+        // como isabela que nunca supo amarme
+        // isabela vuelve a mi porfavor (cambio de prueba)
         trailingContent?.invoke()
     }
 }

@@ -20,7 +20,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 
-//para el circulo grande de ubicacion y confirmacion para ser reutilizado sin tener que crearlo otra vez pues
+// para el circulo grande de ubicacion y confirmacion para ser reutilizado sin tener que crearlo otra vez pues
 @Composable
 fun SonrisasHeroBadge(
     icon: ImageVector,

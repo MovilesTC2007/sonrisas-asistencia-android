@@ -54,13 +54,13 @@ fun LoginScreen(
     onForgotPassword: () -> Unit = {},
     onInviteCode: () -> Unit = {},
 ) {
-    //rememberSaveable para rotacion de pantalla
+    // rememberSaveable para rotacion de pantalla
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
     Column(
-        //correction para el fondo
+        // correction para el fondo
         modifier = modifier
             .fillMaxSize()
             .background(BgCream)
@@ -145,7 +145,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(Spacing.lg))
         SonrisasPrimaryButton(text = "Entrar", onClick = { onLogin(email, password) })
         Spacer(modifier = Modifier.height(Spacing.sm))
-        //el text link nos permite ya no forzar el ancho
+        // el text link nos permite ya no forzar el ancho
         SonrisasTextLink(
             text = "¿Olvidaste tu contraseña?",
             onClick = onForgotPassword,

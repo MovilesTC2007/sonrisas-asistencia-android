@@ -60,15 +60,15 @@ import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 
 
-//MAIN CONTAINER
-//IDEA BASE:
-//primero Scaffold para los margenes de la app con huecos para las tarjetas y contenidos
-//Parte central es el navhost donde se llaman las pantallas explicitamente pues
-////despues por final es la navbar aqui se dibuja directo para no llamarlo por pantalla realmente
-//El funcionamiento de este codigo es para el manejo de rutas entre cada pantalla
+// MAIN CONTAINER
+// IDEA BASE:
+// primero Scaffold para los margenes de la app con huecos para las tarjetas y contenidos
+// Parte central es el navhost donde se llaman las pantallas explicitamente pues
+// //despues por final es la navbar aqui se dibuja directo para no llamarlo por pantalla realmente
+// El funcionamiento de este codigo es para el manejo de rutas entre cada pantalla
 
-private const val NAV_ANIM_MS = 300 //screens Transition
-private const val FADE_MS = 220 //mismo movimiento de transicion 
+private const val NAV_ANIM_MS = 300 // screens Transition
+private const val FADE_MS = 220 // mismo movimiento de transicion
 
 @Composable
 fun SonrisasApp(
@@ -77,11 +77,11 @@ fun SonrisasApp(
     startAtLogin: Boolean = true,
     navController: NavHostController = rememberNavController(),
 ) {
-    //los siguientes comandos son para navegacion continua y actualizacion del Scaffold a tiempo real no fake yo no lo descargo porque ya lo tengo
+    // los siguientes comandos son para navegacion continua y actualizacion del Scaffold a tiempo real no fake yo no lo descargo porque ya lo tengo
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
 
-    //corroboracion de rol para su pantalla
+    // corroboracion de rol para su pantalla
     val tabs = role.tabs
     val currentTab = tabs.firstOrNull { it.route == currentRoute }
     var lastTab by rememberSaveable(role) { mutableStateOf(tabs.first()) }
@@ -89,14 +89,14 @@ fun SonrisasApp(
         if (currentTab != null) lastTab = currentTab
     }
 
-    //para que no se anime al entrar la barra
+    // para que no se anime al entrar la barra
     val showBottomBar = if (backStackEntry == null) !startAtLogin else currentTab != null
 
     Scaffold(
         modifier = modifier,
         containerColor = BgCream,
         bottomBar = {
-            //animacion de entrada al cambio de pantalla, igual y la quito para mejorarla
+            // animacion de entrada al cambio de pantalla, igual y la quito para mejorarla
             AnimatedVisibility(
                 visible = showBottomBar,
                 enter = expandVertically(tween(NAV_ANIM_MS), expandFrom = Alignment.Top) +
@@ -119,8 +119,8 @@ fun SonrisasApp(
             }
         },
     ) { innerPadding ->
-        //para no consumir espacio extra tomamos el innerPadding para que se sopreponga sin consumirlo
- 
+        // para no consumir espacio extra tomamos el innerPadding para que se sopreponga sin consumirlo
+
         SonrisasNavHost(
             navController = navController,
             role = role,
@@ -132,7 +132,7 @@ fun SonrisasApp(
     }
 }
 
-//MAPA DE RUTAS: este es el good para cambiar cuando agreguemos las nuevas pantallas faltantes
+// MAPA DE RUTAS: este es el good para cambiar cuando agreguemos las nuevas pantallas faltantes
 @Composable
 private fun SonrisasNavHost(
     navController: NavHostController,
@@ -157,7 +157,7 @@ private fun NavGraphBuilder.accessGraph(navController: NavHostController, role: 
 
         composable(SonrisasRoutes.LOGIN) { entry ->
             LoginScreen(
-                //esto es para el Mockup PARA QUE ENTRE CUALQUIER DATO DE CONTRASEÑA Y ASI igual se deja para cuando llamemos al back
+                // esto es para el Mockup PARA QUE ENTRE CUALQUIER DATO DE CONTRASEÑA Y ASI igual se deja para cuando llamemos al back
                 onLogin = { _, _ -> entry.ifResumed { navController.onSignedIn(role) } },
                 onInviteCode = { entry.ifResumed { navController.navigate(SonrisasRoutes.CREATE_ACCOUNT) } },
             )
@@ -171,13 +171,17 @@ private fun NavGraphBuilder.accessGraph(navController: NavHostController, role: 
         pushComposable(SonrisasRoutes.LOCATION_PERMISSION) { entry ->
             LocationRequestScreen(
                 onBack = { entry.ifResumed { navController.popBackStack() } },
-                onAllowLocation = { entry.ifResumed { navController.enterMainGraph() } }, //considerar para el permiso de uso de Ubicacion, ahorita elimino el mensaje xd 
+                onAllowLocation = {
+                    entry.ifResumed {
+                        navController.enterMainGraph()
+                    }
+                }, // considerar para el permiso de uso de Ubicacion, ahorita elimino el mensaje xd
             )
         }
     }
 }
 
-//REGISTRO DE LAS RUTAS ASIGNADAS POR ROL
+// REGISTRO DE LAS RUTAS ASIGNADAS POR ROL
 private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: UserRole) {
     navigation(startDestination = SonrisasTab.Inicio.route, route = SonrisasRoutes.MAIN_GRAPH) {
 
@@ -298,7 +302,7 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         pushComposable(SonrisasRoutes.REGISTER_STAFF) { entry ->
             RegisterStaffScreen(
                 onBack = { entry.ifResumed { navController.popBackStack() } },
-                //PARA Mockup
+                // PARA Mockup
                 onRegisterEntry = { _ -> entry.ifResumed { navController.popBackStack() } },
             )
         }
@@ -325,14 +329,14 @@ private fun EmployeeRequestsDestination() {
         history = MockData.requestHistory,
         onTypeSelected = { selectedType = it },
         onReasonChange = { reason = it },
-        //Mockup
+        // Mockup
         onSendClick = { reason = "" },
     )
 }
 
-//SECCION DE MANEJO DE PESTAÑAS good
-//OBTENIDO DE: https://developer.android.com/guide/navigation/backstack/multi-back-stacks?hl=es-419
-//LA IDEA ES QUE el botón "atrás" desde cualquier pestaña regresa a Inicio y desde Inicio sale de la app.
+// SECCION DE MANEJO DE PESTAÑAS good
+// OBTENIDO DE: https://developer.android.com/guide/navigation/backstack/multi-back-stacks?hl=es-419
+// LA IDEA ES QUE el botón "atrás" desde cualquier pestaña regresa a Inicio y desde Inicio sale de la app.
 internal fun NavHostController.navigateToTab(tab: SonrisasTab) {
     navigate(tab.route) {
         popUpTo(SonrisasTab.Inicio.route) { saveState = true }
@@ -366,13 +370,21 @@ private fun NavGraphBuilder.pushComposable(
     composable(
         route = route,
         arguments = arguments,
-        enterTransition = {slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start, tween(NAV_ANIM_MS))},
-        popExitTransition = {slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End, tween(NAV_ANIM_MS))},
+        enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Start, tween(NAV_ANIM_MS)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.End, tween(NAV_ANIM_MS)
+            )
+        },
         content = content,
     )
 }
 
-//CASOS DE ROLES DE CANELA
+// CASOS DE ROLES DE CANELA
 
 @Preview(name = "App · Empleado", showBackground = true, widthDp = 360, heightDp = 800)
 @Composable

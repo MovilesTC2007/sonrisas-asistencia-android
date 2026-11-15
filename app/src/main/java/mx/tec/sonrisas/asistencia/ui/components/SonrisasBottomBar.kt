@@ -46,9 +46,9 @@ interface SonrisasNavItem {
     val icon: ImageVector
 }
 
-//esta barra de navegacion no sabe nada en posiciones o rutas, es solamente componente de front y diseseños
-//con IA se agregaron las transciones entre cada item de la NavigationBarItem 
-//se pone un role.tab para la seleccion de una pestaña y su pocion para correcto consumo
+// esta barra de navegacion no sabe nada en posiciones o rutas, es solamente componente de front y diseseños
+// con IA se agregaron las transciones entre cada item de la NavigationBarItem
+// se pone un role.tab para la seleccion de una pestaña y su pocion para correcto consumo
 @Composable
 fun <T : SonrisasNavItem> SonrisasBottomBar(
     items: List<T>,
@@ -109,24 +109,24 @@ private fun TabIcon(
     selected: Boolean,
     badgeCount: Int,
 ) {
-    //`Animatable` para animacion manual
+    // `Animatable` para animacion manual
     val scale = remember { Animatable(1f) }
-    var wasSelected by remember { mutableStateOf(selected) } //mutable tambien para que no se mueva varias veces
+    var wasSelected by remember { mutableStateOf(selected) } // mutable tambien para que no se mueva varias veces
 
     LaunchedEffect(selected) {
         val justSelected = selected && !wasSelected
         wasSelected = selected
         if (justSelected) {
-            scale.animateTo(1.2f, animationSpec = tween(durationMillis = 110))   
+            scale.animateTo(1.2f, animationSpec = tween(durationMillis = 110))
             scale.animateTo(
                 1f,
-                animationSpec = spring(                                           
+                animationSpec = spring(
                     dampingRatio = Spring.DampingRatioMediumBouncy,
                     stiffness = Spring.StiffnessMedium,
                 ),
             )
         } else {
-            scale.snapTo(1f) //para media animacion
+            scale.snapTo(1f) // para media animacion
         }
     }
 
@@ -157,7 +157,7 @@ private fun TabIcon(
     }
 }
 
-//roles 
+// roles
 
 @Preview(name = "Barra · Empleado", showBackground = true, widthDp = 360)
 @Composable

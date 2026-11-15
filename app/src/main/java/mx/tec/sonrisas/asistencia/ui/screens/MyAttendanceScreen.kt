@@ -62,7 +62,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 
-//el enum y textStyle se añadio a AttendanceStatus
+// el enum y textStyle se añadio a AttendanceStatus
 private val CalendarDayStyle = SonrisasTextStyle.Body.copy(fontSize = 16.sp, lineHeight = 20.sp)
 
 private data class DayRecord(val status: AttendanceStatus, val detail: String)
@@ -110,11 +110,11 @@ fun MyAttendanceScreen(
     var selectedDate by rememberSaveable { mutableIntStateOf(dateKey(2026, 10, initialSelectedDay)) }
 
     // Resumen del mes mostrado. "Asistencias" cuenta los días con entrada (a tiempo + retardo).
-    //para este punto solo utilizar el remember y no rememberSaveable nos evita volver a filtrar los registros cuando se cambia en la recomposición
+    // para este punto solo utilizar el remember y no rememberSaveable nos evita volver a filtrar los registros cuando se cambia en la recomposición
     val monthRecords = remember(year, month) {
         SampleRecords.filterKeys { it / 100 == year * 100 + month }.values
     }
-    //en si solamente hay dos tipos de retardos(como el que ella hizo conmigo cuando dijo que fue mi culpa)
+    // en si solamente hay dos tipos de retardos(como el que ella hizo conmigo cuando dijo que fue mi culpa)
     val delays = monthRecords.count {
         it.status == AttendanceStatus.MinorDelay || it.status == AttendanceStatus.MajorDelay
     }
@@ -134,7 +134,7 @@ fun MyAttendanceScreen(
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            //aplicacion de encabezado
+            // aplicacion de encabezado
             SonrisasTopBar(title = "Mis asistencias")
 
             Spacer(Modifier.height(Spacing.lg))
@@ -198,7 +198,7 @@ fun MyAttendanceScreen(
             SelectedDayRow(date = selectedDate)
             Spacer(Modifier.height(Spacing.xxl))
         }
-        //eliminacion de la navbar
+        // eliminacion de la navbar
     }
 }
 
@@ -351,7 +351,7 @@ private fun CalendarDayCell(
 
 @Composable
 private fun StatusLegend() {
-    //cambio para los estados
+    // cambio para los estados
     FlowRow(
         modifier = Modifier.padding(horizontal = Spacing.xs),
         horizontalArrangement = Arrangement.spacedBy(Spacing.xl),

@@ -8,11 +8,11 @@ import mx.tec.sonrisas.asistencia.ui.screens.RequestStatus
 import mx.tec.sonrisas.asistencia.ui.screens.StayAlert
 import mx.tec.sonrisas.asistencia.ui.screens.WeekdayAbsenteeism
 
-//ESTO SE VA A DEJAR MIENTRAS AGREGAMOS EL BACKEND CORRECTAMENTE, MIENTRAS TANTO PARTE DE LOS DATOS SE TOMARAN DUMMY DESDE AQUI 
-//generacion de data mock con IA
+// ESTO SE VA A DEJAR MIENTRAS AGREGAMOS EL BACKEND CORRECTAMENTE, MIENTRAS TANTO PARTE DE LOS DATOS SE TOMARAN DUMMY DESDE AQUI
+// generacion de data mock con IA
 internal object MockData {
 
-    //Empleado
+    // Empleado
     const val EMPLOYEE_NAME = "Fernando"
     const val SHIFT_SCHEDULE = "8:00 – 16:00"
     const val SHIFT_ROLE = "Maestra · Lactantes"
@@ -26,7 +26,7 @@ internal object MockData {
         AttendanceRecord("Jue 1 oct", "7:57 – 16:00", AttendanceStatus.OnTime),
     )
 
-    //Empleado
+    // Empleado
     const val REQUEST_DATE = "12 de octubre de 2026"
     val requestHistory = listOf(
         RequestHistoryItem("Permiso · 12 oct", RequestStatus.Pending),
@@ -34,7 +34,7 @@ internal object MockData {
         RequestHistoryItem("Falta · 10 ago", RequestStatus.Rejected),
     )
 
-    //Responsable 
+    // Responsable
     const val MANAGER_NAME = "Elena"
     const val PRESENT_COUNT = 17
     const val DELAYED_COUNT = 2
@@ -47,7 +47,7 @@ internal object MockData {
         AreaCoverage("Apoyo", 7, 8),
     )
 
-    //Dirección 
+    // Dirección
     const val TOTAL_STAFF = 84
     const val ABSENCES_TODAY = 6
     const val HIRES_THIS_MONTH = 4
@@ -68,7 +68,7 @@ internal object MockData {
         WeekdayAbsenteeism("Vie", 7.1f),
     )
 
-    //Dirección
+    // Dirección
     const val STATS_PRESENT = 442
     const val STATS_EXPECTED = 480
     const val STATS_ON_TIME = 384
