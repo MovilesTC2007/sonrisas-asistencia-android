@@ -22,7 +22,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
-//medidas extra para botones y acciones
+// medidas extra para botones y acciones
 internal val SonrisasButtonHeight = 48.dp
 internal val SonrisasButtonIconSize = 20.dp
 
@@ -87,7 +87,7 @@ fun SonrisasTextLink(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    //sin forzar el fillmax
+    // sin forzar el fillmax
     TextButton(onClick = onClick, modifier = modifier) {
         Text(text = text, style = SonrisasTextStyle.Button, color = BrandPurple)
     }

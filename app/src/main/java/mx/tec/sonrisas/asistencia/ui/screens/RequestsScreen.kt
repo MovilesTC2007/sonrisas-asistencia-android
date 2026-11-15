@@ -69,7 +69,7 @@ enum class RequestType(val label: String) {
 }
 
 
-//se añade el estado para la solicitud con su respectivo diseño quitando los when que ya habia
+// se añade el estado para la solicitud con su respectivo diseño quitando los when que ya habia
 enum class RequestStatus(
     val label: String,
     val icon: ImageVector,
@@ -85,9 +85,9 @@ data class RequestHistoryItem(
     val status: RequestStatus,
 )
 
-//cambie el nombre del archivo luego si se confunden las funciones
-//se quito igual el Scaffold y se restructura como antes con columns y margenes chidos
-//para los parametros de la solicitud se podran perder entonces sera necesaria el uso del rememberSaveable
+// cambie el nombre del archivo luego si se confunden las funciones
+// se quito igual el Scaffold y se restructura como antes con columns y margenes chidos
+// para los parametros de la solicitud se podran perder entonces sera necesaria el uso del rememberSaveable
 @Composable
 fun RequestsScreen(
     selectedType: RequestType,
@@ -130,7 +130,7 @@ fun RequestsScreen(
         Spacer(Modifier.height(Spacing.sm))
         ReasonField(value = reason, onValueChange = onReasonChange)
         Spacer(Modifier.height(Spacing.xl))
-        //deshabilitado para el boton
+        // deshabilitado para el boton
         SonrisasPrimaryButton(
             text = "Enviar solicitud",
             onClick = onSendClick,
@@ -163,8 +163,8 @@ private fun FieldLabel(
     )
 }
 
-//se cambia el tipo de cada opcion de un box que se apretaba por un selectableGroup
-//mas correcto para anunciar la seleccion a estaod
+// se cambia el tipo de cada opcion de un box que se apretaba por un selectableGroup
+// mas correcto para anunciar la seleccion a estaod
 @Composable
 private fun RequestTypeSelector(
     selectedType: RequestType,
@@ -207,7 +207,7 @@ private fun RequestTypeSelector(
     }
 }
 
-//roleboton para seleccion fecha y el icono en null para que no se lea dos veces
+// roleboton para seleccion fecha y el icono en null para que no se lea dos veces
 @Composable
 private fun DateField(
     text: String,
@@ -310,7 +310,7 @@ private val sampleHistory = listOf(
     RequestHistoryItem("Falta · 10 ago", RequestStatus.Rejected),
 )
 
-//s¿los previews los deje con rememberSaveable para la idea de la navegacion mas adelante
+// s¿los previews los deje con rememberSaveable para la idea de la navegacion mas adelante
 @Preview(name = "Solicitudes · permiso", showBackground = true, widthDp = 360, heightDp = 900)
 @Composable
 private fun RequestsPermissionPreview() {

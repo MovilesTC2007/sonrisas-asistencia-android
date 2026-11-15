@@ -65,7 +65,7 @@ private val StaffDirectory = listOf(
     StaffEntry(7, "Julia Morales Soto", "Limpieza", "Apoyo"),
 )
 
-//mismo caso para los parametros agregando el onStaffClick
+// mismo caso para los parametros agregando el onStaffClick
 @Composable
 fun StaffScreen(
     modifier: Modifier = Modifier,
@@ -112,7 +112,7 @@ fun StaffScreen(
                 bottom = Spacing.lg,
             ),
         )
-        //se quita barra
+        // se quita barra
     }
 }
 

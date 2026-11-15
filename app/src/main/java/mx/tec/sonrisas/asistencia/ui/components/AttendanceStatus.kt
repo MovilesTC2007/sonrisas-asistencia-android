@@ -20,9 +20,9 @@ import mx.tec.sonrisas.asistencia.ui.theme.StatusRedTint
 import mx.tec.sonrisas.asistencia.ui.theme.StatusYellowInk
 import mx.tec.sonrisas.asistencia.ui.theme.StatusYellowTint
 
-//esto servira para la continuacion del mapeo entre estado, texo icono y colores
-//esto porque el recordstatus utilizaba iconos distintos que basicamente eran para el mismo estado
-//caso comun debido al propio mapeo de pantallas
+// esto servira para la continuacion del mapeo entre estado, texo icono y colores
+// esto porque el recordstatus utilizaba iconos distintos que basicamente eran para el mismo estado
+// caso comun debido al propio mapeo de pantallas
 enum class AttendanceStatus(
     val label: String,
     val icon: ImageVector,

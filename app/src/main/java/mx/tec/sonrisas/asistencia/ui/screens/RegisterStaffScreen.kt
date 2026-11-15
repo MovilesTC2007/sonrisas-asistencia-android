@@ -139,7 +139,7 @@ fun RegisterStaffScreen(
                 bottom = Spacing.lg,
             ),
         )
-        //se quita barra idea
+        // se quita barra idea
     }
 }
 

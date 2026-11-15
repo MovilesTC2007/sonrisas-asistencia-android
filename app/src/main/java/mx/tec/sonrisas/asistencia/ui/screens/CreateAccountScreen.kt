@@ -67,8 +67,8 @@ import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
 private val CheckboxVisualSize = 24.dp
 
-//para los eventos solo son {} sin la necesidad de pasarles algo
-//ya que para la navegacion es preferible nunca tocar el diseño ya generad
+// para los eventos solo son {} sin la necesidad de pasarles algo
+// ya que para la navegacion es preferible nunca tocar el diseño ya generad
 @Composable
 fun CreateAccountScreen(
     modifier: Modifier = Modifier,
@@ -76,7 +76,7 @@ fun CreateAccountScreen(
     onActivate: (code: String, fullName: String, email: String, password: String) -> Unit = { _, _, _, _ -> },
     onReadPrivacyNotice: () -> Unit = {},
 ) {
-    //eliminacion de datos para comnezar vacios para acciones directas
+    // eliminacion de datos para comnezar vacios para acciones directas
     var invitationCode by rememberSaveable { mutableStateOf("") }
     var fullName by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
@@ -203,7 +203,7 @@ fun CreateAccountScreen(
             Spacer(Modifier.height(Spacing.xxl))
         }
 
-        //solo habilitarlo cuando se acepta lo indicado (tal vez yo no era el indicado para ella)
+        // solo habilitarlo cuando se acepta lo indicado (tal vez yo no era el indicado para ella)
         SonrisasPrimaryButton(
             text = "Activar cuenta",
             onClick = { onActivate(invitationCode, fullName, email, password) },
@@ -242,8 +242,8 @@ private fun EstanciaCaption(estancia: String) {
     )
 }
 
-//Cambio primordial para la tarjeta de privacidad:
-//se reutiliza el nuevo checkbox definido en componentes, el leer aviso se pasa a textbutton y no a box como antes
+// Cambio primordial para la tarjeta de privacidad:
+// se reutiliza el nuevo checkbox definido en componentes, el leer aviso se pasa a textbutton y no a box como antes
 @Composable
 private fun PrivacyConsentCard(
     checked: Boolean,

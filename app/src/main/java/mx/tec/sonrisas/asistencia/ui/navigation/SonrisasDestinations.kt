@@ -13,10 +13,10 @@ import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.ui.graphics.vector.ImageVector
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasNavItem
 
-//MAPA FINAL DE NAVEGACION A CAMBIAR CON PANTALLAS NUEVAS pues
-//aqui se va a describir los tres perfiles de la app
-//no se utiliza realmente este codigo solo es para parametros de sondeo actualicen esto cuando se agreguen pantallas
-//un enum para los perfiles para dejar de utilizar lo de 1,2,3,4
+// MAPA FINAL DE NAVEGACION A CAMBIAR CON PANTALLAS NUEVAS pues
+// aqui se va a describir los tres perfiles de la app
+// no se utiliza realmente este codigo solo es para parametros de sondeo actualicen esto cuando se agreguen pantallas
+// un enum para los perfiles para dejar de utilizar lo de 1,2,3,4
 enum class UserRole {
     Empleado,
     Responsable,
@@ -45,7 +45,7 @@ enum class UserRole {
         }
 }
 
-//delegacion para inico de cada rol
+// delegacion para inico de cada rol
 enum class SonrisasTab(
     override val label: String,
     override val icon: ImageVector,
@@ -62,13 +62,13 @@ enum class SonrisasTab(
     Perfil("Perfil", Icons.Outlined.Person, "perfil"),
 }
 
-//estas son para las patallas que no llevan la navbar osea las que son pestañas de una pantalla ya hecha
+// estas son para las patallas que no llevan la navbar osea las que son pestañas de una pantalla ya hecha
 object SonrisasRoutes {
-    //con grafos para animar mas nuestra vida
+    // con grafos para animar mas nuestra vida
     const val ACCESS_GRAPH = "acceso"
     const val MAIN_GRAPH = "principal"
 
-    //aqui voy a poner la animacion de bienvenida a la aplicacion
+    // aqui voy a poner la animacion de bienvenida a la aplicacion
     const val LOGIN = "login"
     const val CREATE_ACCOUNT = "crear-cuenta"
     const val LOCATION_PERMISSION = "permiso-ubicacion"
@@ -76,10 +76,10 @@ object SonrisasRoutes {
     const val REGISTER_STAFF = "registrar-personal"
     const val EXPORT_REPORT = "reportes/exportar"
 
-    //el staffID van vacias se llenan al pasar las pantallas con las rutas
+    // el staffID van vacias se llenan al pasar las pantallas con las rutas
     const val STAFF_ID_ARG = "staffId"
     const val STAFF_DETAIL = "personal/detalle/{staffId}"
 
-    ///armado ruta
+    // /armado ruta
     fun staffDetail(staffId: Int) = "personal/detalle/$staffId"
 }

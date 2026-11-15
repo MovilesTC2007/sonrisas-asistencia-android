@@ -37,7 +37,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
-//se añade acciones
+// se añade acciones
 @Composable
 fun LocationRequestScreen(
     modifier: Modifier = Modifier,
@@ -95,7 +95,7 @@ private fun LocationHero() {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        SonrisasHeroBadge(icon = Icons.Outlined.LocationOn) //se llama al circulo
+        SonrisasHeroBadge(icon = Icons.Outlined.LocationOn) // se llama al circulo
         Spacer(Modifier.height(Spacing.xxl))
         Text(
             text = "Solo al registrar\ntu entrada o salida",

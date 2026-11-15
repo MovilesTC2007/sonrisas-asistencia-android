@@ -14,7 +14,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusSm
 
-//meramente decorativo esto va a servir para reurilizacions
+// meramente decorativo esto va a servir para reurilizacions
 @Composable
 fun SonrisasIconChip(
     icon: ImageVector,
