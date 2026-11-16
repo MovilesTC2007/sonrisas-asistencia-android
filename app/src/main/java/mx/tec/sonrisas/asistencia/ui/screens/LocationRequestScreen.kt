@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -66,8 +66,8 @@ fun LocationRequestScreen(
             Spacer(Modifier.height(Spacing.xxl))
             Text(
                 text = "Solo usamos tu ubicación al momento de registrar tu entrada " +
-                        "o salida, para confirmar que estás en la estancia. " +
-                        "No rastreamos tu ubicación.",
+                    "o salida, para confirmar que estás en la estancia. " +
+                    "No rastreamos tu ubicación.",
                 style = SonrisasTextStyle.Body,
                 color = InkSoft,
                 modifier = Modifier.padding(horizontal = Spacing.xs),

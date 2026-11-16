@@ -68,7 +68,6 @@ enum class RequestType(val label: String) {
     ShiftChange("Cambio de turno"),
 }
 
-
 // se añade el estado para la solicitud con su respectivo diseño quitando los when que ya habia
 enum class RequestStatus(
     val label: String,
