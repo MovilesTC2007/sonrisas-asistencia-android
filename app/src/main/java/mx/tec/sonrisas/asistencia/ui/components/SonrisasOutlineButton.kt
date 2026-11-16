@@ -76,7 +76,8 @@ private fun SonrisasOutlinedButtonPreview() {
         Column(Modifier.padding(Spacing.xl)) {
             SonrisasOutlinedButton(text = "Trasladar", onClick = {}, leadingIcon = Icons.Outlined.SwapHoriz)
             Spacer(Modifier.height(Spacing.md))
-            SonrisasOutlinedButton(text = "Dar de baja", onClick = {}, leadingIcon = Icons.Outlined.PersonRemove, destructive = true)
+            SonrisasOutlinedButton(text = "Dar de baja", onClick = {
+            }, leadingIcon = Icons.Outlined.PersonRemove, destructive = true)
             Spacer(Modifier.height(Spacing.md))
             SonrisasOutlinedButton(text = "Deshabilitado", onClick = {}, enabled = false)
         }

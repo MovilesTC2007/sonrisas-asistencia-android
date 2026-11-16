@@ -20,7 +20,8 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasNavItem
 enum class UserRole {
     Empleado,
     Responsable,
-    Direccion;
+    Direccion,
+    ;
 
     val tabs: List<SonrisasTab>
         get() = when (this) {
