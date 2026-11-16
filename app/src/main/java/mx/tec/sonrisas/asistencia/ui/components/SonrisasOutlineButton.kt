@@ -26,7 +26,6 @@ import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
-import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.StatusRedInk
 
@@ -37,8 +36,8 @@ fun SonrisasOutlinedButton(
     modifier: Modifier = Modifier,
     leadingIcon: ImageVector? = null,
     enabled: Boolean = true,
-    // para acciones importantes como dar de baja y cosas asi conviene este tipo de diseseños y contraste
     destructive: Boolean = false,
+    size: SonrisasButtonSize = SonrisasButtonSize.Regular,
 ) {
     val accent = if (destructive) StatusRedInk else BrandPurple
     OutlinedButton(
@@ -52,20 +51,19 @@ fun SonrisasOutlinedButton(
             disabledContainerColor = Color.Transparent,
             disabledContentColor = InkFaint,
         ),
-        // medidas correctas para boton
         modifier = modifier
             .fillMaxWidth()
-            .height(SonrisasButtonHeight),
+            .height(size.height),
     ) {
         if (leadingIcon != null) {
             Icon(
                 imageVector = leadingIcon,
                 contentDescription = null,
-                modifier = Modifier.size(SonrisasButtonIconSize),
+                modifier = Modifier.size(size.iconSize),
             )
-            Spacer(Modifier.width(Spacing.sm))
+            Spacer(Modifier.width(size.iconGap))
         }
-        Text(text = text, style = SonrisasTextStyle.Button)
+        Text(text = text, style = size.textStyle)
     }
 }
 
@@ -80,6 +78,14 @@ private fun SonrisasOutlinedButtonPreview() {
             }, leadingIcon = Icons.Outlined.PersonRemove, destructive = true)
             Spacer(Modifier.height(Spacing.md))
             SonrisasOutlinedButton(text = "Deshabilitado", onClick = {}, enabled = false)
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasOutlinedButton(
+                text = "Confirmar baja",
+                onClick = {},
+                leadingIcon = Icons.Outlined.PersonRemove,
+                destructive = true,
+                size = SonrisasButtonSize.Large,
+            )
         }
     }
 }
