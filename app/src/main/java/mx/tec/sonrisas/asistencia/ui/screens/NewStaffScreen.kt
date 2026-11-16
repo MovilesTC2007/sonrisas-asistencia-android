@@ -132,7 +132,8 @@ fun NewStaffScreen(
 
             Spacer(Modifier.height(Spacing.xl))
             SonrisasInfoCard(
-                message = "Al guardar se genera su código de invitación. Con él crea su cuenta y queda ligada a $centerName.",
+                message = "Al guardar se genera su código de invitación. " +
+                    "Con él crea su cuenta y queda ligada a $centerName.",
             )
             Spacer(Modifier.height(Spacing.xxl))
             SonrisasPrimaryButton(

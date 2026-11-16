@@ -42,3 +42,7 @@ val StatusRedInk = Color(0xFFB0383A)
 // filtrado para color claro en texto y box
 val StatusOrangeTint = Color(0xFFFFF0E3)
 val StatusOrangeInk = Color(0xFF9A4A0C)
+
+// Azul = "información" (AccentBlue). Se usa en avisos informativos (Dar de baja: "Su historial se conserva...").
+val StatusBlueTint = Color(0xFFE1EFFB)
+val StatusBlueInk = Color(0xFF1E6BAE)

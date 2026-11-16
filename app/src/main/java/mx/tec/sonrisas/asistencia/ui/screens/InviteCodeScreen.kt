@@ -51,7 +51,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.StatusGreenTint
 import mx.tec.sonrisas.asistencia.ui.theme.StatusYellowInk
 import mx.tec.sonrisas.asistencia.ui.theme.StatusYellowTint
 
-//Código de invitación (Generar código de invitación, RF-23 · CU02 paso 1).
+// Código de invitación (Generar código de invitación, RF-23 · CU02 paso 1).
 
 private enum class InviteStatus(val label: String, val tint: Color, val ink: Color) {
     Pending("Pendiente", StatusYellowTint, StatusYellowInk),
