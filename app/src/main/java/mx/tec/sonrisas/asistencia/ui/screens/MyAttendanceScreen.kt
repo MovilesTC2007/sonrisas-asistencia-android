@@ -92,14 +92,21 @@ private val WeekdayNames = listOf("lunes", "martes", "miércoles", "jueves", "vi
 private val WeekdayAbbr = listOf("Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom")
 
 private fun firstWeekdayOffset(year: Int, month: Int): Int {
-    val cal = Calendar.getInstance().apply { clear(); set(year, month - 1, 1) }
+    val cal = Calendar.getInstance().apply {
+        clear()
+        set(year, month - 1, 1)
+    }
     return (cal.get(Calendar.DAY_OF_WEEK) + 5) % 7
 }
 
 private fun daysInMonth(year: Int, month: Int): Int =
     Calendar.getInstance()
-        .apply { clear(); set(year, month - 1, 1) }
+        .apply {
+            clear()
+            set(year, month - 1, 1)
+        }
         .getActualMaximum(Calendar.DAY_OF_MONTH)
+
 @Composable
 fun MyAttendanceScreen(
     modifier: Modifier = Modifier,

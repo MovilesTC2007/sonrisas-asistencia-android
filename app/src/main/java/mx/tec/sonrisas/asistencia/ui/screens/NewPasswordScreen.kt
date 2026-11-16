@@ -168,8 +168,18 @@ private fun PasswordField(
             trailingContent = {
                 IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                     Icon(
-                        imageVector = if (isPasswordVisible) Icons.Outlined.Visibility else Icons.Outlined.VisibilityOff,
-                        contentDescription = if (isPasswordVisible) "Ocultar contraseña" else "Mostrar contraseña",
+                        imageVector =
+                        if (isPasswordVisible) {
+                            Icons.Outlined.Visibility
+                        } else {
+                            Icons.Outlined.VisibilityOff
+                        },
+                        contentDescription =
+                        if (isPasswordVisible) {
+                            "Ocultar contraseña"
+                        } else {
+                            "Mostrar contraseña"
+                        },
                         tint = InkFaint,
                         modifier = Modifier.size(20.dp),
                     )

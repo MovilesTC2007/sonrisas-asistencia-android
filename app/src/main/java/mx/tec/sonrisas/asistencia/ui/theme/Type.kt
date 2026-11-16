@@ -1,21 +1,21 @@
 package mx.tec.sonrisas.asistencia.ui.theme
 
-import mx.tec.sonrisas.asistencia.R
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import mx.tec.sonrisas.asistencia.R
 
- val PoppinsFamily = FontFamily(
-     Font(R.font.poppins_semibold, FontWeight.SemiBold),
-     Font(R.font.poppins_bold, FontWeight.Bold),
- )
+val PoppinsFamily = FontFamily(
+    Font(R.font.poppins_semibold, FontWeight.SemiBold),
+    Font(R.font.poppins_bold, FontWeight.Bold),
+)
 val PlusJakartaSansFamily = FontFamily(
-     Font(R.font.plusjakartasans_regular, FontWeight.Normal),
-     Font(R.font.plusjakartasans_medium, FontWeight.Medium),
-     Font(R.font.plusjakartasans_semibold, FontWeight.SemiBold),
+    Font(R.font.plusjakartasans_regular, FontWeight.Normal),
+    Font(R.font.plusjakartasans_medium, FontWeight.Medium),
+    Font(R.font.plusjakartasans_semibold, FontWeight.SemiBold),
 )
 
 private fun display(size: Int, weight: FontWeight = FontWeight.Bold) = TextStyle(
@@ -50,6 +50,7 @@ private fun label(size: Double) = TextStyle(
 
 object SonrisasTextStyle {
     val Display = display(23)
+
     // mantener estilo unico
     val Stat = display(30)
     val Hero = display(48)

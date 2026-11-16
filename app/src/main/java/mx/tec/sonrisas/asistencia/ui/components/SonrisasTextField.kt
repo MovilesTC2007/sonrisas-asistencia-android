@@ -20,7 +20,6 @@ import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 
-
 @Composable
 fun SonrisasTextField(
     value: String,
