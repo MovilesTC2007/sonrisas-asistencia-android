@@ -18,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -27,7 +26,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasDateField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasDropdownField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasFilterChip
@@ -36,8 +34,6 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasInfoCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasInputField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
-import mx.tec.sonrisas.asistencia.ui.navigation.SonrisasTab
-import mx.tec.sonrisas.asistencia.ui.navigation.UserRole
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
@@ -62,7 +58,6 @@ fun NewStaffScreen(
     var name by rememberSaveable { mutableStateOf(initialName) }
     var type by rememberSaveable { mutableStateOf(initialType) }
     var area by rememberSaveable { mutableStateOf(initialArea) }
-    var selectedTab by remember { mutableStateOf(SonrisasTab.Personal) }
 
     Column(
         modifier = modifier
@@ -148,12 +143,6 @@ fun NewStaffScreen(
             )
             Spacer(Modifier.height(Spacing.lg))
         }
-
-        SonrisasBottomBar(
-            items = UserRole.Responsable.tabs,
-            selected = selectedTab,
-            onItemClick = { selectedTab = it },
-        )
     }
 }
 

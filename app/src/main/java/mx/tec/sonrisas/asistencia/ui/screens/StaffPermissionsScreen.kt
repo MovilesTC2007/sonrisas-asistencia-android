@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBackStyle
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasButtonSize
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasFormField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
@@ -42,8 +41,6 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasSegmentedControl
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSwitch
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.components.sonrisasCardShadow
-import mx.tec.sonrisas.asistencia.ui.navigation.SonrisasTab
-import mx.tec.sonrisas.asistencia.ui.navigation.UserRole
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
@@ -78,7 +75,6 @@ fun StaffPermissionsScreen(
     val enabled = remember(permissions) {
         mutableStateListOf<Boolean>().apply { addAll(permissions.map { it.enabledByDefault }) }
     }
-    var selectedTab by remember { mutableStateOf(SonrisasTab.Personal) }
 
     Column(
         modifier = modifier
@@ -141,12 +137,6 @@ fun StaffPermissionsScreen(
             )
             Spacer(Modifier.height(Spacing.lg))
         }
-
-        SonrisasBottomBar(
-            items = UserRole.Responsable.tabs,
-            selected = selectedTab,
-            onItemClick = { selectedTab = it },
-        )
     }
 }
 

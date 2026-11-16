@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -27,7 +26,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBackStyle
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasButtonSize
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasDateField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasDropdownField
@@ -39,8 +37,6 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasRouteCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.components.sonrisasCardShadow
-import mx.tec.sonrisas.asistencia.ui.navigation.SonrisasTab
-import mx.tec.sonrisas.asistencia.ui.navigation.UserRole
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
@@ -72,7 +68,6 @@ fun TransferStaffScreen(
     ),
 ) {
     var area by rememberSaveable { mutableStateOf(initialArea) }
-    var selectedTab by remember { mutableStateOf(SonrisasTab.Personal) }
 
     Column(
         modifier = modifier
@@ -152,12 +147,6 @@ fun TransferStaffScreen(
             )
             Spacer(Modifier.height(Spacing.lg))
         }
-
-        SonrisasBottomBar(
-            items = UserRole.Responsable.tabs,
-            selected = selectedTab,
-            onItemClick = { selectedTab = it },
-        )
     }
 }
 

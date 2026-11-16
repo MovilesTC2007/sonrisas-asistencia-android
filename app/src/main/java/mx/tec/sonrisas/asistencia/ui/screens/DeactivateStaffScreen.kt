@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBackStyle
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasButtonSize
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasDateField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasFormField
@@ -44,8 +42,6 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasOutlinedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPersonCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasRadioButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
-import mx.tec.sonrisas.asistencia.ui.navigation.SonrisasTab
-import mx.tec.sonrisas.asistencia.ui.navigation.UserRole
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeep
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
@@ -72,7 +68,6 @@ fun DeactivateStaffScreen(
     lastDay: String = "30 de octubre de 2026",
 ) {
     var reason by rememberSaveable { mutableStateOf(initialReason) }
-    var selectedTab by remember { mutableStateOf(SonrisasTab.Personal) }
 
     Column(
         modifier = modifier
@@ -143,12 +138,6 @@ fun DeactivateStaffScreen(
             )
             Spacer(Modifier.height(Spacing.lg))
         }
-
-        SonrisasBottomBar(
-            items = UserRole.Responsable.tabs,
-            selected = selectedTab,
-            onItemClick = { selectedTab = it },
-        )
     }
 }
 

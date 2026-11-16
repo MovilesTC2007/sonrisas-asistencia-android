@@ -16,18 +16,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBackStyle
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasButtonSize
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
@@ -35,8 +31,6 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasStepper
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTintedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.components.sonrisasCardShadow
-import mx.tec.sonrisas.asistencia.ui.navigation.SonrisasTab
-import mx.tec.sonrisas.asistencia.ui.navigation.UserRole
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
@@ -53,7 +47,7 @@ data class StaffArea(
 )
 
 @Composable
-fun AreasMinimumsScreen(
+fun AreaMinimunScreen(
     modifier: Modifier = Modifier,
     areas: List<StaffArea> = listOf(
         StaffArea("Lactantes", "Sala 1 · 0 a 18 meses", minimum = 3),
@@ -65,7 +59,6 @@ fun AreasMinimumsScreen(
     val minimums = remember(areas) {
         mutableStateListOf<Int>().apply { addAll(areas.map { it.minimum }) }
     }
-    var selectedTab by remember { mutableStateOf(SonrisasTab.Turnos) }
 
     Column(
         modifier = modifier
@@ -122,12 +115,6 @@ fun AreasMinimumsScreen(
             )
             Spacer(Modifier.height(Spacing.lg))
         }
-
-        SonrisasBottomBar(
-            items = UserRole.Responsable.tabs,
-            selected = selectedTab,
-            onItemClick = { selectedTab = it },
-        )
     }
 }
 
@@ -170,8 +157,8 @@ private fun AreaRow(
 
 @Preview(name = "Áreas y mínimos", showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
-private fun AreasMinimumsScreenPreview() {
+private fun AreaMinimunScreenPreview() {
     SonrisasAsistenciasTheme {
-        AreasMinimumsScreen()
+        AreaMinimunScreen()
     }
 }

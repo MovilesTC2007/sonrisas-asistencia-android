@@ -17,10 +17,6 @@ import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBackStyle
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasButtonSize
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasInviteCodeCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
@@ -38,8 +33,6 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatusChip
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTintedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
-import mx.tec.sonrisas.asistencia.ui.navigation.SonrisasTab
-import mx.tec.sonrisas.asistencia.ui.navigation.UserRole
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
@@ -73,8 +66,6 @@ fun InviteCodeScreen(
     code: String = "SC4K 7R2T",
     validity: String = "Un solo uso · vence el 16 de noviembre",
 ) {
-    var selectedTab by remember { mutableStateOf(SonrisasTab.Personal) }
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -141,12 +132,6 @@ fun InviteCodeScreen(
             }
             Spacer(Modifier.height(Spacing.xl))
         }
-
-        SonrisasBottomBar(
-            items = UserRole.Responsable.tabs,
-            selected = selectedTab,
-            onItemClick = { selectedTab = it },
-        )
     }
 }
 
