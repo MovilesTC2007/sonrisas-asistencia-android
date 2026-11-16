@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -31,6 +32,10 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 
+// estilo del boton de regreso: Chip es el de siempre (circulo lila con flecha morada)
+// Plain es el chevron simple en tinta oscura, el que ya usa Detalle de estancia y las capturas de Alta de persona y Codigo de invitacion
+enum class SonrisasBackStyle { Chip, Plain }
+
 // topbar para encabezado, se comparte en varias pantallas
 // para desaparecer formuato null y mantener componentes guardados compartidos
 @Composable
@@ -38,6 +43,7 @@ fun SonrisasTopBar(
     title: String,
     modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
+    backStyle: SonrisasBackStyle = SonrisasBackStyle.Chip,
 ) {
     Row(
         modifier = modifier
@@ -46,24 +52,39 @@ fun SonrisasTopBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (onBack != null) {
-            // Área táctil de 48 dp; el chip visible mide 40 dp.
-            IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(BrandPurpleLight),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                        contentDescription = "Regresar",
-                        tint = BrandPurple,
-                        modifier = Modifier.size(20.dp),
-                    )
+            when (backStyle) {
+                SonrisasBackStyle.Chip -> {
+                    IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(BrandPurpleLight),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                                contentDescription = "Regresar",
+                                tint = BrandPurple,
+                                modifier = Modifier.size(20.dp),
+                            )
+                        }
+                    }
+                    Spacer(Modifier.width(Spacing.sm))
+                }
+
+                SonrisasBackStyle.Plain -> {
+                    IconButton(onClick = onBack, modifier = Modifier.size(48.dp)) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                            contentDescription = "Regresar",
+                            tint = InkPrimary,
+                            modifier = Modifier.size(32.dp),
+                        )
+                    }
+                    Spacer(Modifier.width(Spacing.xs))
                 }
             }
-            Spacer(Modifier.width(Spacing.sm))
         }
         Text(
             text = title,
@@ -80,6 +101,7 @@ private fun SonrisasTopBarPreview() {
     SonrisasAsistenciasTheme {
         Column(Modifier.padding(Spacing.xl)) {
             SonrisasTopBar(title = "Detalle de personal", onBack = {})
+            SonrisasTopBar(title = "Código de invitación", onBack = {}, backStyle = SonrisasBackStyle.Plain)
             SonrisasTopBar(title = "Mis asistencias")
         }
     }
