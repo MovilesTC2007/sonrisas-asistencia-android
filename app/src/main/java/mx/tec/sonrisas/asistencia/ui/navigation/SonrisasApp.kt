@@ -59,7 +59,6 @@ import mx.tec.sonrisas.asistencia.ui.screens.StatisticsScreen
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 
-
 // MAIN CONTAINER
 // IDEA BASE:
 // primero Scaffold para los margenes de la app con huecos para las tarjetas y contenidos
@@ -154,7 +153,6 @@ private fun SonrisasNavHost(
 
 private fun NavGraphBuilder.accessGraph(navController: NavHostController, role: UserRole) {
     navigation(startDestination = SonrisasRoutes.LOGIN, route = SonrisasRoutes.ACCESS_GRAPH) {
-
         composable(SonrisasRoutes.LOGIN) { entry ->
             LoginScreen(
                 // esto es para el Mockup PARA QUE ENTRE CUALQUIER DATO DE CONTRASEÑA Y ASI igual se deja para cuando llamemos al back
@@ -184,7 +182,6 @@ private fun NavGraphBuilder.accessGraph(navController: NavHostController, role: 
 // REGISTRO DE LAS RUTAS ASIGNADAS POR ROL
 private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: UserRole) {
     navigation(startDestination = SonrisasTab.Inicio.route, route = SonrisasRoutes.MAIN_GRAPH) {
-
         composable(SonrisasTab.Inicio.route) { entry ->
             when (role) {
                 UserRole.Empleado -> AttendanceScreen(
@@ -352,7 +349,6 @@ private fun NavHostController.onSignedIn(role: UserRole) {
     }
 }
 
-
 private fun NavHostController.enterMainGraph() {
     navigate(SonrisasRoutes.MAIN_GRAPH) {
         popUpTo(SonrisasRoutes.ACCESS_GRAPH) { inclusive = true }
@@ -372,12 +368,14 @@ private fun NavGraphBuilder.pushComposable(
         arguments = arguments,
         enterTransition = {
             slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Start, tween(NAV_ANIM_MS)
+                AnimatedContentTransitionScope.SlideDirection.Start,
+                tween(NAV_ANIM_MS),
             )
         },
         popExitTransition = {
             slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.End, tween(NAV_ANIM_MS)
+                AnimatedContentTransitionScope.SlideDirection.End,
+                tween(NAV_ANIM_MS),
             )
         },
         content = content,

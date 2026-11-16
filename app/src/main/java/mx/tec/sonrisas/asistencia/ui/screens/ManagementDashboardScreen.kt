@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasCoverageRow
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasNoticeBanner
@@ -40,7 +41,6 @@ import mx.tec.sonrisas.asistencia.ui.theme.RadiusSm
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
-import kotlin.math.roundToInt
 
 data class WeekdayAbsenteeism(
     val dayLabel: String,
@@ -178,7 +178,7 @@ private fun WeeklyAbsenteeismChart(
 ) {
     val maxPercent = (data.maxOfOrNull { it.absencePercent } ?: 1f).coerceAtLeast(1f)
     val chartDescription = "Ausentismo promedio semanal: " +
-            data.joinToString { "${it.dayLabel} ${it.absencePercent.roundToInt()} por ciento" }
+        data.joinToString { "${it.dayLabel} ${it.absencePercent.roundToInt()} por ciento" }
 
     Row(
         modifier = modifier

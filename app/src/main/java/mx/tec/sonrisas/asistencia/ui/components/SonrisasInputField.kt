@@ -88,7 +88,9 @@ private fun SonrisasInputFieldPreview() {
         Column(Modifier.padding(Spacing.xl)) {
             SonrisasInputField(value = filled, onValueChange = { filled = it })
             Spacer(Modifier.height(Spacing.md))
-            SonrisasInputField(value = empty, onValueChange = { empty = it }, placeholder = "Escribe el nombre completo")
+            SonrisasInputField(value = empty, onValueChange = {
+                empty = it
+            }, placeholder = "Escribe el nombre completo")
         }
     }
 }

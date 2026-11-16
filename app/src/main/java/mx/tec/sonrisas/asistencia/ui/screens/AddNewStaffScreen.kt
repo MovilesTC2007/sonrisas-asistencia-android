@@ -303,7 +303,8 @@ private fun InvitationInfoBanner(
                 .size(20.dp),
         )
         Text(
-            text = "Al guardar se genera su código de invitación. Con él crea su cuenta y queda ligada a $facilityName.",
+            text = "Al guardar se genera su código de invitación." +
+                " Con él crea su cuenta y queda ligada a $facilityName.",
             style = SonrisasTypography.bodyLarge,
             color = InkPrimary,
             modifier = Modifier.weight(1f),

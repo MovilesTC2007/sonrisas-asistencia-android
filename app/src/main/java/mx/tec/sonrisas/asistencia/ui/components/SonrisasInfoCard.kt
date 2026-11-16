@@ -87,7 +87,8 @@ private fun SonrisasInfoCardPreview() {
             verticalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
             SonrisasInfoCard(
-                message = "Al guardar se genera su código de invitación. Con él crea su cuenta y queda ligada a Arcoíris.",
+                message = "Al guardar se genera su código de invitación. " +
+                    "Con él crea su cuenta y queda ligada a Arcoíris.",
             )
             SonrisasInfoCard(
                 message = "Su historial se conserva y cuenta en el reporte de rotación.",

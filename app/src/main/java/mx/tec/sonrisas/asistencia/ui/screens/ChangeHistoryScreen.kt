@@ -88,7 +88,13 @@ private val PeriodOptions = listOf("Hoy", "Esta semana", "Este mes")
 
 private const val ALL_KINDS = "Todos los tipos"
 private val KindOptions = listOf(
-    ALL_KINDS, "Correcciones", "Retardos", "Entradas", "Altas", "Bajas", "Ubicación",
+    ALL_KINDS,
+    "Correcciones",
+    "Retardos",
+    "Entradas",
+    "Altas",
+    "Bajas",
+    "Ubicación",
 )
 
 @OptIn(ExperimentalLayoutApi::class)
