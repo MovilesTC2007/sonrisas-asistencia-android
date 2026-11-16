@@ -198,7 +198,8 @@ private val samplePrivacySections = listOf(
     ),
     PrivacySection(
         title = "Qué datos usamos",
-        body = "Tu nombre, correo, estancia, horario y registros de asistencia. Tu ubicación solo al momento de registrar entrada o salida.",
+        body = "Tu nombre, correo, estancia, horario y registros de asistencia." +
+            " Tu ubicación solo al momento de registrar entrada o salida.",
     ),
     PrivacySection(
         title = "Para qué",
@@ -206,7 +207,8 @@ private val samplePrivacySections = listOf(
     ),
     PrivacySection(
         title = "Con quién los compartimos",
-        body = "Solo con el personal directivo de la fundación que requiere la información para organizar las estancias.",
+        body = "Solo con el personal directivo de la fundación que requiere " +
+            "la información para organizar las estancias.",
     ),
     PrivacySection(
         title = "Tus derechos",

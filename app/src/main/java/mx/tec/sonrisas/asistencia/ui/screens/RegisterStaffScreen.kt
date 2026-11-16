@@ -65,6 +65,7 @@ private val SampleStaff = listOf(
 )
 
 private val CheckboxVisualSize = 24.dp
+
 @Composable
 fun RegisterStaffScreen(
     modifier: Modifier = Modifier,

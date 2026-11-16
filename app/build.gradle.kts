@@ -1,3 +1,4 @@
+val ktlintCli = configurations.create("ktlintCli")
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -56,16 +57,27 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
     detektPlugins(libs.detekt.formatting)
+    add("ktlintCli", "com.pinterest.ktlint:ktlint-cli:1.5.0") // final version upgrade
 }
 // configuration tools for ci/cd
-ktlint {
-    android = true
-    verbose = true
-    reporters {
-        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN) // Reports directly in the PR
-        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.SARIF) // Readable errors in the console
-    }
+tasks.register<JavaExec>("ktlintSourcesCheck") {
+    group = "verification"
+    description = "Revisa el formato de src/**/*.kt con ktlint"
+    classpath = ktlintCli
+    mainClass.set("com.pinterest.ktlint.Main")
+    args("src/**/*.kt", "!**/build/**")
 }
+
+tasks.register<JavaExec>("ktlintSourcesFormat") {
+    group = "formatting"
+    description = "Corrige automáticamente el formato de src/**/*.kt"
+    classpath = ktlintCli
+    mainClass.set("com.pinterest.ktlint.Main")
+    args("-F", "src/**/*.kt", "!**/build/**")
+}
+
+tasks.named("ktlintCheck") { dependsOn("ktlintSourcesCheck") }
+tasks.named("ktlintFormat") { dependsOn("ktlintSourcesFormat") }
 
 detekt {
     buildUponDefaultConfig = true
