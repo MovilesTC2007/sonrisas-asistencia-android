@@ -18,12 +18,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.WarningAmber
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,20 +36,31 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasCoverageRow
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTintedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
+import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
+import mx.tec.sonrisas.asistencia.ui.theme.StatusRedTint
 
 data class AreaCoverage(
     val areaName: String,
     val presentCount: Int,
     val requiredCount: Int,
+)
+
+data class StaffingAlert(
+    val areaName: String,
+    val presentCount: Int,
+    val requiredCount: Int,
+    val missingPersonName: String,
 )
 
 @Composable
@@ -59,6 +72,9 @@ fun ManagerHomeScreen(
     coverage: List<AreaCoverage>,
     pendingRequestsCount: Int,
     modifier: Modifier = Modifier,
+    staffingAlert: StaffingAlert? = null,
+    onMovePersonClick: () -> Unit = {},
+    onViewTodayListClick: () -> Unit = {},
     onStaffClick: () -> Unit = {},
     onShiftsClick: () -> Unit = {},
     onRequestsClick: () -> Unit = {},
@@ -77,6 +93,20 @@ fun ManagerHomeScreen(
         Spacer(Modifier.height(Spacing.md))
         SonrisasTopBar(title = "Buen día, $managerName")
         Spacer(Modifier.height(Spacing.lg))
+        if (staffingAlert != null) {
+            StaffingAlertCard(alert = staffingAlert)
+            Spacer(Modifier.height(Spacing.xl))
+            SonrisasPrimaryButton(
+                text = "Mover a alguien de área",
+                onClick = onMovePersonClick,
+            )
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasTintedButton(
+                text = "Ver lista de hoy",
+                onClick = onViewTodayListClick,
+            )
+            Spacer(Modifier.height(Spacing.xxl))
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(Spacing.md),
@@ -155,6 +185,45 @@ fun ManagerHomeScreen(
 }
 
 @Composable
+private fun StaffingAlertCard(
+    alert: StaffingAlert,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RadiusLg)
+            .background(StatusRedTint)
+            .padding(Spacing.lg),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.WarningAmber,
+            contentDescription = null,
+            tint = AccentRed,
+            modifier = Modifier
+                .padding(top = 2.dp)
+                .size(20.dp),
+        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "${alert.areaName} está por debajo del mínimo",
+                style = SonrisasTextStyle.Title,
+                color = InkPrimary,
+            )
+            Spacer(Modifier.height(Spacing.xs))
+            Text(
+                text = "Hay ${alert.presentCount} de ${alert.requiredCount} personas. " +
+                    "${alert.missingPersonName} no ha registrado entrada.",
+                style = SonrisasTextStyle.Body,
+                color = InkSoft,
+            )
+        }
+    }
+}
+
+@Composable
 private fun ShortcutTile(
     icon: ImageVector,
     label: String,
@@ -206,6 +275,27 @@ private fun ManagerHomeScreenPreview() {
             absentCount = 1,
             coverage = sampleCoverage,
             pendingRequestsCount = 2,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ManagerHomeScreenAlertPreview() {
+    SonrisasAsistenciasTheme {
+        ManagerHomeScreen(
+            managerName = "Elena",
+            presentCount = 17,
+            delayedCount = 2,
+            absentCount = 1,
+            coverage = sampleCoverage,
+            pendingRequestsCount = 2,
+            staffingAlert = StaffingAlert(
+                areaName = "Maternales",
+                presentCount = 1,
+                requiredCount = 2,
+                missingPersonName = "Sofía Ramírez",
+            ),
         )
     }
 }
