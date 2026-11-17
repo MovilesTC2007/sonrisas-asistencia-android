@@ -81,6 +81,12 @@ object SonrisasRoutes {
     const val STAFF_ID_ARG = "staffId"
     const val STAFF_DETAIL = "personal/detalle/{staffId}"
 
-    // /armado ruta
+    // Grafo para estanciaScreen
+    const val ESTANCIAS_LIST = "estancias/lista"
+    const val ESTANCIA_ID_ARG = "estanciaId"
+    const val ESTANCIA_DETAIL = "estancias/detalle/{estanciaId}"
+
+    // armado ruta
+    fun estanciaDetail(estanciaId: Int) = "estancias/detalle/$estanciaId"
     fun staffDetail(staffId: Int) = "personal/detalle/$staffId"
 }

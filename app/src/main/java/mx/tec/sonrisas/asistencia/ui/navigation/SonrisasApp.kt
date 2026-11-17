@@ -257,9 +257,7 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
             }
         }
 
-        composable(SonrisasTab.Estancias.route) {
-            EstanciaDetailScreen()
-        }
+        estanciasGraph(navController)
 
         composable(SonrisasTab.Historial.route) {
             ChangeHistoryScreen()
