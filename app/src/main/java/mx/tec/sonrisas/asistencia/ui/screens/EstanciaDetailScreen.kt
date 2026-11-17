@@ -1,6 +1,7 @@
 package mx.tec.sonrisas.asistencia.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,13 +17,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
+import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,6 +38,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.CoverageLevel
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasBackStyle
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasOutlinedButton
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatusChip
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.components.coverageLevel
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.AccentOrange
 import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
@@ -56,24 +66,23 @@ import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceLilac
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
-private enum class Coverage(val icon: ImageVector, val tint: Color, val description: String) {
-    Complete(Icons.Outlined.CheckCircle, AccentGreen, "cobertura completa"),
-    Partial(Icons.Outlined.ErrorOutline, AccentOrange, "cobertura incompleta"),
-    Critical(Icons.Outlined.ErrorOutline, AccentRed, "cobertura crítica"),
+data class EstanciaAreaCoverage(val area: String, val present: Int, val expected: Int) {
+    val level: CoverageLevel
+        get() = coverageLevel(present, expected)
 }
 
-private data class EstanciaAreaCoverage(val area: String, val present: Int, val expected: Int) {
-    val coverage: Coverage
-        get() = when {
-            present >= expected -> Coverage.Complete
-            present.toFloat() / expected < 0.7f -> Coverage.Critical // menos del 70 % (p. ej. 2/3)
-            else -> Coverage.Partial
-        }
-}
+data class MonthMetric(val value: String, val label: String)
 
-private data class MonthMetric(val value: String, val label: String)
+data class EstanciaPerson(
+    val id: Int,
+    val name: String,
+    val area: String,
+    val clockIn: String?,
+    val status: AttendanceStatus,
+)
 
-private data class EstanciaSummary(
+data class EstanciaDetail(
+    val id: Int,
     val name: String,
     val present: Int,
     val total: Int,
@@ -82,9 +91,12 @@ private data class EstanciaSummary(
     val areas: List<EstanciaAreaCoverage>,
     val month: String,
     val metrics: List<MonthMetric>,
+    val people: List<EstanciaPerson>,
 )
 
-private val SampleEstancia = EstanciaSummary(
+// Datos de muestra (previews y MockData). Cuando haya backend se reemplaza por la respuesta real.
+val SampleEstanciaDetail = EstanciaDetail(
+    id = 3,
     name = "Los Girasoles",
     present = 14,
     total = 18,
@@ -96,20 +108,49 @@ private val SampleEstancia = EstanciaSummary(
         EstanciaAreaCoverage("Preescolar", 5, 6),
         EstanciaAreaCoverage("Apoyo", 3, 4),
     ),
-    month = "Octubre",
+    month = "Noviembre",
     metrics = listOf(
         MonthMetric("1", "Alta"),
         MonthMetric("3", "Bajas"),
         MonthMetric("9%", "Ausentismo"),
     ),
+    people = listOf(
+        EstanciaPerson(1, "Ana Martínez", "Lactantes", "7:55", AttendanceStatus.OnTime),
+        EstanciaPerson(2, "Rosa Pérez", "Lactantes", "8:22", AttendanceStatus.MajorDelay),
+        EstanciaPerson(3, "María Torres", "Maternales", "8:09", AttendanceStatus.MinorDelay),
+        EstanciaPerson(4, "Sofía Ramírez", "Maternales", null, AttendanceStatus.Absent),
+        EstanciaPerson(5, "Carmen López", "Apoyo", "6:58", AttendanceStatus.OnTime),
+    ),
 )
 
 private val MetricNumberStyle = SonrisasTextStyle.Display.copy(fontSize = 22.sp, lineHeight = 28.sp)
 
-@Composable
-fun EstanciaDetailScreen(modifier: Modifier = Modifier) {
-    val estancia = SampleEstancia
+private val CoverageLevel.icon: ImageVector
+    get() = if (this == CoverageLevel.Complete) Icons.Outlined.CheckCircle else Icons.Outlined.ErrorOutline
 
+private val CoverageLevel.tint: Color
+    get() = when (this) {
+        CoverageLevel.Complete -> AccentGreen
+        CoverageLevel.Partial -> AccentOrange
+        CoverageLevel.Critical -> AccentRed
+    }
+
+private val CoverageLevel.description: String
+    get() = when (this) {
+        CoverageLevel.Complete -> "cobertura completa"
+        CoverageLevel.Partial -> "cobertura incompleta"
+        CoverageLevel.Critical -> "cobertura crítica"
+    }
+
+@Composable
+fun EstanciaDetailScreen(
+    estancia: EstanciaDetail,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    onPersonClick: (Int) -> Unit = {},
+    onViewReportsClick: () -> Unit = {},
+    onViewHistoryClick: () -> Unit = {},
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -123,7 +164,7 @@ fun EstanciaDetailScreen(modifier: Modifier = Modifier) {
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            EstanciaDetailHeader(title = estancia.name)
+            SonrisasTopBar(title = estancia.name, onBack = onBack, backStyle = SonrisasBackStyle.Plain)
 
             Spacer(Modifier.height(Spacing.lg))
             AttendanceIsland(estancia = estancia)
@@ -132,6 +173,13 @@ fun EstanciaDetailScreen(modifier: Modifier = Modifier) {
             SectionTitle(text = "Cobertura por área")
             Spacer(Modifier.height(Spacing.sm))
             CoverageCard(areas = estancia.areas)
+
+            Spacer(Modifier.height(Spacing.xxl))
+            SectionTitle(text = "Personal")
+            Spacer(Modifier.height(Spacing.sm))
+            SonrisasListCard(items = estancia.people) { person ->
+                PersonRow(person = person, onClick = { onPersonClick(person.id) })
+            }
 
             Spacer(Modifier.height(Spacing.xxl))
             SectionTitle(text = estancia.month)
@@ -144,36 +192,26 @@ fun EstanciaDetailScreen(modifier: Modifier = Modifier) {
                     MetricCard(metric = metric, modifier = Modifier.weight(1f))
                 }
             }
+
+            Spacer(Modifier.height(Spacing.xxl))
+            SonrisasOutlinedButton(
+                text = "Ver estadísticas y reportes",
+                onClick = onViewReportsClick,
+                leadingIcon = Icons.Outlined.BarChart,
+            )
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasOutlinedButton(
+                text = "Ver historial de cambios",
+                onClick = onViewHistoryClick,
+                leadingIcon = Icons.Outlined.History,
+            )
             Spacer(Modifier.height(Spacing.xxl))
         }
     }
 }
 
 @Composable
-private fun EstanciaDetailHeader(title: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        IconButton(onClick = {}, modifier = Modifier.size(48.dp)) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
-                contentDescription = "Regresar",
-                tint = InkPrimary,
-                modifier = Modifier.size(32.dp),
-            )
-        }
-        Spacer(Modifier.width(Spacing.xs))
-        Text(
-            text = title,
-            style = SonrisasTextStyle.Display,
-            color = InkPrimary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.semantics { heading() },
-        )
-    }
-}
-
-@Composable
-private fun AttendanceIsland(estancia: EstanciaSummary) {
+private fun AttendanceIsland(estancia: EstanciaDetail) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -260,7 +298,7 @@ private fun CoverageCard(areas: List<EstanciaAreaCoverage>) {
 
 @Composable
 private fun CoverageRow(area: EstanciaAreaCoverage) {
-    val coverage = area.coverage
+    val level = area.level
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -282,10 +320,55 @@ private fun CoverageRow(area: EstanciaAreaCoverage) {
         )
         Spacer(Modifier.width(Spacing.sm))
         Icon(
-            imageVector = coverage.icon,
-            contentDescription = coverage.description,
-            tint = coverage.tint,
+            imageVector = level.icon,
+            contentDescription = level.description,
+            tint = level.tint,
             modifier = Modifier.size(20.dp),
+        )
+    }
+}
+
+@Composable
+private fun PersonRow(
+    person: EstanciaPerson,
+    onClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClickLabel = "Ver a ${person.name}", onClick = onClick)
+            .heightIn(min = 64.dp)
+            .padding(horizontal = Spacing.lg, vertical = Spacing.md),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SonrisasAvatar(
+            name = person.name,
+            size = 40.dp,
+            containerColor = BrandPurpleLight,
+            contentColor = BrandPurpleDeepText,
+        )
+        Spacer(Modifier.width(Spacing.md))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = person.name,
+                style = SonrisasTextStyle.Body,
+                color = InkPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = "${person.area} · ${person.clockIn ?: "Sin registro"}",
+                style = SonrisasTextStyle.Caption,
+                color = InkSoft,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        Spacer(Modifier.width(Spacing.sm))
+        SonrisasStatusChip(
+            text = person.status.label,
+            tint = person.status.tint,
+            ink = person.status.ink,
         )
     }
 }
@@ -315,10 +398,10 @@ private fun MetricCard(metric: MonthMetric, modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(name = "Detalle de estancia", showBackground = true, widthDp = 360, heightDp = 800)
+@Preview(name = "Detalle de estancia", showBackground = true, widthDp = 360, heightDp = 1100)
 @Composable
 private fun EstanciaDetailScreenPreview() {
     SonrisasAsistenciasTheme {
-        EstanciaDetailScreen()
+        EstanciaDetailScreen(estancia = SampleEstanciaDetail, onBack = {})
     }
 }

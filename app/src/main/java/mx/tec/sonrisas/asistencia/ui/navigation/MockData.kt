@@ -3,9 +3,11 @@ package mx.tec.sonrisas.asistencia.ui.navigation
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
 import mx.tec.sonrisas.asistencia.ui.screens.AreaCoverage
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceRecord
+import mx.tec.sonrisas.asistencia.ui.screens.EstanciaDetail
 import mx.tec.sonrisas.asistencia.ui.screens.EstanciaListItem
 import mx.tec.sonrisas.asistencia.ui.screens.RequestHistoryItem
 import mx.tec.sonrisas.asistencia.ui.screens.RequestStatus
+import mx.tec.sonrisas.asistencia.ui.screens.SampleEstanciaDetail
 import mx.tec.sonrisas.asistencia.ui.screens.StayAlert
 import mx.tec.sonrisas.asistencia.ui.screens.WeekdayAbsenteeism
 
@@ -90,4 +92,13 @@ internal object MockData {
         EstanciaListItem(4, "Luna Nueva", "San Nicolás, N.L.", 15, 15),
         EstanciaListItem(5, "Amanecer", "Escobedo, N.L.", 16, 17),
     )
+    fun estanciaDetail(id: Int): EstanciaDetail? = estancias.firstOrNull { it.id == id }?.let { item ->
+        SampleEstanciaDetail.copy(
+            id = item.id,
+            name = item.name,
+            city = item.city,
+            present = item.presentCount,
+            total = item.requiredCount,
+        )
+    }
 }

@@ -354,10 +354,10 @@ private fun NavHostController.enterMainGraph() {
     }
 }
 
-private inline fun NavBackStackEntry.ifResumed(action: () -> Unit) {
+internal inline fun NavBackStackEntry.ifResumed(action: () -> Unit) {
     if (lifecycle.currentState == Lifecycle.State.RESUMED) action()
 }
-private fun NavGraphBuilder.pushComposable(
+internal fun NavGraphBuilder.pushComposable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,
