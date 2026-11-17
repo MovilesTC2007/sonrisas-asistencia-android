@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -78,11 +79,12 @@ fun SonrisasApp(
 ) {
     // los siguientes comandos son para navegacion continua y actualizacion del Scaffold a tiempo real no fake yo no lo descargo porque ya lo tengo
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = backStackEntry?.destination?.route
 
     // corroboracion de rol para su pantalla
     val tabs = role.tabs
-    val currentTab = tabs.firstOrNull { it.route == currentRoute }
+    val currentTab = tabs.firstOrNull { tab ->
+        backStackEntry?.destination?.hierarchy?.any { it.route == tab.route } == true
+    }
     var lastTab by rememberSaveable(role) { mutableStateOf(tabs.first()) }
     LaunchedEffect(currentTab) {
         if (currentTab != null) lastTab = currentTab
