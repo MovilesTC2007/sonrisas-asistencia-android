@@ -10,10 +10,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,9 +34,9 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
+import mx.tec.sonrisas.asistencia.ui.screens.AreaMinimunScreen
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceConfirmationScreen
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceScreen
-import mx.tec.sonrisas.asistencia.ui.screens.ComingSoonScreen
 import mx.tec.sonrisas.asistencia.ui.screens.CreateAccountScreen
 import mx.tec.sonrisas.asistencia.ui.screens.DetailStaffScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LocationRequestScreen
@@ -211,6 +207,8 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     onRegisterMultipleClick = {
                         entry.ifResumed { navController.navigate(SonrisasRoutes.REGISTER_STAFF) }
                     },
+                    onMovePersonClick = { navController.navigate(TempRoutes.ASSIGN_SHIFT) }, // TEMP
+                    onViewTodayListClick = { navController.navigate(TempRoutes.TODAY_LIST) }, // TEMP
                 )
                 UserRole.Direccion -> DireccionHomeDestination(navController, entry)
             }
@@ -225,24 +223,18 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                 onStaffClick = { staffId ->
                     entry.ifResumed { navController.navigate(SonrisasRoutes.staffDetail(staffId)) }
                 },
+                onGenerateInviteCode = { navController.navigate(TempRoutes.INVITE_CODE) }, // TEMP
+                onAddStaff = { navController.navigate(TempRoutes.NEW_STAFF) }, // TEMP
             )
         }
 
         composable(SonrisasTab.Turnos.route) {
-            ComingSoonScreen(
-                title = "Turnos",
-                icon = Icons.Outlined.Schedule,
-                message = "Aquí verás las áreas, los mínimos de personal y los horarios de tu estancia.",
-            )
+            AreaMinimunScreen() // TEMP (antes: ComingSoonScreen de Turnos)
         }
 
         composable(SonrisasTab.Solicitudes.route) {
             when (role) {
-                UserRole.Responsable -> ComingSoonScreen(
-                    title = "Solicitudes",
-                    icon = Icons.Outlined.Description,
-                    message = "Aquí revisarás y aprobarás las solicitudes de tu personal.",
-                )
+                UserRole.Responsable -> TempScreensHub(onOpen = { navController.navigate(it) }) // TEMP
                 UserRole.Empleado, UserRole.Direccion -> EmployeeRequestsDestination()
             }
         }
@@ -251,13 +243,10 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         reportesGraph(navController)
         historialGraph(navController)
         direccionProfileRoutes(navController)
+        tempPreviewRoutes(navController) // TEMP
 
         composable(SonrisasTab.Perfil.route) {
-            ComingSoonScreen(
-                title = "Perfil",
-                icon = Icons.Outlined.Person,
-                message = "Aquí verás tus datos personales y podrás cerrar sesión.",
-            )
+            TempEmployeeProfile() // TEMP (antes: ComingSoonScreen de Perfil)
         }
 
         pushComposable(SonrisasRoutes.ATTENDANCE_CONFIRMATION) { entry ->
@@ -283,6 +272,9 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         ) { entry ->
             DetailStaffScreen(
                 onBack = { entry.ifResumed { navController.popBackStack() } },
+                onEdit = { navController.navigate(TempRoutes.PERMISSIONS) }, // TEMP
+                onTransfer = { navController.navigate(TempRoutes.TRANSFER_STAFF) }, // TEMP
+                onDeactivate = { navController.navigate(TempRoutes.DEACTIVATE) }, // TEMP
             )
         }
     }
