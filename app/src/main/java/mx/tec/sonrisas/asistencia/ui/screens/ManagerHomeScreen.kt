@@ -214,7 +214,8 @@ private fun StaffingAlertCard(
             )
             Spacer(Modifier.height(Spacing.xs))
             Text(
-                text = "Hay ${alert.presentCount} de ${alert.requiredCount} personas. ${alert.missingPersonName} no ha registrado entrada.",
+                text = "Hay ${alert.presentCount} de ${alert.requiredCount} personas. " +
+                    "${alert.missingPersonName} no ha registrado entrada.",
                 style = SonrisasTextStyle.Body,
                 color = InkSoft,
             )
