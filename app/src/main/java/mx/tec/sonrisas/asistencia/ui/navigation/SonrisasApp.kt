@@ -25,9 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -44,7 +44,6 @@ import mx.tec.sonrisas.asistencia.ui.screens.ChangeHistoryScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ComingSoonScreen
 import mx.tec.sonrisas.asistencia.ui.screens.CreateAccountScreen
 import mx.tec.sonrisas.asistencia.ui.screens.DetailStaffScreen
-import mx.tec.sonrisas.asistencia.ui.screens.EstanciaDetailScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ExportReportScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LocationRequestScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LoginScreen

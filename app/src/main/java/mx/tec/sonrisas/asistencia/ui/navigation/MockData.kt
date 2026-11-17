@@ -3,6 +3,7 @@ package mx.tec.sonrisas.asistencia.ui.navigation
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
 import mx.tec.sonrisas.asistencia.ui.screens.AreaCoverage
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceRecord
+import mx.tec.sonrisas.asistencia.ui.screens.EstanciaListItem
 import mx.tec.sonrisas.asistencia.ui.screens.RequestHistoryItem
 import mx.tec.sonrisas.asistencia.ui.screens.RequestStatus
 import mx.tec.sonrisas.asistencia.ui.screens.StayAlert
@@ -79,5 +80,14 @@ internal object MockData {
         StayAlert("Estancia Arcoíris", "Personal insuficiente"),
         StayAlert("Estancia Las Rosas", "Personal insuficiente"),
         StayAlert("Estancia Los Girasoles", "Personal insuficiente"),
+    )
+
+    // Data estancia fill
+    val estancias = listOf(
+        EstanciaListItem(1, "Arcoíris", "Monterrey, N.L.", 17, 18),
+        EstanciaListItem(2, "Rayito de Sol", "Guadalupe, N.L.", 16, 16),
+        EstanciaListItem(3, "Los Girasoles", "Apodaca, N.L.", 14, 18),
+        EstanciaListItem(4, "Luna Nueva", "San Nicolás, N.L.", 15, 15),
+        EstanciaListItem(5, "Amanecer", "Escobedo, N.L.", 16, 17),
     )
 }
