@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,8 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
-import mx.tec.sonrisas.asistencia.ui.theme.AccentOrange
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
@@ -34,7 +29,7 @@ fun SonrisasCoverageRow(
     modifier: Modifier = Modifier,
     unit: String? = null,
 ) {
-    val isComplete = presentCount >= requiredCount
+    val level = coverageLevel(presentCount, requiredCount)
     val count = if (unit != null) "$presentCount/$requiredCount $unit" else "$presentCount/$requiredCount"
 
     Row(
@@ -60,9 +55,9 @@ fun SonrisasCoverageRow(
         )
         Spacer(Modifier.width(Spacing.sm))
         Icon(
-            imageVector = if (isComplete) Icons.Outlined.CheckCircle else Icons.Outlined.ErrorOutline,
-            contentDescription = if (isComplete) "Cobertura completa" else "Cobertura incompleta",
-            tint = if (isComplete) AccentGreen else AccentOrange,
+            imageVector = level.icon,
+            contentDescription = level.description,
+            tint = level.tint,
             modifier = Modifier.size(20.dp),
         )
     }

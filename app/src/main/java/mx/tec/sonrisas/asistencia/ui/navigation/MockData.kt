@@ -1,6 +1,7 @@
 package mx.tec.sonrisas.asistencia.ui.navigation
 
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.CoverageLevel
 import mx.tec.sonrisas.asistencia.ui.screens.AreaCoverage
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceRecord
 import mx.tec.sonrisas.asistencia.ui.screens.EstanciaDetail
@@ -51,11 +52,15 @@ internal object MockData {
     )
 
     // Dirección
-    const val TOTAL_STAFF = 84
-    const val ABSENCES_TODAY = 6
+    const val DIRECTOR_NAME = "Patricia Gómez Ríos"
+    const val TODAY_LABEL = "Martes 17 de noviembre"
+    const val UPDATED_LABEL = "Actualizado hace 2 min"
+    const val TOTAL_STAFF = 480
+    const val PRESENT_TODAY = 442
     const val HIRES_THIS_MONTH = 4
     const val DEPARTURES_THIS_MONTH = 2
     const val MONTH_NAME = "noviembre"
+    const val TOTAL_ESTANCIAS = 62
     val facilitiesCoverage = listOf(
         AreaCoverage("Arcoíris", 17, 18),
         AreaCoverage("Rayito de Sol", 16, 16),
@@ -92,6 +97,12 @@ internal object MockData {
         EstanciaListItem(4, "Luna Nueva", "San Nicolás, N.L.", 15, 15),
         EstanciaListItem(5, "Amanecer", "Escobedo, N.L.", 16, 17),
     )
+    val worstCoverage = estancias
+        .sortedBy { it.presentCount.toFloat() / it.requiredCount }
+        .take(5)
+
+    val alertCount = estancias.count { it.level != CoverageLevel.Complete }
+
     fun estanciaDetail(id: Int): EstanciaDetail? = estancias.firstOrNull { it.id == id }?.let { item ->
         SampleEstanciaDetail.copy(
             id = item.id,

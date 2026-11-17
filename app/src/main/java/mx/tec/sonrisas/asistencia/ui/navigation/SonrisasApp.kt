@@ -47,7 +47,6 @@ import mx.tec.sonrisas.asistencia.ui.screens.DetailStaffScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ExportReportScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LocationRequestScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LoginScreen
-import mx.tec.sonrisas.asistencia.ui.screens.ManagementDashboardScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ManagerHomeScreen
 import mx.tec.sonrisas.asistencia.ui.screens.MyAttendanceScreen
 import mx.tec.sonrisas.asistencia.ui.screens.RegisterStaffScreen
@@ -212,16 +211,7 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                         entry.ifResumed { navController.navigate(SonrisasRoutes.REGISTER_STAFF) }
                     },
                 )
-
-                UserRole.Direccion -> ManagementDashboardScreen(
-                    totalStaff = MockData.TOTAL_STAFF,
-                    absencesToday = MockData.ABSENCES_TODAY,
-                    hiresThisMonth = MockData.HIRES_THIS_MONTH,
-                    departuresThisMonth = MockData.DEPARTURES_THIS_MONTH,
-                    monthName = MockData.MONTH_NAME,
-                    facilitiesCoverage = MockData.facilitiesCoverage,
-                    weeklyAbsenteeism = MockData.weeklyAbsenteeism,
-                )
+                UserRole.Direccion -> DireccionHomeDestination(navController, entry)
             }
         }
 

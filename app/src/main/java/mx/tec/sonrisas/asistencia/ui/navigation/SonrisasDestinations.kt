@@ -81,12 +81,16 @@ object SonrisasRoutes {
     const val STAFF_ID_ARG = "staffId"
     const val STAFF_DETAIL = "personal/detalle/{staffId}"
 
-    // Grafo para estanciaScreen
-    const val ESTANCIAS_LIST = "estancias/lista"
+    // Grafo para EstanciasListScreen
+    const val ESTANCIAS_FILTER_ARG = "filtro"
+    const val ESTANCIAS_LIST = "estancias/lista?filtro={filtro}"
     const val ESTANCIA_ID_ARG = "estanciaId"
     const val ESTANCIA_DETAIL = "estancias/detalle/{estanciaId}"
 
     // armado ruta
+    fun estanciasList(filter: String? = null) =
+        if (filter == null) "estancias/lista" else "estancias/lista?filtro=$filter"
+
     fun estanciaDetail(estanciaId: Int) = "estancias/detalle/$estanciaId"
     fun staffDetail(staffId: Int) = "personal/detalle/$staffId"
 }
