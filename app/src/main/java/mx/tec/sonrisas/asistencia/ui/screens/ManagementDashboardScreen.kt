@@ -1,6 +1,7 @@
 package mx.tec.sonrisas.asistencia.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,29 +12,41 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasCoverageRow
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasNoticeBanner
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTintedButton
+import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
+import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
@@ -41,101 +54,160 @@ import mx.tec.sonrisas.asistencia.ui.theme.RadiusSm
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
+import mx.tec.sonrisas.asistencia.ui.theme.StatusGreenTint
 
 data class WeekdayAbsenteeism(
     val dayLabel: String,
     val absencePercent: Float,
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ManagementDashboardScreen(
+    directorName: String,
+    dateLabel: String,
+    updatedLabel: String,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     totalStaff: Int,
-    absencesToday: Int,
+    presentToday: Int,
     hiresThisMonth: Int,
     departuresThisMonth: Int,
     monthName: String,
-    facilitiesCoverage: List<AreaCoverage>,
+    alertCount: Int,
+    worstCoverage: List<EstanciaListItem>,
+    totalEstancias: Int,
     weeklyAbsenteeism: List<WeekdayAbsenteeism>,
     modifier: Modifier = Modifier,
+    onProfileClick: () -> Unit = {},
+    onAlertClick: () -> Unit = {},
+    onEstanciaClick: (Int) -> Unit = {},
+    onViewAllClick: () -> Unit = {},
 ) {
-    val incompleteCount = facilitiesCoverage.count { it.presentCount < it.requiredCount }
-    val presentTotal = facilitiesCoverage.sumOf { it.presentCount }
-    val requiredTotal = facilitiesCoverage.sumOf { it.requiredCount }
-
-    Column(
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
         modifier = modifier
             .fillMaxSize()
-            .background(BgCream)
-            .statusBarsPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = Spacing.xl),
+            .background(BgCream),
     ) {
-        Spacer(Modifier.height(Spacing.md))
-        SonrisasTopBar(title = "Panel de Dirección")
-        Spacer(Modifier.height(Spacing.lg))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = Spacing.xl),
         ) {
-            DirectorStatCard(
-                value = totalStaff,
-                label = "Personal total",
-                modifier = Modifier.weight(1f),
+            Spacer(Modifier.height(Spacing.md))
+            DashboardHeader(
+                directorName = directorName,
+                dateLabel = dateLabel,
+                updatedLabel = updatedLabel,
+                onProfileClick = onProfileClick,
             )
-            DirectorStatCard(
-                value = absencesToday,
-                label = "Ausencias de hoy",
-                modifier = Modifier.weight(1f),
-            )
-        }
-        Spacer(Modifier.height(Spacing.md))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
-        ) {
-            DirectorStatCard(
-                value = hiresThisMonth,
-                label = "Altas de $monthName",
-                modifier = Modifier.weight(1f),
-            )
-            DirectorStatCard(
-                value = departuresThisMonth,
-                label = "Bajas de $monthName",
-                modifier = Modifier.weight(1f),
-            )
-        }
-        if (incompleteCount > 0) {
+            Spacer(Modifier.height(Spacing.lg))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+            ) {
+                DirectorStatCard(totalStaff, "Personal total", Modifier.weight(1f))
+                DirectorStatCard(presentToday, "Presentes hoy", Modifier.weight(1f))
+            }
+            Spacer(Modifier.height(Spacing.md))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.md),
+            ) {
+                DirectorStatCard(hiresThisMonth, "Altas de $monthName", Modifier.weight(1f))
+                DirectorStatCard(departuresThisMonth, "Bajas de $monthName", Modifier.weight(1f))
+            }
             Spacer(Modifier.height(Spacing.xl))
-            IncompleteCoverageBanner(incompleteCount = incompleteCount)
+            StaffingAlertBanner(alertCount = alertCount, onClick = onAlertClick)
+            Spacer(Modifier.height(Spacing.xxl))
+            Text(
+                text = "Menor cobertura hoy",
+                style = SonrisasTextStyle.Title,
+                color = InkPrimary,
+                modifier = Modifier.semantics { heading() },
+            )
+            Text(
+                text = "Las ${worstCoverage.size} estancias con menos personal",
+                style = SonrisasTextStyle.Caption,
+                color = InkSoft,
+            )
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasListCard(items = worstCoverage) { item ->
+                SonrisasCoverageRow(
+                    label = item.name,
+                    presentCount = item.presentCount,
+                    requiredCount = item.requiredCount,
+                    modifier = Modifier.clickable(
+                        onClickLabel = "Abrir ${item.name}",
+                        onClick = { onEstanciaClick(item.id) },
+                    ),
+                )
+            }
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasTintedButton(
+                text = "Ver las $totalEstancias",
+                onClick = onViewAllClick,
+            )
+            Spacer(Modifier.height(Spacing.xxl))
+            Text(
+                text = "Ausentismo promedio semanal",
+                style = SonrisasTextStyle.Title,
+                color = InkPrimary,
+                modifier = Modifier.semantics { heading() },
+            )
+            Spacer(Modifier.height(Spacing.lg))
+            WeeklyAbsenteeismChart(data = weeklyAbsenteeism)
+            Spacer(Modifier.height(Spacing.xxl))
         }
-        Spacer(Modifier.height(Spacing.xxl))
-        Text(
-            text = "Cobertura de hoy",
-            style = SonrisasTextStyle.Title,
-            color = InkPrimary,
-        )
-        Text(
-            text = "$presentTotal de $requiredTotal presentes",
-            style = SonrisasTextStyle.Caption,
-            color = InkSoft,
-        )
-        Spacer(Modifier.height(Spacing.md))
-        SonrisasListCard(items = facilitiesCoverage) { facility ->
-            SonrisasCoverageRow(
-                label = facility.areaName,
-                presentCount = facility.presentCount,
-                requiredCount = facility.requiredCount,
+    }
+}
+
+@Composable
+private fun DashboardHeader(
+    directorName: String,
+    dateLabel: String,
+    updatedLabel: String,
+    onProfileClick: () -> Unit,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Buen día, ${directorName.substringBefore(' ')}",
+                style = SonrisasTextStyle.Display,
+                color = InkPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.semantics { heading() },
+            )
+            Text(
+                text = dateLabel,
+                style = SonrisasTextStyle.Body,
+                color = InkSoft,
+            )
+            Text(
+                text = updatedLabel,
+                style = SonrisasTextStyle.Caption,
+                color = InkSoft,
             )
         }
-        Spacer(Modifier.height(Spacing.xxl))
-        Text(
-            text = "Ausentismo promedio semanal",
-            style = SonrisasTextStyle.Title,
-            color = InkPrimary,
-        )
-        Spacer(Modifier.height(Spacing.lg))
-        WeeklyAbsenteeismChart(data = weeklyAbsenteeism)
-        Spacer(Modifier.height(Spacing.xxl))
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .clickable(onClickLabel = "Abrir perfil", role = Role.Button, onClick = onProfileClick),
+            contentAlignment = Alignment.Center,
+        ) {
+            SonrisasAvatar(
+                name = directorName,
+                size = 44.dp,
+                containerColor = BrandPurpleLight,
+                contentColor = BrandPurpleDeepText,
+            )
+        }
     }
 }
 
@@ -155,24 +227,36 @@ private fun DirectorStatCard(
 }
 
 @Composable
-private fun IncompleteCoverageBanner(
-    incompleteCount: Int,
+private fun StaffingAlertBanner(
+    alertCount: Int,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val message = if (incompleteCount == 1) {
-        "1 estancia con cobertura incompleta hoy"
+    if (alertCount > 0) {
+        val message = if (alertCount == 1) {
+            "1 estancia con personal insuficiente"
+        } else {
+            "$alertCount estancias con personal insuficiente"
+        }
+        SonrisasNoticeBanner(
+            icon = Icons.Outlined.ErrorOutline,
+            message = message,
+            onClick = onClick,
+            modifier = modifier,
+        )
     } else {
-        "$incompleteCount estancias con cobertura incompleta hoy"
+        SonrisasNoticeBanner(
+            icon = Icons.Outlined.CheckCircle,
+            message = "Todas las estancias tienen su personal completo",
+            containerColor = StatusGreenTint,
+            iconTint = AccentGreen,
+            modifier = modifier,
+        )
     }
-    SonrisasNoticeBanner(
-        icon = Icons.Outlined.ErrorOutline,
-        message = message,
-        modifier = modifier,
-    )
 }
 
 @Composable
-private fun WeeklyAbsenteeismChart(
+internal fun WeeklyAbsenteeismChart(
     data: List<WeekdayAbsenteeism>,
     modifier: Modifier = Modifier,
 ) {
@@ -223,12 +307,11 @@ private fun WeeklyAbsenteeismChart(
     }
 }
 
-private val sampleFacilities = listOf(
-    AreaCoverage("Arcoíris", 17, 18),
-    AreaCoverage("Rayito de Sol", 16, 16),
-    AreaCoverage("Luna Nueva", 15, 15),
-    AreaCoverage("Amanecer", 16, 17),
-    AreaCoverage("Los Girasoles", 14, 18),
+private val sampleWorst = listOf(
+    EstanciaListItem(3, "Los Girasoles", "Apodaca, N.L.", 14, 18),
+    EstanciaListItem(4, "Luna Nueva", "San Nicolás, N.L.", 8, 15),
+    EstanciaListItem(1, "Arcoíris", "Monterrey, N.L.", 17, 18),
+    EstanciaListItem(2, "Rayito de Sol", "Guadalupe, N.L.", 16, 16),
 )
 
 private val sampleAbsenteeism = listOf(
@@ -239,17 +322,47 @@ private val sampleAbsenteeism = listOf(
     WeekdayAbsenteeism("Vie", 7.1f),
 )
 
-@Preview(showBackground = true)
+@Preview(name = "Panel de Dirección", showBackground = true, widthDp = 360, heightDp = 1100)
 @Composable
 private fun ManagementDashboardScreenPreview() {
     SonrisasAsistenciasTheme {
         ManagementDashboardScreen(
-            totalStaff = 84,
-            absencesToday = 6,
+            directorName = "Patricia Gómez Ríos",
+            dateLabel = "Martes 17 de noviembre",
+            updatedLabel = "Actualizado hace 2 min",
+            isRefreshing = false,
+            onRefresh = {},
+            totalStaff = 480,
+            presentToday = 442,
             hiresThisMonth = 4,
             departuresThisMonth = 2,
             monthName = "noviembre",
-            facilitiesCoverage = sampleFacilities,
+            alertCount = 3,
+            worstCoverage = sampleWorst,
+            totalEstancias = 62,
+            weeklyAbsenteeism = sampleAbsenteeism,
+        )
+    }
+}
+
+@Preview(name = "Panel · sin alertas", showBackground = true, widthDp = 360, heightDp = 1100)
+@Composable
+internal fun ManagementDashboardNoAlertsPreview() {
+    SonrisasAsistenciasTheme {
+        ManagementDashboardScreen(
+            directorName = "Patricia Gómez Ríos",
+            dateLabel = "Martes 17 de noviembre",
+            updatedLabel = "Actualizado hace 2 min",
+            isRefreshing = false,
+            onRefresh = {},
+            totalStaff = 480,
+            presentToday = 480,
+            hiresThisMonth = 4,
+            departuresThisMonth = 2,
+            monthName = "noviembre",
+            alertCount = 0,
+            worstCoverage = sampleWorst.takeLast(1),
+            totalEstancias = 62,
             weeklyAbsenteeism = sampleAbsenteeism,
         )
     }

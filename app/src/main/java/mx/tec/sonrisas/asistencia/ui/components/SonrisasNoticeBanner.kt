@@ -1,6 +1,7 @@
 package mx.tec.sonrisas.asistencia.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,12 +36,16 @@ fun SonrisasNoticeBanner(
     icon: ImageVector,
     message: String,
     modifier: Modifier = Modifier,
+    containerColor: Color = SurfacePeach,
+    iconTint: Color = AccentOrange,
+    onClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RadiusLg)
-            .background(SurfacePeach)
+            .background(containerColor)
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(horizontal = Spacing.lg, vertical = Spacing.md),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(Spacing.md),
@@ -47,7 +53,7 @@ fun SonrisasNoticeBanner(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = AccentOrange,
+            tint = iconTint,
             modifier = Modifier.size(20.dp),
         )
         Text(

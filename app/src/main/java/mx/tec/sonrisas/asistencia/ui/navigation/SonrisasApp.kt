@@ -10,10 +10,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -37,17 +34,13 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
+import mx.tec.sonrisas.asistencia.ui.screens.AreaMinimunScreen
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceConfirmationScreen
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceScreen
-import mx.tec.sonrisas.asistencia.ui.screens.ChangeHistoryScreen
-import mx.tec.sonrisas.asistencia.ui.screens.ComingSoonScreen
 import mx.tec.sonrisas.asistencia.ui.screens.CreateAccountScreen
 import mx.tec.sonrisas.asistencia.ui.screens.DetailStaffScreen
-import mx.tec.sonrisas.asistencia.ui.screens.EstanciaDetailScreen
-import mx.tec.sonrisas.asistencia.ui.screens.ExportReportScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LocationRequestScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LoginScreen
-import mx.tec.sonrisas.asistencia.ui.screens.ManagementDashboardScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ManagerHomeScreen
 import mx.tec.sonrisas.asistencia.ui.screens.MyAttendanceScreen
 import mx.tec.sonrisas.asistencia.ui.screens.RegisterStaffScreen
@@ -55,7 +48,6 @@ import mx.tec.sonrisas.asistencia.ui.screens.RequestType
 import mx.tec.sonrisas.asistencia.ui.screens.RequestsScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ShiftStatus
 import mx.tec.sonrisas.asistencia.ui.screens.StaffScreen
-import mx.tec.sonrisas.asistencia.ui.screens.StatisticsScreen
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 
@@ -78,11 +70,12 @@ fun SonrisasApp(
 ) {
     // los siguientes comandos son para navegacion continua y actualizacion del Scaffold a tiempo real no fake yo no lo descargo porque ya lo tengo
     val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = backStackEntry?.destination?.route
 
     // corroboracion de rol para su pantalla
     val tabs = role.tabs
-    val currentTab = tabs.firstOrNull { it.route == currentRoute }
+    val currentTab = tabs.firstOrNull { tab ->
+        backStackEntry?.destination?.hierarchy?.any { it.route == tab.route } == true
+    }
     var lastTab by rememberSaveable(role) { mutableStateOf(tabs.first()) }
     LaunchedEffect(currentTab) {
         if (currentTab != null) lastTab = currentTab
@@ -106,7 +99,11 @@ fun SonrisasApp(
                 SonrisasBottomBar(
                     items = tabs,
                     selected = currentTab ?: lastTab,
-                    onItemClick = { tab -> navController.navigateToTab(tab) },
+                    onItemClick = { tab ->
+                        val returnedToHome = tab == SonrisasTab.Inicio &&
+                            navController.popBackStack(tab.route, inclusive = false, saveState = true)
+                        if (!returnedToHome) navController.navigateToTab(tab)
+                    },
                     badgeCount = { tab ->
                         if (role == UserRole.Responsable && tab == SonrisasTab.Solicitudes) {
                             MockData.PENDING_REQUESTS
@@ -210,17 +207,10 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     onRegisterMultipleClick = {
                         entry.ifResumed { navController.navigate(SonrisasRoutes.REGISTER_STAFF) }
                     },
+                    onMovePersonClick = { navController.navigate(TempRoutes.ASSIGN_SHIFT) }, // TEMP
+                    onViewTodayListClick = { navController.navigate(TempRoutes.TODAY_LIST) }, // TEMP
                 )
-
-                UserRole.Direccion -> ManagementDashboardScreen(
-                    totalStaff = MockData.TOTAL_STAFF,
-                    absencesToday = MockData.ABSENCES_TODAY,
-                    hiresThisMonth = MockData.HIRES_THIS_MONTH,
-                    departuresThisMonth = MockData.DEPARTURES_THIS_MONTH,
-                    monthName = MockData.MONTH_NAME,
-                    facilitiesCoverage = MockData.facilitiesCoverage,
-                    weeklyAbsenteeism = MockData.weeklyAbsenteeism,
-                )
+                UserRole.Direccion -> DireccionHomeDestination(navController, entry)
             }
         }
 
@@ -233,53 +223,30 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                 onStaffClick = { staffId ->
                     entry.ifResumed { navController.navigate(SonrisasRoutes.staffDetail(staffId)) }
                 },
+                onGenerateInviteCode = { navController.navigate(TempRoutes.INVITE_CODE) }, // TEMP
+                onAddStaff = { navController.navigate(TempRoutes.NEW_STAFF) }, // TEMP
             )
         }
 
         composable(SonrisasTab.Turnos.route) {
-            ComingSoonScreen(
-                title = "Turnos",
-                icon = Icons.Outlined.Schedule,
-                message = "Aquí verás las áreas, los mínimos de personal y los horarios de tu estancia.",
-            )
+            AreaMinimunScreen() // TEMP (antes: ComingSoonScreen de Turnos)
         }
 
         composable(SonrisasTab.Solicitudes.route) {
             when (role) {
-                UserRole.Responsable -> ComingSoonScreen(
-                    title = "Solicitudes",
-                    icon = Icons.Outlined.Description,
-                    message = "Aquí revisarás y aprobarás las solicitudes de tu personal.",
-                )
+                UserRole.Responsable -> TempScreensHub(onOpen = { navController.navigate(it) }) // TEMP
                 UserRole.Empleado, UserRole.Direccion -> EmployeeRequestsDestination()
             }
         }
 
-        composable(SonrisasTab.Estancias.route) {
-            EstanciaDetailScreen()
-        }
+        estanciasGraph(navController)
+        reportesGraph(navController)
+        historialGraph(navController)
+        direccionProfileRoutes(navController)
+        tempPreviewRoutes(navController) // TEMP
 
-        composable(SonrisasTab.Historial.route) {
-            ChangeHistoryScreen()
-        }
-
-        composable(SonrisasTab.Reportes.route) {
-            StatisticsScreen(
-                presentCount = MockData.STATS_PRESENT,
-                expectedCount = MockData.STATS_EXPECTED,
-                onTimeCount = MockData.STATS_ON_TIME,
-                minorDelayCount = MockData.STATS_MINOR_DELAY,
-                majorDelayCount = MockData.STATS_MAJOR_DELAY,
-                absentCount = MockData.STATS_ABSENT,
-                alerts = MockData.stayAlerts,
-            )
-        }
         composable(SonrisasTab.Perfil.route) {
-            ComingSoonScreen(
-                title = "Perfil",
-                icon = Icons.Outlined.Person,
-                message = "Aquí verás tus datos personales y podrás cerrar sesión.",
-            )
+            TempEmployeeProfile() // TEMP (antes: ComingSoonScreen de Perfil)
         }
 
         pushComposable(SonrisasRoutes.ATTENDANCE_CONFIRMATION) { entry ->
@@ -290,10 +257,6 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     }
                 },
             )
-        }
-
-        pushComposable(SonrisasRoutes.EXPORT_REPORT) {
-            ExportReportScreen()
         }
 
         pushComposable(SonrisasRoutes.REGISTER_STAFF) { entry ->
@@ -309,6 +272,9 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         ) { entry ->
             DetailStaffScreen(
                 onBack = { entry.ifResumed { navController.popBackStack() } },
+                onEdit = { navController.navigate(TempRoutes.PERMISSIONS) }, // TEMP
+                onTransfer = { navController.navigate(TempRoutes.TRANSFER_STAFF) }, // TEMP
+                onDeactivate = { navController.navigate(TempRoutes.DEACTIVATE) }, // TEMP
             )
         }
     }
@@ -355,10 +321,10 @@ private fun NavHostController.enterMainGraph() {
     }
 }
 
-private inline fun NavBackStackEntry.ifResumed(action: () -> Unit) {
+internal inline fun NavBackStackEntry.ifResumed(action: () -> Unit) {
     if (lifecycle.currentState == Lifecycle.State.RESUMED) action()
 }
-private fun NavGraphBuilder.pushComposable(
+internal fun NavGraphBuilder.pushComposable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
     content: @Composable AnimatedContentScope.(NavBackStackEntry) -> Unit,

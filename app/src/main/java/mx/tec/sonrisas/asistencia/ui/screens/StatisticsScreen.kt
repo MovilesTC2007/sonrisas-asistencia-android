@@ -2,6 +2,7 @@ package mx.tec.sonrisas.asistencia.ui.screens
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,10 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.Icon
@@ -32,25 +30,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasSegmentedControl
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.AccentRed
-import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
-import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.StatusRedInk
@@ -61,66 +57,79 @@ data class StayAlert(
     val message: String,
 )
 
+enum class StatsPeriod(
+    val label: String,
+    val coverageTitle: String,
+    val attendanceTitle: String,
+) {
+    Today("Hoy", "Cobertura de hoy", "Asistencia de hoy"),
+    Week("Semana", "Cobertura de la semana", "Asistencia de la semana"),
+    Month("Mes", "Cobertura del mes", "Asistencia del mes"),
+}
+
+data class StatisticsSummary(
+    val presentCount: Int,
+    val expectedCount: Int,
+    val onTimeCount: Int,
+    val minorDelayCount: Int,
+    val majorDelayCount: Int,
+    val absentCount: Int,
+)
+
 private data class AttendanceSlice(
     val count: Int,
     val color: Color,
 )
 
-// igual Restructuracion sin Scaffold se quita flecha de regresar y existia un coveragedonut doble que no se usaba pero ya elimiando
 @Composable
-fun StatisticsScreen(
-    presentCount: Int,
-    expectedCount: Int,
-    onTimeCount: Int,
-    minorDelayCount: Int,
-    majorDelayCount: Int,
-    absentCount: Int,
+fun StatisticsContent(
+    period: StatsPeriod,
+    onPeriodChange: (StatsPeriod) -> Unit,
+    stats: StatisticsSummary,
+    trend: List<WeekdayAbsenteeism>,
+    ranking: List<EstanciaListItem>,
     alerts: List<StayAlert>,
     modifier: Modifier = Modifier,
+    onEstanciaClick: (Int) -> Unit = {},
 ) {
-    val coverageFraction = if (expectedCount > 0) presentCount.toFloat() / expectedCount else 0f
+    val coverageFraction =
+        if (stats.expectedCount > 0) stats.presentCount.toFloat() / stats.expectedCount else 0f
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(BgCream)
-            .statusBarsPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = Spacing.xl),
-    ) {
-        Spacer(Modifier.height(Spacing.md))
-        SonrisasTopBar(title = "Estadísticas")
+    Column(modifier = modifier) {
+        SonrisasSegmentedControl(
+            options = StatsPeriod.entries,
+            selected = period,
+            onSelect = onPeriodChange,
+            label = { it.label },
+        )
         Spacer(Modifier.height(Spacing.lg))
         CoverageSummaryCard(
+            title = period.coverageTitle,
             fraction = coverageFraction,
-            presentCount = presentCount,
-            expectedCount = expectedCount,
+            presentCount = stats.presentCount,
+            expectedCount = stats.expectedCount,
             slices = listOf(
-                AttendanceSlice(onTimeCount, AttendanceStatus.OnTime.accent),
-                AttendanceSlice(minorDelayCount, AttendanceStatus.MinorDelay.accent),
-                AttendanceSlice(majorDelayCount, AttendanceStatus.MajorDelay.accent),
-                AttendanceSlice(absentCount, AttendanceStatus.Absent.accent),
+                AttendanceSlice(stats.onTimeCount, AttendanceStatus.OnTime.accent),
+                AttendanceSlice(stats.minorDelayCount, AttendanceStatus.MinorDelay.accent),
+                AttendanceSlice(stats.majorDelayCount, AttendanceStatus.MajorDelay.accent),
+                AttendanceSlice(stats.absentCount, AttendanceStatus.Absent.accent),
             ),
         )
         Spacer(Modifier.height(Spacing.xxl))
-        Text(
-            text = "Asistencia de hoy",
-            style = SonrisasTextStyle.Title,
-            color = InkPrimary,
-        )
+        StatsSectionTitle(text = period.attendanceTitle)
         Spacer(Modifier.height(Spacing.md))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
             SonrisasStatCard(
-                value = onTimeCount,
+                value = stats.onTimeCount,
                 label = AttendanceStatus.OnTime.label,
                 status = AttendanceStatus.OnTime,
                 modifier = Modifier.weight(1f),
             )
             SonrisasStatCard(
-                value = minorDelayCount,
+                value = stats.minorDelayCount,
                 label = AttendanceStatus.MinorDelay.label,
                 status = AttendanceStatus.MinorDelay,
                 modifier = Modifier.weight(1f),
@@ -132,37 +141,58 @@ fun StatisticsScreen(
             horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
             SonrisasStatCard(
-                value = majorDelayCount,
+                value = stats.majorDelayCount,
                 label = AttendanceStatus.MajorDelay.label,
                 status = AttendanceStatus.MajorDelay,
                 modifier = Modifier.weight(1f),
             )
             SonrisasStatCard(
-                value = absentCount,
+                value = stats.absentCount,
                 label = AttendanceStatus.Absent.label,
                 status = AttendanceStatus.Absent,
                 modifier = Modifier.weight(1f),
             )
         }
+        Spacer(Modifier.height(Spacing.xxl))
+        StatsSectionTitle(text = "Ausentismo por día")
+        Spacer(Modifier.height(Spacing.lg))
+        WeeklyAbsenteeismChart(data = trend)
+        if (ranking.isNotEmpty()) {
+            Spacer(Modifier.height(Spacing.xxl))
+            StatsSectionTitle(text = "Ranking de asistencia")
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasListCard(items = ranking.withIndex().toList()) { (index, item) ->
+                RankingRow(
+                    position = index + 1,
+                    item = item,
+                    onClick = { onEstanciaClick(item.id) },
+                )
+            }
+        }
         if (alerts.isNotEmpty()) {
             Spacer(Modifier.height(Spacing.xxl))
-            Text(
-                text = "Estancias con alertas",
-                style = SonrisasTextStyle.Title,
-                color = InkPrimary,
-            )
+            StatsSectionTitle(text = "Estancias con alertas")
             Spacer(Modifier.height(Spacing.md))
-            // alertas para la tarjeta
             SonrisasListCard(items = alerts) { alert ->
                 StayAlertRow(alert = alert)
             }
         }
-        Spacer(Modifier.height(Spacing.xxl))
     }
 }
 
 @Composable
+private fun StatsSectionTitle(text: String) {
+    Text(
+        text = text,
+        style = SonrisasTextStyle.Title,
+        color = InkPrimary,
+        modifier = Modifier.semantics { heading() },
+    )
+}
+
+@Composable
 private fun CoverageSummaryCard(
+    title: String,
     fraction: Float,
     presentCount: Int,
     expectedCount: Int,
@@ -182,7 +212,7 @@ private fun CoverageSummaryCard(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Cobertura de hoy",
+                text = title,
                 style = SonrisasTextStyle.Title,
                 color = InkPrimary,
             )
@@ -201,7 +231,7 @@ private fun CoverageSummaryCard(
             fraction = fraction,
             slices = slices,
             total = expectedCount,
-            modifier = Modifier.semantics { contentDescription = "Cobertura de hoy: $percent por ciento" },
+            modifier = Modifier.semantics { contentDescription = "$title: $percent por ciento" },
         )
     }
 }
@@ -279,8 +309,46 @@ private fun DonutBar(
     }
 }
 
-// mejoramiento de diseño ideono
-// quedo mejor el de erik que el de nicte saludos xd
+@Composable
+private fun RankingRow(
+    position: Int,
+    item: EstanciaListItem,
+    onClick: () -> Unit,
+) {
+    val percent =
+        if (item.requiredCount > 0) (item.presentCount * 100f / item.requiredCount).roundToInt() else 0
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClickLabel = "Abrir ${item.name}", onClick = onClick)
+            .heightIn(min = 56.dp)
+            .padding(horizontal = Spacing.lg, vertical = Spacing.md),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "$position",
+            style = SonrisasTextStyle.Body.copy(fontWeight = FontWeight.SemiBold),
+            color = BrandPurple,
+            modifier = Modifier.width(28.dp),
+        )
+        Text(
+            text = item.name,
+            style = SonrisasTextStyle.Body,
+            color = InkPrimary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+        )
+        Spacer(Modifier.width(Spacing.sm))
+        Text(
+            text = "$percent %",
+            style = SonrisasTextStyle.Body,
+            color = InkSoft,
+        )
+    }
+}
+
 @Composable
 private fun StayAlertRow(
     alert: StayAlert,
@@ -314,28 +382,6 @@ private fun StayAlertRow(
             contentDescription = null,
             tint = AccentRed,
             modifier = Modifier.size(20.dp),
-        )
-    }
-}
-
-private val sampleAlerts = listOf(
-    StayAlert("Estancia arcoíris", "Personal insuficiente"),
-    StayAlert("Estancia Las Rosas", "Personal insuficiente"),
-    StayAlert("Estancia Los Girasoles", "Personal insuficiente"),
-)
-
-@Preview(name = "Estadísticas dirección", showBackground = true, widthDp = 360, heightDp = 1000)
-@Composable
-private fun StatisticsPreview() {
-    SonrisasAsistenciasTheme {
-        StatisticsScreen(
-            presentCount = 442,
-            expectedCount = 480,
-            onTimeCount = 384,
-            minorDelayCount = 15,
-            majorDelayCount = 8,
-            absentCount = 33,
-            alerts = sampleAlerts,
         )
     }
 }
