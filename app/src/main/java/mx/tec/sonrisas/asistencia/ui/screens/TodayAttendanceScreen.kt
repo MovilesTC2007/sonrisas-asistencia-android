@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
@@ -70,6 +71,7 @@ fun TodayAttendanceScreen(
     onFilterSelected: (TodayListFilter) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
+    onRegisterIncidenceClick: () -> Unit = {},
 ) {
     val filteredEntries = when (selectedFilter) {
         TodayListFilter.All -> entries
@@ -95,6 +97,7 @@ fun TodayAttendanceScreen(
             style = SonrisasTextStyle.Body,
             color = InkSoft,
         )
+
         Spacer(Modifier.height(Spacing.lg))
         FilterSegmentedControl(
             selected = selectedFilter,
@@ -116,6 +119,11 @@ fun TodayAttendanceScreen(
                 TodayAttendanceRow(entry = entry)
             }
         }
+        Spacer(Modifier.height(Spacing.lg))
+        SonrisasPrimaryButton(
+            text = "Registrar incidencia",
+            onClick = onRegisterIncidenceClick,
+        )
         Spacer(Modifier.height(Spacing.xxl))
     }
 }
