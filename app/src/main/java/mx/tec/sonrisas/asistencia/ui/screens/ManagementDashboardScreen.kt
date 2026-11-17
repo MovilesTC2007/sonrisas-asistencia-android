@@ -256,7 +256,7 @@ private fun StaffingAlertBanner(
 }
 
 @Composable
-private fun WeeklyAbsenteeismChart(
+internal fun WeeklyAbsenteeismChart(
     data: List<WeekdayAbsenteeism>,
     modifier: Modifier = Modifier,
 ) {
@@ -347,7 +347,7 @@ private fun ManagementDashboardScreenPreview() {
 
 @Preview(name = "Panel · sin alertas", showBackground = true, widthDp = 360, heightDp = 1100)
 @Composable
-private fun ManagementDashboardNoAlertsPreview() {
+internal fun ManagementDashboardNoAlertsPreview() {
     SonrisasAsistenciasTheme {
         ManagementDashboardScreen(
             directorName = "Patricia Gómez Ríos",

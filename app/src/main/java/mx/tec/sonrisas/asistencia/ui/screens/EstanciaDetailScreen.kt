@@ -195,7 +195,7 @@ fun EstanciaDetailScreen(
 
             Spacer(Modifier.height(Spacing.xxl))
             SonrisasOutlinedButton(
-                text = "Ver estadísticas y reportes",
+                text = "Exportar reporte de estancia",
                 onClick = onViewReportsClick,
                 leadingIcon = Icons.Outlined.BarChart,
             )

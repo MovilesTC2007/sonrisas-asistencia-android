@@ -40,11 +40,9 @@ import androidx.navigation.navArgument
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceConfirmationScreen
 import mx.tec.sonrisas.asistencia.ui.screens.AttendanceScreen
-import mx.tec.sonrisas.asistencia.ui.screens.ChangeHistoryScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ComingSoonScreen
 import mx.tec.sonrisas.asistencia.ui.screens.CreateAccountScreen
 import mx.tec.sonrisas.asistencia.ui.screens.DetailStaffScreen
-import mx.tec.sonrisas.asistencia.ui.screens.ExportReportScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LocationRequestScreen
 import mx.tec.sonrisas.asistencia.ui.screens.LoginScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ManagerHomeScreen
@@ -54,7 +52,6 @@ import mx.tec.sonrisas.asistencia.ui.screens.RequestType
 import mx.tec.sonrisas.asistencia.ui.screens.RequestsScreen
 import mx.tec.sonrisas.asistencia.ui.screens.ShiftStatus
 import mx.tec.sonrisas.asistencia.ui.screens.StaffScreen
-import mx.tec.sonrisas.asistencia.ui.screens.StatisticsScreen
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 
@@ -106,7 +103,11 @@ fun SonrisasApp(
                 SonrisasBottomBar(
                     items = tabs,
                     selected = currentTab ?: lastTab,
-                    onItemClick = { tab -> navController.navigateToTab(tab) },
+                    onItemClick = { tab ->
+                        val returnedToHome = tab == SonrisasTab.Inicio &&
+                            navController.popBackStack(tab.route, inclusive = false, saveState = true)
+                        if (!returnedToHome) navController.navigateToTab(tab)
+                    },
                     badgeCount = { tab ->
                         if (role == UserRole.Responsable && tab == SonrisasTab.Solicitudes) {
                             MockData.PENDING_REQUESTS
@@ -247,22 +248,10 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         }
 
         estanciasGraph(navController)
+        reportesGraph(navController)
+        historialGraph(navController)
+        direccionProfileRoutes(navController)
 
-        composable(SonrisasTab.Historial.route) {
-            ChangeHistoryScreen()
-        }
-
-        composable(SonrisasTab.Reportes.route) {
-            StatisticsScreen(
-                presentCount = MockData.STATS_PRESENT,
-                expectedCount = MockData.STATS_EXPECTED,
-                onTimeCount = MockData.STATS_ON_TIME,
-                minorDelayCount = MockData.STATS_MINOR_DELAY,
-                majorDelayCount = MockData.STATS_MAJOR_DELAY,
-                absentCount = MockData.STATS_ABSENT,
-                alerts = MockData.stayAlerts,
-            )
-        }
         composable(SonrisasTab.Perfil.route) {
             ComingSoonScreen(
                 title = "Perfil",
@@ -279,10 +268,6 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     }
                 },
             )
-        }
-
-        pushComposable(SonrisasRoutes.EXPORT_REPORT) {
-            ExportReportScreen()
         }
 
         pushComposable(SonrisasRoutes.REGISTER_STAFF) { entry ->

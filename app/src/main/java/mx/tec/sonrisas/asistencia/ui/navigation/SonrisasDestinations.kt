@@ -75,7 +75,10 @@ object SonrisasRoutes {
     const val LOCATION_PERMISSION = "permiso-ubicacion"
     const val ATTENDANCE_CONFIRMATION = "confirmacion-registro"
     const val REGISTER_STAFF = "registrar-personal"
-    const val EXPORT_REPORT = "reportes/exportar"
+    const val REPORTS_VIEW_ARG = "vista"
+    const val REPORTS_ESTANCIA_ARG = "estanciaId"
+    const val NO_ESTANCIA = -1
+    const val REPORTS_HOME = "reportes/inicio?vista={vista}&estanciaId={estanciaId}"
 
     // el staffID van vacias se llenan al pasar las pantallas con las rutas
     const val STAFF_ID_ARG = "staffId"
@@ -86,6 +89,21 @@ object SonrisasRoutes {
     const val ESTANCIAS_LIST = "estancias/lista?filtro={filtro}"
     const val ESTANCIA_ID_ARG = "estanciaId"
     const val ESTANCIA_DETAIL = "estancias/detalle/{estanciaId}"
+    const val HISTORY_ESTANCIA_ARG = "estanciaId"
+    const val HISTORY_LIST = "historial/lista?estanciaId={estanciaId}"
+    const val HISTORY_EVENT_ID_ARG = "eventId"
+    const val HISTORY_EVENT = "historial/evento/{eventId}"
+    const val PERSON_ID_ARG = "personId"
+    const val PERSON_DETAIL = "estancias/persona/{personId}"
+    const val DIRECCION_PROFILE = "direccion/perfil"
+    const val DIRECCION_TRANSFER = "direccion/perfil/transferir"
+
+    fun historyList(estanciaId: Int? = null) =
+        if (estanciaId == null) "historial/lista" else "historial/lista?estanciaId=$estanciaId"
+
+    fun historyEvent(eventId: Int) = "historial/evento/$eventId"
+
+    fun personDetail(personId: Int) = "estancias/persona/$personId"
 
     // armado ruta
     fun estanciasList(filter: String? = null) =
@@ -93,4 +111,11 @@ object SonrisasRoutes {
 
     fun estanciaDetail(estanciaId: Int) = "estancias/detalle/$estanciaId"
     fun staffDetail(staffId: Int) = "personal/detalle/$staffId"
+    fun reports(view: String? = null, estanciaId: Int? = null): String {
+        val params = listOfNotNull(
+            view?.let { "vista=$it" },
+            estanciaId?.let { "estanciaId=$it" },
+        )
+        return if (params.isEmpty()) "reportes/inicio" else "reportes/inicio?" + params.joinToString("&")
+    }
 }
