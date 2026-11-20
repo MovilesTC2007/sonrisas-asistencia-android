@@ -197,90 +197,11 @@ private fun CoverageSummaryCard(
                 color = InkSoft,
             )
         }
-        CoverageDonut(
-            fraction = fraction,
-            slices = slices,
-            total = expectedCount,
-            modifier = Modifier.semantics { contentDescription = "Cobertura de hoy: $percent por ciento" },
-        )
+
     }
 }
 
-@Composable
-private fun CoverageDonut(
-    fraction: Float,
-    slices: List<AttendanceSlice>,
-    total: Int,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier.size(130.dp),
-        contentAlignment = Alignment.Center,
-    ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val strokeWidth = 14.dp.toPx()
-            val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth)
-            val arcTopLeft = Offset(strokeWidth / 2, strokeWidth / 2)
 
-            drawArc(
-                color = InkFaint.copy(alpha = 0.25f),
-                startAngle = 0f,
-                sweepAngle = 360f,
-                useCenter = false,
-                topLeft = arcTopLeft,
-                size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
-            )
-            drawArc(
-                color = BrandPurple,
-                startAngle = -90f,
-                sweepAngle = 360f * fraction.coerceIn(0f, 1f),
-                useCenter = false,
-                topLeft = arcTopLeft,
-                size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
-            )
-        }
-        Column(
-            modifier = Modifier.width(76.dp),
-            verticalArrangement = Arrangement.spacedBy(Spacing.sm),
-        ) {
-            slices.forEach { slice ->
-                val barFraction = if (total > 0) slice.count.toFloat() / total else 0f
-                DonutBar(
-                    fraction = if (slice.count > 0) barFraction.coerceAtLeast(0.12f) else 0f,
-                    color = slice.color,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun DonutBar(
-    fraction: Float,
-    color: Color,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(10.dp)
-            .clip(RadiusPill)
-            .background(InkFaint.copy(alpha = 0.2f)),
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(fraction.coerceIn(0f, 1f))
-                .fillMaxHeight()
-                .clip(RadiusPill)
-                .background(color),
-        )
-    }
-}
-
-// mejoramiento de diseño ideono
-// quedo mejor el de erik que el de nicte saludos xd
 @Composable
 private fun StayAlertRow(
     alert: StayAlert,

@@ -1,4 +1,4 @@
-package mx.tec.sonrisas.asistencia.ui.screens
+package mx.tec.sonrisas.asistencia.ui.screens.managerScreens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

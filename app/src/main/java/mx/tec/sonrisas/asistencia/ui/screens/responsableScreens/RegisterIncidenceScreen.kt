@@ -1,4 +1,4 @@
-package mx.tec.sonrisas.asistencia.ui.screens
+package mx.tec.sonrisas.asistencia.ui.screens.responsableScreens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
@@ -211,7 +212,7 @@ private fun LabeledField(
 private fun FieldBox(
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
-    minHeight: androidx.compose.ui.unit.Dp = 54.dp,
+    minHeight: Dp = 54.dp,
     content: @Composable BoxScope.() -> Unit,
 ) {
     val clickableModifier = if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier
