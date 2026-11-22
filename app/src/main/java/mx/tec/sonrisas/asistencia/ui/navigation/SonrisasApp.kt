@@ -207,8 +207,12 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     onRegisterMultipleClick = {
                         entry.ifResumed { navController.navigate(SonrisasRoutes.REGISTER_STAFF) }
                     },
-                    onMovePersonClick = { navController.navigate(TempRoutes.ASSIGN_SHIFT) }, // TEMP
-                    onViewTodayListClick = { navController.navigate(TempRoutes.TODAY_LIST) }, // TEMP
+                    onMovePersonClick = {
+                        entry.ifResumed { navController.navigate(ManagementRoutes.ASSIGN_SHIFT) }
+                    },
+                    onViewTodayListClick = {
+                        entry.ifResumed { navController.navigate(ManagementRoutes.TODAY_LIST) }
+                    },
                 )
                 UserRole.Direccion -> DireccionHomeDestination(navController, entry)
             }
@@ -223,18 +227,22 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                 onStaffClick = { staffId ->
                     entry.ifResumed { navController.navigate(SonrisasRoutes.staffDetail(staffId)) }
                 },
-                onGenerateInviteCode = { navController.navigate(TempRoutes.INVITE_CODE) }, // TEMP
-                onAddStaff = { navController.navigate(TempRoutes.NEW_STAFF) }, // TEMP
+                onGenerateInviteCode = {
+                    entry.ifResumed { navController.navigate(ManagementRoutes.INVITE_CODE) }
+                },
+                onAddStaff = { entry.ifResumed { navController.navigate(ManagementRoutes.NEW_STAFF) } },
             )
         }
 
         composable(SonrisasTab.Turnos.route) {
-            AreaMinimunScreen() // TEMP (antes: ComingSoonScreen de Turnos)
+            AreaMinimunScreen()
         }
 
         composable(SonrisasTab.Solicitudes.route) {
             when (role) {
-                UserRole.Responsable -> TempScreensHub(onOpen = { navController.navigate(it) }) // TEMP
+                UserRole.Responsable -> ManagerRequestsDestination(
+                    onBack = { navController.navigateToTab(SonrisasTab.Inicio) },
+                )
                 UserRole.Empleado, UserRole.Direccion -> EmployeeRequestsDestination()
             }
         }
@@ -243,10 +251,13 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         reportesGraph(navController)
         historialGraph(navController)
         direccionProfileRoutes(navController)
-        tempPreviewRoutes(navController) // TEMP
+        responsableRoutes(navController)
 
         composable(SonrisasTab.Perfil.route) {
-            TempEmployeeProfile() // TEMP (antes: ComingSoonScreen de Perfil)
+            when (role) {
+                UserRole.Responsable -> ManagerProfileDestination()
+                UserRole.Empleado, UserRole.Direccion -> EmployeeProfileDestination()
+            }
         }
 
         pushComposable(SonrisasRoutes.ATTENDANCE_CONFIRMATION) { entry ->
@@ -272,9 +283,9 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         ) { entry ->
             DetailStaffScreen(
                 onBack = { entry.ifResumed { navController.popBackStack() } },
-                onEdit = { navController.navigate(TempRoutes.PERMISSIONS) }, // TEMP
-                onTransfer = { navController.navigate(TempRoutes.TRANSFER_STAFF) }, // TEMP
-                onDeactivate = { navController.navigate(TempRoutes.DEACTIVATE) }, // TEMP
+                onEdit = { entry.ifResumed { navController.navigate(ManagementRoutes.PERMISSIONS) } },
+                onTransfer = { entry.ifResumed { navController.navigate(ManagementRoutes.TRANSFER_STAFF) } },
+                onDeactivate = { entry.ifResumed { navController.navigate(ManagementRoutes.DEACTIVATE) } },
             )
         }
     }

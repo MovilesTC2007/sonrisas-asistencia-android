@@ -14,7 +14,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 //  UserRole.Responsable  -> Inicio | Personal | Turnos | Solicitudes
 //  UserRole.Direccion    -> Inicio | Estancias | Reportes | Historial
 // Cuando el login sea real, el rol vendra del servidor y esta variable se elimina
-private val DEV_ROLE = UserRole.
+private val DEV_ROLE = UserRole.Direccion
 
 // por eliminar
 class MainActivity : ComponentActivity() {
@@ -28,5 +28,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-// waos
