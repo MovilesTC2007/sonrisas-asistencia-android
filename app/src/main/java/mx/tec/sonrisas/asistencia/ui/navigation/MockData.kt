@@ -2,23 +2,23 @@ package mx.tec.sonrisas.asistencia.ui.navigation
 
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
 import mx.tec.sonrisas.asistencia.ui.components.CoverageLevel
-import mx.tec.sonrisas.asistencia.ui.screens.ALL_ESTANCIAS
-import mx.tec.sonrisas.asistencia.ui.screens.AreaCoverage
-import mx.tec.sonrisas.asistencia.ui.screens.AttendanceRecord
-import mx.tec.sonrisas.asistencia.ui.screens.ChangeEvent
-import mx.tec.sonrisas.asistencia.ui.screens.ChangeKind
-import mx.tec.sonrisas.asistencia.ui.screens.DireccionProfile
-import mx.tec.sonrisas.asistencia.ui.screens.EstanciaDetail
-import mx.tec.sonrisas.asistencia.ui.screens.EstanciaListItem
-import mx.tec.sonrisas.asistencia.ui.screens.PersonDetail
-import mx.tec.sonrisas.asistencia.ui.screens.PersonRecord
-import mx.tec.sonrisas.asistencia.ui.screens.RequestHistoryItem
-import mx.tec.sonrisas.asistencia.ui.screens.RequestStatus
-import mx.tec.sonrisas.asistencia.ui.screens.SampleEstanciaDetail
-import mx.tec.sonrisas.asistencia.ui.screens.StatisticsSummary
-import mx.tec.sonrisas.asistencia.ui.screens.StatsPeriod
-import mx.tec.sonrisas.asistencia.ui.screens.StayAlert
-import mx.tec.sonrisas.asistencia.ui.screens.WeekdayAbsenteeism
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ALL_ESTANCIAS
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ChangeEvent
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ChangeKind
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.DireccionProfile
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.EstanciaDetail
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.EstanciaListItem
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.PersonDetail
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.PersonRecord
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.SampleEstanciaDetail
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.StatisticsSummary
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.StatsPeriod
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.StayAlert
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.WeekdayAbsenteeism
+import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.AttendanceRecord
+import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.RequestHistoryItem
+import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.RequestStatus
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.AreaCoverage
 
 // ESTO SE VA A DEJAR MIENTRAS AGREGAMOS EL BACKEND CORRECTAMENTE, MIENTRAS TANTO PARTE DE LOS DATOS SE TOMARAN DUMMY DESDE AQUI
 // Regla de detekt (ClassOrdering): primero todas las propiedades y al final todas las funciones.

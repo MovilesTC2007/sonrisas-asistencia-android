@@ -8,24 +8,24 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
-import mx.tec.sonrisas.asistencia.ui.screens.AccountDetail
-import mx.tec.sonrisas.asistencia.ui.screens.AssignShiftScreen
-import mx.tec.sonrisas.asistencia.ui.screens.CorrectRecordScreen
-import mx.tec.sonrisas.asistencia.ui.screens.DeactivateStaffScreen
-import mx.tec.sonrisas.asistencia.ui.screens.IncidenceType
-import mx.tec.sonrisas.asistencia.ui.screens.InviteCodeScreen
-import mx.tec.sonrisas.asistencia.ui.screens.LocationUnderReviewScreen
-import mx.tec.sonrisas.asistencia.ui.screens.NewStaffScreen
-import mx.tec.sonrisas.asistencia.ui.screens.RegisterIncidenceScreen
-import mx.tec.sonrisas.asistencia.ui.screens.RequestReviewScreen
-import mx.tec.sonrisas.asistencia.ui.screens.ShiftScheduleType
-import mx.tec.sonrisas.asistencia.ui.screens.StaffPermissionsScreen
-import mx.tec.sonrisas.asistencia.ui.screens.TodayAttendanceEntry
-import mx.tec.sonrisas.asistencia.ui.screens.TodayAttendanceScreen
-import mx.tec.sonrisas.asistencia.ui.screens.TodayListFilter
-import mx.tec.sonrisas.asistencia.ui.screens.TransferStaffScreen
-import mx.tec.sonrisas.asistencia.ui.screens.UserProfileScreen
-import mx.tec.sonrisas.asistencia.ui.screens.WeekDay
+import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.LocationUnderReviewScreen
+import mx.tec.sonrisas.asistencia.ui.screens.generalScreens.AccountDetail
+import mx.tec.sonrisas.asistencia.ui.screens.generalScreens.UserProfileScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.AssignShiftScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.CorrectRecordScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.DeactivateStaffScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.IncidenceType
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.InviteCodeScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.NewStaffScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.RegisterIncidenceScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.RequestReviewScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.ShiftScheduleType
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.StaffPermissionsScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.TodayAttendanceEntry
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.TodayAttendanceScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.TodayListFilter
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.TransferStaffScreen
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.WeekDay
 
 internal object ManagementRoutes {
     const val TODAY_LIST = "responsable/lista-hoy"
