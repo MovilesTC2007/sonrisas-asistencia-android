@@ -1,5 +1,6 @@
 package mx.tec.sonrisas.asistencia.ui.navigation
 
+import android.net.Uri
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Apartment
 import androidx.compose.material.icons.outlined.BarChart
@@ -93,6 +94,13 @@ object SonrisasRoutes {
     const val PERSON_DETAIL = "estancias/persona/{personId}"
     const val DIRECCION_PROFILE = "direccion/perfil"
     const val DIRECCION_TRANSFER = "direccion/perfil/transferir"
+    const val RESPONSABLE_NAME_ARG = "nombre"
+    const val RESPONSABLE_ESTANCIA_ARG = "estancia"
+    const val NEW_RESPONSABLE = "direccion/nuevo-responsable"
+    const val RESPONSABLE_INVITE = "direccion/nuevo-responsable/codigo?nombre={nombre}&estancia={estancia}"
+
+    fun responsableInvite(name: String, estancia: String) =
+        "direccion/nuevo-responsable/codigo?nombre=${Uri.encode(name)}&estancia=${Uri.encode(estancia)}"
 
     fun historyList(estanciaId: Int? = null) =
         if (estanciaId == null) "historial/lista" else "historial/lista?estanciaId=$estanciaId"

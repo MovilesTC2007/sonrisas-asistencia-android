@@ -249,6 +249,7 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         estanciasGraph(navController)
         reportesGraph(navController)
         direccionProfileRoutes(navController)
+        nuevoResponsableRoutes(navController)
         responsableRoutes(navController)
 
         if (role != UserRole.Direccion) {

@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ErrorOutline
+import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -42,6 +43,7 @@ import mx.tec.sonrisas.asistencia.R
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasCoverageRow
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasNoticeBanner
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasOutlinedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTintedButton
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
@@ -82,6 +84,7 @@ fun ManagementDashboardScreen(
     onAlertClick: () -> Unit = {},
     onEstanciaClick: (Int) -> Unit = {},
     onViewAllClick: () -> Unit = {},
+    onNewResponsableClick: () -> Unit = {},
 ) {
     PullToRefreshBox(
         isRefreshing = isRefreshing,
@@ -149,6 +152,12 @@ fun ManagementDashboardScreen(
             SonrisasTintedButton(
                 text = "Ver las $totalEstancias",
                 onClick = onViewAllClick,
+            )
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasOutlinedButton(
+                text = "Nuevo responsable",
+                onClick = onNewResponsableClick,
+                leadingIcon = Icons.Outlined.PersonAdd,
             )
             Spacer(Modifier.height(Spacing.xxl))
             Text(

@@ -28,6 +28,7 @@ import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.EstanciasListScree
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ExportContent
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.HistoryPeriod
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ManagementDashboardScreen
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.NewResponsableScreen
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.PersonDetailScreen
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ReportFormat
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ReportPeriod
@@ -41,6 +42,7 @@ import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.TransferAccountScr
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.TransferStep
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.filterChanges
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.filterEstancias
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.InviteCodeScreen
 
 private const val REFRESH_MOCK_MS = 800L
 
@@ -87,6 +89,9 @@ internal fun DireccionHomeDestination(
         },
         onViewAllClick = {
             entry.ifResumed { navController.navigate(SonrisasRoutes.estanciasList()) }
+        },
+        onNewResponsableClick = {
+            entry.ifResumed { navController.navigate(SonrisasRoutes.NEW_RESPONSABLE) }
         },
     )
 }
@@ -339,6 +344,44 @@ private fun HistoryDestination(
         onEventClick = onEventClick,
         onReportsClick = onReportsClick,
     )
+}
+
+// Nuevo responsable (sin barra inferior): formulario y código de invitación.
+internal fun NavGraphBuilder.nuevoResponsableRoutes(navController: NavHostController) {
+    pushComposable(SonrisasRoutes.NEW_RESPONSABLE) { entry ->
+        NewResponsableScreen(
+            estanciaOptions = MockData.estancias.map { it.name },
+            onBack = { entry.ifResumed { navController.popBackStack() } },
+            onSaveClick = { name, estancia ->
+                entry.ifResumed { navController.navigate(SonrisasRoutes.responsableInvite(name, estancia)) }
+            },
+        )
+    }
+
+    pushComposable(
+        route = SonrisasRoutes.RESPONSABLE_INVITE,
+        arguments = listOf(
+            navArgument(SonrisasRoutes.RESPONSABLE_NAME_ARG) {
+                type = NavType.StringType
+                defaultValue = ""
+            },
+            navArgument(SonrisasRoutes.RESPONSABLE_ESTANCIA_ARG) {
+                type = NavType.StringType
+                defaultValue = ""
+            },
+        ),
+    ) { entry ->
+        val name = entry.arguments?.getString(SonrisasRoutes.RESPONSABLE_NAME_ARG).orEmpty()
+        val estancia = entry.arguments?.getString(SonrisasRoutes.RESPONSABLE_ESTANCIA_ARG).orEmpty()
+        InviteCodeScreen(
+            recipientName = name,
+            recipientDetail = "Responsable · $estancia",
+            code = MockData.RESPONSABLE_INVITE_CODE,
+            onBack = {
+                entry.ifResumed { navController.popBackStack(SonrisasTab.Inicio.route, inclusive = false) }
+            },
+        )
+    }
 }
 
 // Pestaña Perfil de Dirección

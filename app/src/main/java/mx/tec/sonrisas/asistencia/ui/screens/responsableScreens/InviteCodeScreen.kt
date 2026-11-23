@@ -61,6 +61,7 @@ private val SampleInvites = listOf(
 @Composable
 fun InviteCodeScreen(
     modifier: Modifier = Modifier,
+    onBack: () -> Unit = {},
     recipientName: String = "Patricia Gómez Ríos",
     recipientDetail: String = "Asistente · Maternales",
     code: String = "SC4K 7R2T",
@@ -81,7 +82,7 @@ fun InviteCodeScreen(
             Spacer(Modifier.height(Spacing.md))
             SonrisasTopBar(
                 title = "Código de invitación",
-                onBack = {},
+                onBack = onBack,
                 backStyle = SonrisasBackStyle.Plain,
             )
 
