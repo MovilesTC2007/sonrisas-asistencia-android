@@ -1,5 +1,6 @@
 package mx.tec.sonrisas.asistencia.ui.screens.direccionScreens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -37,7 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
+import mx.tec.sonrisas.asistencia.R
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasCoverageRow
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasNoticeBanner
@@ -46,7 +47,6 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasTintedButton
 import mx.tec.sonrisas.asistencia.ui.theme.AccentGreen
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
@@ -79,7 +79,6 @@ fun ManagementDashboardScreen(
     totalEstancias: Int,
     weeklyAbsenteeism: List<WeekdayAbsenteeism>,
     modifier: Modifier = Modifier,
-    onProfileClick: () -> Unit = {},
     onAlertClick: () -> Unit = {},
     onEstanciaClick: (Int) -> Unit = {},
     onViewAllClick: () -> Unit = {},
@@ -103,7 +102,6 @@ fun ManagementDashboardScreen(
                 directorName = directorName,
                 dateLabel = dateLabel,
                 updatedLabel = updatedLabel,
-                onProfileClick = onProfileClick,
             )
             Spacer(Modifier.height(Spacing.lg))
             Row(
@@ -171,7 +169,6 @@ private fun DashboardHeader(
     directorName: String,
     dateLabel: String,
     updatedLabel: String,
-    onProfileClick: () -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.weight(1f)) {
@@ -196,16 +193,13 @@ private fun DashboardHeader(
         }
         Box(
             modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .clickable(onClickLabel = "Abrir perfil", role = Role.Button, onClick = onProfileClick),
+                .size(78.dp)
+                .clip(CircleShape),
             contentAlignment = Alignment.Center,
         ) {
-            SonrisasAvatar(
-                name = directorName,
-                size = 44.dp,
-                containerColor = BrandPurpleLight,
-                contentColor = BrandPurpleDeepText,
+            Image(
+                painter = painterResource(id = R.drawable.sonrisaslogo),
+                contentDescription = "Logo Sonrisas",
             )
         }
     }

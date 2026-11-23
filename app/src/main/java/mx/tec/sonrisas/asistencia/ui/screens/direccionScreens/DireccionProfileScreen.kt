@@ -33,7 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasBackStyle
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasOutlinedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
@@ -69,7 +68,6 @@ private data class DireccionProfileAction(
 @Composable
 fun DireccionProfileScreen(
     profile: DireccionProfile,
-    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     onChangePasswordClick: () -> Unit = {},
     onTrustedDevicesClick: () -> Unit = {},
@@ -103,7 +101,7 @@ fun DireccionProfileScreen(
             .padding(horizontal = Spacing.xl),
     ) {
         Spacer(Modifier.height(Spacing.md))
-        SonrisasTopBar(title = "Perfil", onBack = onBack, backStyle = SonrisasBackStyle.Plain)
+        SonrisasTopBar(title = "Perfil")
         Spacer(Modifier.height(Spacing.lg))
         ProfileHeader(fullName = profile.fullName)
         Spacer(Modifier.height(Spacing.lg))
@@ -224,7 +222,6 @@ private fun DireccionProfilePreview() {
                 scope = "Todas las estancias (62)",
                 trustedDevices = 2,
             ),
-            onBack = {},
         )
     }
 }

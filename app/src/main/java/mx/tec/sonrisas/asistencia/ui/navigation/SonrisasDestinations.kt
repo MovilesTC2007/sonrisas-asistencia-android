@@ -13,10 +13,6 @@ import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.ui.graphics.vector.ImageVector
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasNavItem
 
-// MAPA FINAL DE NAVEGACION A CAMBIAR CON PANTALLAS NUEVAS pues
-// aqui se va a describir los tres perfiles de la app
-// no se utiliza realmente este codigo solo es para parametros de sondeo actualicen esto cuando se agreguen pantallas
-// un enum para los perfiles para dejar de utilizar lo de 1,2,3,4
 enum class UserRole {
     Empleado,
     Responsable,
@@ -41,7 +37,7 @@ enum class UserRole {
                 SonrisasTab.Inicio,
                 SonrisasTab.Estancias,
                 SonrisasTab.Reportes,
-                SonrisasTab.Historial,
+                SonrisasTab.Perfil,
             )
         }
 }

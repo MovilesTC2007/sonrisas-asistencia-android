@@ -15,6 +15,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import java.util.Map.entry
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ChangeEventDetailScreen
@@ -76,9 +77,6 @@ internal fun DireccionHomeDestination(
         worstCoverage = MockData.worstCoverage,
         totalEstancias = MockData.TOTAL_ESTANCIAS,
         weeklyAbsenteeism = MockData.weeklyAbsenteeism,
-        onProfileClick = {
-            entry.ifResumed { navController.navigate(SonrisasRoutes.DIRECCION_PROFILE) }
-        },
         onAlertClick = {
             entry.ifResumed {
                 navController.navigate(SonrisasRoutes.estanciasList(EstanciaFilter.WithAlert.name))
@@ -339,26 +337,28 @@ private fun HistoryDestination(
     )
 }
 
-// Perfil
-
-// Sin barra inferior
+// Pestaña Perfil de Dirección
 internal fun NavGraphBuilder.direccionProfileRoutes(navController: NavHostController) {
-    pushComposable(SonrisasRoutes.DIRECCION_PROFILE) { entry ->
-        DireccionProfileScreen(
-            profile = MockData.direccionProfile,
-            onBack = { entry.ifResumed { navController.popBackStack() } },
-            onTransferClick = {
-                entry.ifResumed { navController.navigate(SonrisasRoutes.DIRECCION_TRANSFER) }
-            },
-            onLogoutClick = { navController.signOut() },
-        )
-    }
+    navigation(
+        startDestination = SonrisasRoutes.DIRECCION_PROFILE,
+        route = SonrisasTab.Perfil.route,
+    ) {
+        composable(SonrisasRoutes.DIRECCION_PROFILE) { entry ->
+            DireccionProfileScreen(
+                profile = MockData.direccionProfile,
+                onTransferClick = {
+                    entry.ifResumed { navController.navigate(SonrisasRoutes.DIRECCION_TRANSFER) }
+                },
+                onLogoutClick = { navController.signOut() },
+            )
+        }
 
-    pushComposable(SonrisasRoutes.DIRECCION_TRANSFER) { entry ->
-        TransferAccountDestination(
-            onBack = { entry.ifResumed { navController.popBackStack() } },
-            onFinished = { navController.signOut() },
-        )
+        pushComposable(SonrisasRoutes.DIRECCION_TRANSFER) { entry ->
+            TransferAccountDestination(
+                onBack = { entry.ifResumed { navController.popBackStack() } },
+                onFinished = { navController.signOut() },
+            )
+        }
     }
 }
 

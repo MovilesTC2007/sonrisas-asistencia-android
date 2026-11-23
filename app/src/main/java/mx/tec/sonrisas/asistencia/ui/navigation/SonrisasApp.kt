@@ -253,10 +253,12 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         direccionProfileRoutes(navController)
         responsableRoutes(navController)
 
-        composable(SonrisasTab.Perfil.route) {
-            when (role) {
-                UserRole.Responsable -> ManagerProfileDestination()
-                UserRole.Empleado, UserRole.Direccion -> EmployeeProfileDestination()
+        if (role != UserRole.Direccion) {
+            composable(SonrisasTab.Perfil.route) {
+                when (role) {
+                    UserRole.Responsable -> ManagerProfileDestination()
+                    else -> EmployeeProfileDestination()
+                }
             }
         }
 
