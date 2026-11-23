@@ -36,7 +36,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.LocationIssue
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasLocationNotice
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSegmentedControl
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
@@ -78,6 +80,7 @@ fun RegisterIncidenceScreen(
     onArrivalTimeClick: () -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier,
+    locationIssue: LocationIssue? = null,
     onBackClick: () -> Unit = {},
 ) {
     Column(
@@ -94,6 +97,10 @@ fun RegisterIncidenceScreen(
             title = "Registrar incidencia",
             onBack = onBackClick,
         )
+        if (locationIssue != null) {
+            Spacer(Modifier.height(Spacing.lg))
+            SonrisasLocationNotice(issue = locationIssue)
+        }
         Spacer(Modifier.height(Spacing.lg))
         PersonSummaryCard(name = personName, detail = personDetail)
         Spacer(Modifier.height(Spacing.lg))
@@ -348,6 +355,27 @@ private fun RegisterIncidenceDelay2Preview() {
             onReasonChange = { reason = it },
             onArrivalTimeClick = {},
             onSaveClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun RegisterIncidenceLocationPreview() {
+    SonrisasAsistenciasTheme {
+        RegisterIncidenceScreen(
+            personName = "Rosa Pérez García",
+            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            selectedType = IncidenceType.Delay,
+            onTypeSelected = {},
+            assignedTime = "8:00",
+            arrivalTime = "8:22",
+            minutesLate = 22,
+            reason = "",
+            onReasonChange = {},
+            onArrivalTimeClick = {},
+            onSaveClick = {},
+            locationIssue = LocationIssue.Imprecise,
         )
     }
 }

@@ -61,7 +61,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
 enum class ShiftScheduleType(val label: String) {
     Fixed("Horario fijo"),
-    Rotating("Rotativo"),
+    Rotating("Modificar datos"),
 }
 
 enum class WeekDay(val initial: String, val fullName: String) {

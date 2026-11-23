@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.WarningAmber
@@ -32,8 +33,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.LocationIssue
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasCoverageRow
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasLocationNotice
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasStatCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTintedButton
@@ -73,6 +76,7 @@ fun ManagerHomeScreen(
     pendingRequestsCount: Int,
     modifier: Modifier = Modifier,
     staffingAlert: StaffingAlert? = null,
+    locationIssue: LocationIssue? = null,
     onMovePersonClick: () -> Unit = {},
     onViewTodayListClick: () -> Unit = {},
     onStaffClick: () -> Unit = {},
@@ -92,6 +96,10 @@ fun ManagerHomeScreen(
     ) {
         Spacer(Modifier.height(Spacing.md))
         SonrisasTopBar(title = "Buen día, $managerName")
+        if (locationIssue != null) {
+            Spacer(Modifier.height(Spacing.lg))
+            SonrisasLocationNotice(issue = locationIssue)
+        }
         Spacer(Modifier.height(Spacing.lg))
         if (staffingAlert != null) {
             StaffingAlertCard(alert = staffingAlert)
@@ -157,14 +165,14 @@ fun ManagerHomeScreen(
             horizontalArrangement = Arrangement.spacedBy(Spacing.md),
         ) {
             ShortcutTile(
-                icon = Icons.Outlined.People,
-                label = "Personal",
+                icon = Icons.Outlined.WarningAmber,
+                label = "Incidencia",
                 onClick = onStaffClick,
                 modifier = Modifier.weight(1f),
             )
             ShortcutTile(
-                icon = Icons.Outlined.CalendarToday,
-                label = "Turnos",
+                icon = Icons.Outlined.CheckCircle,
+                label = "Reg. Varias Personas",
                 onClick = onShiftsClick,
                 modifier = Modifier.weight(1f),
             )
@@ -176,11 +184,6 @@ fun ManagerHomeScreen(
             )
         }
         Spacer(Modifier.height(Spacing.xl))
-        SonrisasPrimaryButton(
-            text = "Registrar varias personas",
-            onClick = onRegisterMultipleClick,
-        )
-        Spacer(Modifier.height(Spacing.xxl))
     }
 }
 
@@ -296,6 +299,28 @@ private fun ManagerHomeScreenAlertPreview() {
                 requiredCount = 2,
                 missingPersonName = "Sofía Ramírez",
             ),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ManagerHomeScreenLocationPreview() {
+    SonrisasAsistenciasTheme {
+        ManagerHomeScreen(
+            managerName = "Elena",
+            presentCount = 17,
+            delayedCount = 2,
+            absentCount = 1,
+            coverage = sampleCoverage,
+            pendingRequestsCount = 2,
+            staffingAlert = StaffingAlert(
+                areaName = "Maternales",
+                presentCount = 1,
+                requiredCount = 2,
+                missingPersonName = "Sofía Ramírez",
+            ),
+            locationIssue = LocationIssue.Suspicious,
         )
     }
 }

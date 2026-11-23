@@ -33,8 +33,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.components.LocationIssue
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasLocationNotice
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasNoticeBanner
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasOutlinedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
@@ -75,6 +77,7 @@ fun RequestReviewScreen(
     onRejectClick: () -> Unit,
     modifier: Modifier = Modifier,
     coverageWarning: String? = null,
+    locationIssue: LocationIssue? = null,
     onBackClick: () -> Unit = {},
 ) {
     val details = listOf(
@@ -97,6 +100,10 @@ fun RequestReviewScreen(
             title = "Solicitud",
             onBack = onBackClick,
         )
+        if (locationIssue != null) {
+            Spacer(Modifier.height(Spacing.lg))
+            SonrisasLocationNotice(issue = locationIssue)
+        }
         Spacer(Modifier.height(Spacing.lg))
         RequesterCard(name = personName, roleLabel = roleLabel)
         Spacer(Modifier.height(Spacing.lg))
@@ -271,6 +278,26 @@ private fun RequestReviewScreenNoWarningPreview() {
             onResponseChange = {},
             onApproveClick = {},
             onRejectClick = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun RequestReviewScreenLocationPreview() {
+    SonrisasAsistenciasTheme {
+        RequestReviewScreen(
+            personName = "Fernando Anckerman Ramírez",
+            roleLabel = "Maestro · Lactantes",
+            requestType = "Permiso por horas",
+            whenLabel = "Lunes 12 oct · 9:00 a 11:00",
+            reason = "Tengo una cita médica de 9:00 a 11:00.",
+            response = "",
+            onResponseChange = {},
+            onApproveClick = {},
+            onRejectClick = {},
+            coverageWarning = "Lactantes queda con 2 de 3 personas de 9:00 a 11:00.",
+            locationIssue = LocationIssue.Suspicious,
         )
     }
 }

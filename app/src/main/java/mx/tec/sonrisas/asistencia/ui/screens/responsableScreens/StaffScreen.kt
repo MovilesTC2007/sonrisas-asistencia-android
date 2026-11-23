@@ -88,7 +88,7 @@ fun StaffScreen(
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            SonrisasTopBar(title = "Personal")
+            SonrisasTopBar(title = "Nueva Persona")
 
             Spacer(Modifier.height(Spacing.lg))
             SonrisasSearchField(
