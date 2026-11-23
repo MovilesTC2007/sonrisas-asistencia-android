@@ -32,7 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.components.LocationIssue
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasCheckbox
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasLocationNotice
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSearchField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
@@ -70,6 +72,7 @@ private val CheckboxVisualSize = 24.dp
 fun RegisterStaffScreen(
     modifier: Modifier = Modifier,
     initialSelectedCount: Int = SampleStaff.size,
+    locationIssue: LocationIssue? = null,
     onBack: () -> Unit = {},
     onRegisterEntry: (selectedIds: Set<Int>) -> Unit = {},
 ) {
@@ -100,6 +103,11 @@ fun RegisterStaffScreen(
         ) {
             Spacer(Modifier.height(Spacing.md))
             SonrisasTopBar(title = "Registrar personal", onBack = onBack)
+
+            if (locationIssue != null) {
+                Spacer(Modifier.height(Spacing.lg))
+                SonrisasLocationNotice(issue = locationIssue)
+            }
 
             Spacer(Modifier.height(Spacing.lg))
             SonrisasSearchField(
@@ -261,5 +269,16 @@ private fun RegisterStaffPartialPreview() {
 private fun RegisterStaffNonePreview() {
     SonrisasAsistenciasTheme {
         RegisterStaffScreen(initialSelectedCount = 0)
+    }
+}
+
+@Preview(name = "Registrar personal · ubicación imprecisa", showBackground = true, widthDp = 360, heightDp = 800)
+@Composable
+private fun RegisterStaffLocationPreview() {
+    SonrisasAsistenciasTheme {
+        RegisterStaffScreen(
+            initialSelectedCount = 3,
+            locationIssue = LocationIssue.Imprecise,
+        )
     }
 }
