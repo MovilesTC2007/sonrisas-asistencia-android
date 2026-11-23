@@ -43,7 +43,6 @@ import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.ShiftStatus
 import mx.tec.sonrisas.asistencia.ui.screens.generalScreens.CreateAccountScreen
 import mx.tec.sonrisas.asistencia.ui.screens.generalScreens.LocationRequestScreen
 import mx.tec.sonrisas.asistencia.ui.screens.generalScreens.LoginScreen
-import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.AreaMinimunScreen
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.DetailStaffScreen
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.ManagerHomeScreen
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.RegisterStaffScreen
@@ -103,13 +102,6 @@ fun SonrisasApp(
                         val returnedToHome = tab == SonrisasTab.Inicio &&
                             navController.popBackStack(tab.route, inclusive = false, saveState = true)
                         if (!returnedToHome) navController.navigateToTab(tab)
-                    },
-                    badgeCount = { tab ->
-                        if (role == UserRole.Responsable && tab == SonrisasTab.Solicitudes) {
-                            MockData.PENDING_REQUESTS
-                        } else {
-                            0
-                        }
                     },
                 )
             }
@@ -201,8 +193,12 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     absentCount = MockData.ABSENT_COUNT,
                     coverage = MockData.areaCoverage,
                     pendingRequestsCount = MockData.PENDING_REQUESTS,
-                    onStaffClick = { navController.navigateToTab(SonrisasTab.Personal) },
-                    onRequestsClick = { navController.navigateToTab(SonrisasTab.Solicitudes) },
+                    onIncidenceClick = {
+                        entry.ifResumed { navController.navigate(ManagementRoutes.INCIDENCE_LIST) }
+                    },
+                    onRequestsClick = {
+                        entry.ifResumed { navController.navigate(ManagementRoutes.REQUESTS_LIST) }
+                    },
                     onRegisterMultipleClick = {
                         entry.ifResumed { navController.navigate(SonrisasRoutes.REGISTER_STAFF) }
                     },
@@ -233,17 +229,14 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
             )
         }
 
-        composable(SonrisasTab.Turnos.route) {
-            AreaMinimunScreen()
+        composable(SonrisasTab.Turnos.route) { entry ->
+            AreasDestination(
+                onAddAreaClick = { entry.ifResumed { navController.navigate(ManagementRoutes.NEW_AREA) } },
+            )
         }
 
         composable(SonrisasTab.Solicitudes.route) {
-            when (role) {
-                UserRole.Responsable -> ManagerRequestsDestination(
-                    onBack = { navController.navigateToTab(SonrisasTab.Inicio) },
-                )
-                UserRole.Empleado, UserRole.Direccion -> EmployeeRequestsDestination()
-            }
+            EmployeeRequestsDestination()
         }
 
         estanciasGraph(navController)
@@ -255,7 +248,7 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         if (role != UserRole.Direccion) {
             composable(SonrisasTab.Perfil.route) {
                 when (role) {
-                    UserRole.Responsable -> ManagerProfileDestination()
+                    UserRole.Responsable -> ManagerProfileDestination(navController)
                     else -> EmployeeProfileDestination()
                 }
             }
@@ -284,9 +277,10 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
         ) { entry ->
             DetailStaffScreen(
                 onBack = { entry.ifResumed { navController.popBackStack() } },
-                onEdit = { entry.ifResumed { navController.navigate(ManagementRoutes.PERMISSIONS) } },
+                onEdit = { entry.ifResumed { navController.navigate(ManagementRoutes.ASSIGN_SHIFT) } },
                 onTransfer = { entry.ifResumed { navController.navigate(ManagementRoutes.TRANSFER_STAFF) } },
                 onDeactivate = { entry.ifResumed { navController.navigate(ManagementRoutes.DEACTIVATE) } },
+                onCorrectRecord = { entry.ifResumed { navController.navigate(ManagementRoutes.CORRECT_RECORD) } },
             )
         }
     }

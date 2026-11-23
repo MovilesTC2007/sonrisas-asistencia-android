@@ -1,5 +1,6 @@
 package mx.tec.sonrisas.asistencia.ui.navigation
 
+import androidx.compose.runtime.mutableStateListOf
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
 import mx.tec.sonrisas.asistencia.ui.components.CoverageLevel
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ALL_ESTANCIAS
@@ -19,6 +20,11 @@ import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.AttendanceRecord
 import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.RequestHistoryItem
 import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.RequestStatus
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.AreaCoverage
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.IncidenceCandidate
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.ManagerRequest
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.ManagerRequestStatus
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.ResponsableProfile
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.StaffArea
 
 // ESTO SE VA A DEJAR MIENTRAS AGREGAMOS EL BACKEND CORRECTAMENTE, MIENTRAS TANTO PARTE DE LOS DATOS SE TOMARAN DUMMY DESDE AQUI
 // Regla de detekt (ClassOrdering): primero todas las propiedades y al final todas las funciones.
@@ -47,10 +53,82 @@ internal object MockData {
 
     // Responsable
     const val MANAGER_NAME = "Elena"
+    const val MANAGER_ESTANCIA = "Arcoíris"
     const val PRESENT_COUNT = 17
     const val DELAYED_COUNT = 2
     const val ABSENT_COUNT = 1
     const val PENDING_REQUESTS = 2
+    val managerRequests = listOf(
+        ManagerRequest(
+            id = 1,
+            personName = "Fernando Anckerman Ramírez",
+            roleLabel = "Maestro · Lactantes",
+            requestType = "Permiso por horas",
+            whenLabel = "Lun 12 oct · 9:00 a 11:00",
+            reason = "Tengo una cita médica de 9:00 a 11:00.",
+            status = ManagerRequestStatus.Pending,
+            coverageWarning = "Lactantes queda con 2 de 3 personas de 9:00 a 11:00.",
+        ),
+        ManagerRequest(
+            id = 2,
+            personName = "Lucía Hernández Ruiz",
+            roleLabel = "Maestra · Lactantes",
+            requestType = "Cambio de turno",
+            whenLabel = "Mié 14 oct · turno de tarde",
+            reason = "Por las mañanas llevo a mi hijo a la escuela.",
+            status = ManagerRequestStatus.Pending,
+        ),
+        ManagerRequest(
+            id = 3,
+            personName = "Rosa Pérez García",
+            roleLabel = "Auxiliar · Lactantes",
+            requestType = "Falta justificada",
+            whenLabel = "Vie 2 oct",
+            reason = "Consulta médica, con comprobante.",
+            status = ManagerRequestStatus.Approved,
+        ),
+        ManagerRequest(
+            id = 4,
+            personName = "Carmen López Vega",
+            roleLabel = "Cocina",
+            requestType = "Permiso por horas",
+            whenLabel = "Mar 6 oct · 13:00 a 15:00",
+            reason = "Trámite en el banco.",
+            status = ManagerRequestStatus.Rejected,
+        ),
+        ManagerRequest(
+            id = 5,
+            personName = "Sofía Ramírez Cruz",
+            roleLabel = "Maestra · Maternales",
+            requestType = "Vacaciones",
+            whenLabel = "19 al 23 oct",
+            reason = "Vacaciones programadas.",
+            status = ManagerRequestStatus.Approved,
+        ),
+    )
+    val responsableProfile = ResponsableProfile(
+        fullName = "Elena Ríos Salazar",
+        email = "elena@gmail.com",
+        estancia = MANAGER_ESTANCIA,
+        staffCount = 18,
+    )
+    val incidenceCandidates = listOf(
+        IncidenceCandidate(1, "Sofía Ramírez Cruz", "Maestra · Maternales", "8:00", AttendanceStatus.Absent),
+        IncidenceCandidate(2, "Carmen López Vega", "Cocina", "7:00", AttendanceStatus.Absent),
+        IncidenceCandidate(3, "Rosa Pérez García", "Auxiliar · Lactantes", "8:00", AttendanceStatus.MajorDelay, "8:22"),
+        IncidenceCandidate(4, "María Torres Díaz", "Maestra · Maternales", "8:00", AttendanceStatus.MinorDelay, "8:09"),
+        IncidenceCandidate(5, "Ana Martínez López", "Maestra · Lactantes", "8:00", AttendanceStatus.OnTime, "7:55"),
+        IncidenceCandidate(6, "Lucía Hernández Ruiz", "Maestra · Lactantes", "8:00", AttendanceStatus.OnTime, "7:58"),
+    )
+
+    // Áreas de la estancia: lista observable para que Áreas y mínimos y Editar personal compartan los cambios.
+    val areas = mutableStateListOf(
+        StaffArea("Lactantes", "Sala 1 · 0 a 18 meses", minimum = 3),
+        StaffArea("Maternales", "Sala 2 · 18 meses a 3 años", minimum = 2),
+        StaffArea("Preescolar", "Sala 3 · 3 a 6 años", minimum = 4),
+        StaffArea("Apoyo", "Cocina y limpieza", minimum = 6),
+    )
+    val staffRoles = listOf("Maestra", "Asistente", "Cocina", "Limpieza", "Administrativo")
     val areaCoverage = listOf(
         AreaCoverage("Lactantes", 3, 3),
         AreaCoverage("Maternales", 1, 2),
@@ -128,7 +206,7 @@ internal object MockData {
             id = 1,
             kind = ChangeKind.Correction,
             description = "Elena Ruiz corrigió la salida de Carmen López",
-            estancia = "Arcoíris",
+            estancia = MANAGER_ESTANCIA,
             time = "hoy 9:14",
             daysAgo = 0,
             actor = "Elena Ruiz",
@@ -140,7 +218,7 @@ internal object MockData {
             id = 2,
             kind = ChangeKind.Delay,
             description = "Elena Ruiz registró retardo mayor de Rosa Pérez",
-            estancia = "Arcoíris",
+            estancia = MANAGER_ESTANCIA,
             time = "hoy 8:40",
             daysAgo = 0,
             actor = "Elena Ruiz",
@@ -152,7 +230,7 @@ internal object MockData {
             id = 3,
             kind = ChangeKind.GroupEntry,
             description = "Lucía Hernández registró la entrada de 6 personas",
-            estancia = "Arcoíris",
+            estancia = MANAGER_ESTANCIA,
             time = "hoy 7:58",
             daysAgo = 0,
             actor = "Lucía Hernández",
@@ -259,6 +337,10 @@ internal object MockData {
             total = item.requiredCount,
         )
     }
+
+    fun incidenceCandidate(id: Int): IncidenceCandidate? = incidenceCandidates.firstOrNull { it.id == id }
+
+    fun managerRequest(id: Int): ManagerRequest? = managerRequests.firstOrNull { it.id == id }
 
     fun changeEvent(id: Int): ChangeEvent? = changeEvents.firstOrNull { it.id == id }
 

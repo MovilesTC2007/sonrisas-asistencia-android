@@ -16,8 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +28,7 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasStepper
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTintedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.components.rememberSonrisasToast
 import mx.tec.sonrisas.asistencia.ui.components.sonrisasCardShadow
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
@@ -48,17 +47,13 @@ data class StaffArea(
 
 @Composable
 fun AreaMinimunScreen(
+    areas: List<StaffArea>,
+    onMinimumChange: (index: Int, value: Int) -> Unit,
     modifier: Modifier = Modifier,
-    areas: List<StaffArea> = listOf(
-        StaffArea("Lactantes", "Sala 1 · 0 a 18 meses", minimum = 3),
-        StaffArea("Maternales", "Sala 2 · 18 meses a 3 años", minimum = 2),
-        StaffArea("Preescolar", "Sala 3 · 3 a 6 años", minimum = 4),
-        StaffArea("Apoyo", "Cocina y limpieza", minimum = 6),
-    ),
+    onBack: (() -> Unit)? = null,
+    onAddAreaClick: () -> Unit = {},
 ) {
-    val minimums = remember(areas) {
-        mutableStateListOf<Int>().apply { addAll(areas.map { it.minimum }) }
-    }
+    val showSavedToast = rememberSonrisasToast()
 
     Column(
         modifier = modifier
@@ -75,7 +70,7 @@ fun AreaMinimunScreen(
             Spacer(Modifier.height(Spacing.md))
             SonrisasTopBar(
                 title = "Áreas y mínimos",
-                onBack = {},
+                onBack = onBack,
                 backStyle = SonrisasBackStyle.Plain,
             )
 
@@ -93,15 +88,15 @@ fun AreaMinimunScreen(
             ) { index ->
                 AreaRow(
                     area = areas[index],
-                    minimum = minimums[index],
-                    onMinimumChange = { minimums[index] = it },
+                    minimum = areas[index].minimum,
+                    onMinimumChange = { onMinimumChange(index, it) },
                 )
             }
 
             Spacer(Modifier.height(Spacing.xxl))
             SonrisasTintedButton(
                 text = "Agregar área",
-                onClick = {},
+                onClick = onAddAreaClick,
                 leadingIcon = Icons.Rounded.Add,
                 size = SonrisasButtonSize.Large,
             )
@@ -109,7 +104,7 @@ fun AreaMinimunScreen(
             Spacer(Modifier.height(Spacing.xl + Spacing.sm))
             SonrisasPrimaryButton(
                 text = "Guardar cambios",
-                onClick = {},
+                onClick = showSavedToast,
                 size = SonrisasButtonSize.Large,
                 elevated = true,
             )
@@ -159,6 +154,12 @@ private fun AreaRow(
 @Composable
 private fun AreaMinimunScreenPreview() {
     SonrisasAsistenciasTheme {
-        AreaMinimunScreen()
+        AreaMinimunScreen(
+            areas = listOf(
+                StaffArea("Lactantes", "Sala 1 · 0 a 18 meses", minimum = 3),
+                StaffArea("Maternales", "Sala 2 · 18 meses a 3 años", minimum = 2),
+            ),
+            onMinimumChange = { _, _ -> },
+        )
     }
 }

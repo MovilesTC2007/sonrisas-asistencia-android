@@ -77,7 +77,7 @@ fun ManagerHomeScreen(
     locationIssue: LocationIssue? = null,
     onMovePersonClick: () -> Unit = {},
     onViewTodayListClick: () -> Unit = {},
-    onStaffClick: () -> Unit = {},
+    onIncidenceClick: () -> Unit = {},
     onRequestsClick: () -> Unit = {},
     onRegisterMultipleClick: () -> Unit = {},
 ) {
@@ -164,7 +164,7 @@ fun ManagerHomeScreen(
             ShortcutTile(
                 icon = Icons.Outlined.WarningAmber,
                 label = "Incidencia",
-                onClick = onStaffClick,
+                onClick = onIncidenceClick,
                 modifier = Modifier.weight(1f),
             )
             ShortcutTile(
