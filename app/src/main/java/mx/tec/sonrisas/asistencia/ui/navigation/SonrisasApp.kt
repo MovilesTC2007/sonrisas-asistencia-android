@@ -202,7 +202,6 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
                     coverage = MockData.areaCoverage,
                     pendingRequestsCount = MockData.PENDING_REQUESTS,
                     onStaffClick = { navController.navigateToTab(SonrisasTab.Personal) },
-                    onShiftsClick = { navController.navigateToTab(SonrisasTab.Turnos) },
                     onRequestsClick = { navController.navigateToTab(SonrisasTab.Solicitudes) },
                     onRegisterMultipleClick = {
                         entry.ifResumed { navController.navigate(SonrisasRoutes.REGISTER_STAFF) }

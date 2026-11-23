@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.EditNote
 import androidx.compose.material.icons.outlined.PersonRemove
 import androidx.compose.material.icons.outlined.SwapHoriz
 import androidx.compose.material3.HorizontalDivider
@@ -73,6 +74,7 @@ fun DetailStaffScreen(
     onEdit: () -> Unit = {},
     onTransfer: () -> Unit = {},
     onDeactivate: () -> Unit = {},
+    onCorrectRecord: () -> Unit = {},
 ) {
     val profile = SampleProfile
 
@@ -117,7 +119,7 @@ fun DetailStaffScreen(
             // fijas abajo: así se leen como acciones sobre esta persona.
             Spacer(Modifier.height(Spacing.xxl))
             SonrisasPrimaryButton(
-                text = "Editar",
+                text = "Editar turno",
                 onClick = onEdit,
                 leadingIcon = Icons.Outlined.Edit,
             )
@@ -126,6 +128,12 @@ fun DetailStaffScreen(
                 text = "Trasladar",
                 onClick = onTransfer,
                 leadingIcon = Icons.Outlined.SwapHoriz,
+            )
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasOutlinedButton(
+                text = "Corregir registro",
+                onClick = onCorrectRecord,
+                leadingIcon = Icons.Outlined.EditNote,
             )
             Spacer(Modifier.height(Spacing.md))
             SonrisasOutlinedButton(
