@@ -36,7 +36,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.LocationIssue
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasLocationNotice
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSegmentedControl
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
@@ -65,6 +67,12 @@ enum class IncidenceType(val label: String) {
 
 private val severityRanges = listOf("0–4 tolerancia", "5–14", "15–29", "30+ falta")
 
+private const val PREVIEW_PERSON_NAME = "Rosa Pérez García"
+private const val PREVIEW_PERSON_DETAIL = "Auxiliar · Lactantes · jueves 8 oct"
+private const val PREVIEW_ASSIGNED_TIME = "8:00"
+private const val PREVIEW_ARRIVAL_TIME = "8:22"
+private const val PREVIEW_REASON = "Tráfico por obras en Av. Constitución."
+
 @Composable
 fun RegisterIncidenceScreen(
     personName: String,
@@ -79,6 +87,7 @@ fun RegisterIncidenceScreen(
     onArrivalTimeClick: () -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier,
+    locationIssue: LocationIssue? = null,
     onBackClick: () -> Unit = {},
 ) {
     val showSavedToast = rememberSonrisasToast()
@@ -96,6 +105,10 @@ fun RegisterIncidenceScreen(
             title = "Registrar incidencia",
             onBack = onBackClick,
         )
+        if (locationIssue != null) {
+            Spacer(Modifier.height(Spacing.lg))
+            SonrisasLocationNotice(issue = locationIssue)
+        }
         Spacer(Modifier.height(Spacing.lg))
         PersonSummaryCard(name = personName, detail = personDetail)
         Spacer(Modifier.height(Spacing.lg))
@@ -316,15 +329,15 @@ private fun DelaySeverityCard(
 private fun RegisterIncidenceDelayPreview() {
     SonrisasAsistenciasTheme {
         var type by remember { mutableStateOf(IncidenceType.Delay) }
-        var reason by remember { mutableStateOf("Tráfico por obras en Av. Constitución.") }
+        var reason by remember { mutableStateOf(PREVIEW_REASON) }
 
         RegisterIncidenceScreen(
-            personName = "Rosa Pérez García",
-            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
             selectedType = type,
             onTypeSelected = { type = it },
-            assignedTime = "8:00",
-            arrivalTime = "8:22",
+            assignedTime = PREVIEW_ASSIGNED_TIME,
+            arrivalTime = PREVIEW_ARRIVAL_TIME,
             minutesLate = 22,
             reason = reason,
             onReasonChange = { reason = it },
@@ -339,14 +352,14 @@ private fun RegisterIncidenceDelayPreview() {
 private fun RegisterIncidenceDelay2Preview() {
     SonrisasAsistenciasTheme {
         var type by remember { mutableStateOf(IncidenceType.Delay) }
-        var reason by remember { mutableStateOf("Tráfico por obras en Av. Constitución.") }
+        var reason by remember { mutableStateOf(PREVIEW_REASON) }
 
         RegisterIncidenceScreen(
-            personName = "Rosa Pérez García",
-            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
             selectedType = type,
             onTypeSelected = { type = it },
-            assignedTime = "8:00",
+            assignedTime = PREVIEW_ASSIGNED_TIME,
             arrivalTime = "9:22",
             minutesLate = 82,
             reason = reason,
@@ -359,15 +372,36 @@ private fun RegisterIncidenceDelay2Preview() {
 
 @Preview(showBackground = true)
 @Composable
+private fun RegisterIncidenceLocationPreview() {
+    SonrisasAsistenciasTheme {
+        RegisterIncidenceScreen(
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
+            selectedType = IncidenceType.Delay,
+            onTypeSelected = {},
+            assignedTime = PREVIEW_ASSIGNED_TIME,
+            arrivalTime = PREVIEW_ARRIVAL_TIME,
+            minutesLate = 22,
+            reason = "",
+            onReasonChange = {},
+            onArrivalTimeClick = {},
+            onSaveClick = {},
+            locationIssue = LocationIssue.Imprecise,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 private fun RegisterIncidenceAbsencePreview() {
     SonrisasAsistenciasTheme {
         RegisterIncidenceScreen(
-            personName = "Rosa Pérez García",
-            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
             selectedType = IncidenceType.Absence,
             onTypeSelected = {},
-            assignedTime = "8:00",
-            arrivalTime = "8:22",
+            assignedTime = PREVIEW_ASSIGNED_TIME,
+            arrivalTime = PREVIEW_ARRIVAL_TIME,
             minutesLate = 0,
             reason = "",
             onReasonChange = {},
@@ -382,12 +416,12 @@ private fun RegisterIncidenceAbsencePreview() {
 private fun RegisterIncidencePreview() {
     SonrisasAsistenciasTheme {
         RegisterIncidenceScreen(
-            personName = "Rosa Pérez García",
-            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
             selectedType = IncidenceType.Incident,
             onTypeSelected = {},
-            assignedTime = "8:00",
-            arrivalTime = "8:22",
+            assignedTime = PREVIEW_ASSIGNED_TIME,
+            arrivalTime = PREVIEW_ARRIVAL_TIME,
             minutesLate = 0,
             reason = "",
             onReasonChange = {},
