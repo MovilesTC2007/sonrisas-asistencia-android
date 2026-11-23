@@ -35,7 +35,7 @@ enum class UserRole {
                 SonrisasTab.Inicio,
                 SonrisasTab.Personal,
                 SonrisasTab.Turnos,
-                SonrisasTab.Solicitudes,
+                SonrisasTab.Perfil,
             )
             Direccion -> listOf(
                 SonrisasTab.Inicio,

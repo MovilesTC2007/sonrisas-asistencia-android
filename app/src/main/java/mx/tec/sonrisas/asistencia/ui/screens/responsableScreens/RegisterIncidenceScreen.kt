@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -38,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
 import mx.tec.sonrisas.asistencia.ui.components.LocationIssue
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasFilterChip
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasLocationNotice
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSegmentedControl
@@ -73,6 +77,7 @@ private const val PREVIEW_ASSIGNED_TIME = "8:00"
 private const val PREVIEW_ARRIVAL_TIME = "8:22"
 private const val PREVIEW_REASON = "Tráfico por obras en Av. Constitución."
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RegisterIncidenceScreen(
     personName: String,
@@ -89,6 +94,9 @@ fun RegisterIncidenceScreen(
     modifier: Modifier = Modifier,
     locationIssue: LocationIssue? = null,
     onBackClick: () -> Unit = {},
+    incidentCategories: List<String> = emptyList(),
+    selectedIncidentCategory: String? = null,
+    onIncidentCategorySelected: (String) -> Unit = {},
 ) {
     val showSavedToast = rememberSonrisasToast()
     Column(
@@ -145,6 +153,26 @@ fun RegisterIncidenceScreen(
             }
             Spacer(Modifier.height(Spacing.lg))
             DelaySeverityCard(minutesLate = minutesLate)
+        }
+        if (selectedType == IncidenceType.Incident && incidentCategories.isNotEmpty()) {
+            Spacer(Modifier.height(Spacing.lg))
+            LabeledField(label = "Tipo de incidencia") {
+                FlowRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectableGroup(),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.sm),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.xs),
+                ) {
+                    incidentCategories.forEach { option ->
+                        SonrisasFilterChip(
+                            text = option,
+                            selected = option == selectedIncidentCategory,
+                            onClick = { onIncidentCategorySelected(option) },
+                        )
+                    }
+                }
+            }
         }
         Spacer(Modifier.height(Spacing.lg))
         LabeledField(label = "Motivo") {

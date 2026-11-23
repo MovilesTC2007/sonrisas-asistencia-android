@@ -65,6 +65,7 @@ fun TransferStaffScreen(
     startDate: String = "16 nov 2026",
     initialArea: String = "Lactantes",
     onSaveClick: () -> Unit = {},
+    onBack: () -> Unit = {},
     workedPeriods: List<WorkedPeriod> = listOf(
         WorkedPeriod(center = "Arcoíris", range = "12 ene – 15 nov 2026", days = 214),
     ),
@@ -86,7 +87,7 @@ fun TransferStaffScreen(
             Spacer(Modifier.height(Spacing.md))
             SonrisasTopBar(
                 title = "Trasladar",
-                onBack = {},
+                onBack = onBack,
                 backStyle = SonrisasBackStyle.Plain,
             )
 

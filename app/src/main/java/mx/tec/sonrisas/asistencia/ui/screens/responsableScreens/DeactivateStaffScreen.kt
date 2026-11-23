@@ -68,6 +68,7 @@ fun DeactivateStaffScreen(
     initialReason: String = "Renuncia",
     lastDay: String = "30 de octubre de 2026",
     onSaveClick: () -> Unit = {},
+    onBack: () -> Unit = {},
 ) {
     var reason by rememberSaveable { mutableStateOf(initialReason) }
     val showSavedToast = rememberSonrisasToast()
@@ -86,7 +87,7 @@ fun DeactivateStaffScreen(
             Spacer(Modifier.height(Spacing.md))
             SonrisasTopBar(
                 title = "Dar de baja",
-                onBack = {},
+                onBack = onBack,
                 backStyle = SonrisasBackStyle.Plain,
             )
 
