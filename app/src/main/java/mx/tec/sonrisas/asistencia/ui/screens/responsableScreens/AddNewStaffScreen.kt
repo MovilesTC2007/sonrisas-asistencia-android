@@ -1,5 +1,4 @@
 package mx.tec.sonrisas.asistencia.ui.screens.responsableScreens
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -63,8 +62,6 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceLilac
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
-
-
 @Composable
 fun AddNewStaffScreen(
     facilityName: String,
@@ -153,10 +150,8 @@ fun AddNewStaffScreen(
                     modifier = Modifier.size(22.dp),
                 )
             }
-
             Spacer(modifier = Modifier.height(Spacing.lg))
             FieldLabel(text = "Turno")
-
             Spacer(modifier = Modifier.height(Spacing.lg))
             SonrisasShiftSchedule(
                 selectedDays = selectedDays,
@@ -166,7 +161,6 @@ fun AddNewStaffScreen(
                 onEntryTimeClick = onEntryTimeClick,
                 onExitTimeClick = onExitTimeClick,
             )
-
             Spacer(modifier = Modifier.height(Spacing.xl))
             InvitationInfoBanner(facilityName = facilityName)
             Spacer(modifier = Modifier.height(Spacing.xxl))
@@ -263,7 +257,6 @@ private fun AreaDropdown(
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
-
     Box(modifier = modifier.fillMaxWidth()) {
         FormFieldContainer(onClick = { expanded = true }) {
             Text(
@@ -334,7 +327,6 @@ private fun InvitationInfoBanner(
         )
     }
 }
-
 private val sampleStaffTypes = listOf(
     "Maestra titular",
     "Asistente",
@@ -342,7 +334,6 @@ private val sampleStaffTypes = listOf(
     "Limpieza",
     "Administrativo",
 )
-
 private val sampleAreas = listOf(
     "Lactantes",
     "Maternales",

@@ -49,13 +49,11 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
-
 enum class TodayListFilter(val label: String) {
     Attendance("Asistencia"),
     NoClockIn("Falta"),
     Delays("Retardo"),
 }
-
 data class TodayAttendanceEntry(
     val name: String,
     val area: String,
@@ -74,9 +72,11 @@ fun TodayAttendanceScreen(
     onBackClick: () -> Unit = {},
 ) {
     val filteredEntries = when (selectedFilter) {
-        TodayListFilter.Attendance -> entries.filter { it.status== AttendanceStatus.OnTime }
+        TodayListFilter.Attendance -> entries.filter { it.status == AttendanceStatus.OnTime }
         TodayListFilter.NoClockIn -> entries.filter { it.status == AttendanceStatus.Absent }
-        TodayListFilter.Delays -> entries.filter { it.status == AttendanceStatus.MinorDelay || it.status == AttendanceStatus.MajorDelay }
+        TodayListFilter.Delays -> entries.filter {
+            it.status == AttendanceStatus.MinorDelay || it.status == AttendanceStatus.MajorDelay
+        }
     }
 
     Column(
