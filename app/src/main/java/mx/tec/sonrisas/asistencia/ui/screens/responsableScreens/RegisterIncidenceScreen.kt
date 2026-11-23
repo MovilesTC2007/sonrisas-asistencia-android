@@ -66,6 +66,12 @@ enum class IncidenceType(val label: String) {
 
 private val severityRanges = listOf("0–4 tolerancia", "5–14", "15–29", "30+ falta")
 
+private const val PREVIEW_PERSON_NAME = "Rosa Pérez García"
+private const val PREVIEW_PERSON_DETAIL = "Auxiliar · Lactantes · jueves 8 oct"
+private const val PREVIEW_ASSIGNED_TIME = "8:00"
+private const val PREVIEW_ARRIVAL_TIME = "8:22"
+private const val PREVIEW_REASON = "Tráfico por obras en Av. Constitución."
+
 @Composable
 fun RegisterIncidenceScreen(
     personName: String,
@@ -318,15 +324,15 @@ private fun DelaySeverityCard(
 private fun RegisterIncidenceDelayPreview() {
     SonrisasAsistenciasTheme {
         var type by remember { mutableStateOf(IncidenceType.Delay) }
-        var reason by remember { mutableStateOf("Tráfico por obras en Av. Constitución.") }
+        var reason by remember { mutableStateOf(PREVIEW_REASON) }
 
         RegisterIncidenceScreen(
-            personName = "Rosa Pérez García",
-            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
             selectedType = type,
             onTypeSelected = { type = it },
-            assignedTime = "8:00",
-            arrivalTime = "8:22",
+            assignedTime = PREVIEW_ASSIGNED_TIME,
+            arrivalTime = PREVIEW_ARRIVAL_TIME,
             minutesLate = 22,
             reason = reason,
             onReasonChange = { reason = it },
@@ -341,14 +347,14 @@ private fun RegisterIncidenceDelayPreview() {
 private fun RegisterIncidenceDelay2Preview() {
     SonrisasAsistenciasTheme {
         var type by remember { mutableStateOf(IncidenceType.Delay) }
-        var reason by remember { mutableStateOf("Tráfico por obras en Av. Constitución.") }
+        var reason by remember { mutableStateOf(PREVIEW_REASON) }
 
         RegisterIncidenceScreen(
-            personName = "Rosa Pérez García",
-            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
             selectedType = type,
             onTypeSelected = { type = it },
-            assignedTime = "8:00",
+            assignedTime = PREVIEW_ASSIGNED_TIME,
             arrivalTime = "9:22",
             minutesLate = 82,
             reason = reason,
@@ -364,12 +370,12 @@ private fun RegisterIncidenceDelay2Preview() {
 private fun RegisterIncidenceLocationPreview() {
     SonrisasAsistenciasTheme {
         RegisterIncidenceScreen(
-            personName = "Rosa Pérez García",
-            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
             selectedType = IncidenceType.Delay,
             onTypeSelected = {},
-            assignedTime = "8:00",
-            arrivalTime = "8:22",
+            assignedTime = PREVIEW_ASSIGNED_TIME,
+            arrivalTime = PREVIEW_ARRIVAL_TIME,
             minutesLate = 22,
             reason = "",
             onReasonChange = {},
@@ -385,12 +391,12 @@ private fun RegisterIncidenceLocationPreview() {
 private fun RegisterIncidenceAbsencePreview() {
     SonrisasAsistenciasTheme {
         RegisterIncidenceScreen(
-            personName = "Rosa Pérez García",
-            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
             selectedType = IncidenceType.Absence,
             onTypeSelected = {},
-            assignedTime = "8:00",
-            arrivalTime = "8:22",
+            assignedTime = PREVIEW_ASSIGNED_TIME,
+            arrivalTime = PREVIEW_ARRIVAL_TIME,
             minutesLate = 0,
             reason = "",
             onReasonChange = {},
@@ -405,12 +411,12 @@ private fun RegisterIncidenceAbsencePreview() {
 private fun RegisterIncidencePreview() {
     SonrisasAsistenciasTheme {
         RegisterIncidenceScreen(
-            personName = "Rosa Pérez García",
-            personDetail = "Auxiliar · Lactantes · jueves 8 oct",
+            personName = PREVIEW_PERSON_NAME,
+            personDetail = PREVIEW_PERSON_DETAIL,
             selectedType = IncidenceType.Incident,
             onTypeSelected = {},
-            assignedTime = "8:00",
-            arrivalTime = "8:22",
+            assignedTime = PREVIEW_ASSIGNED_TIME,
+            arrivalTime = PREVIEW_ARRIVAL_TIME,
             minutesLate = 0,
             reason = "",
             onReasonChange = {},

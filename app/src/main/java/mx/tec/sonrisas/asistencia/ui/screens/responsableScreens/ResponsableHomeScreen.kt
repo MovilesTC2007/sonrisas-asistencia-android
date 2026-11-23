@@ -78,7 +78,6 @@ fun ManagerHomeScreen(
     onMovePersonClick: () -> Unit = {},
     onViewTodayListClick: () -> Unit = {},
     onStaffClick: () -> Unit = {},
-    onShiftsClick: () -> Unit = {},
     onRequestsClick: () -> Unit = {},
     onRegisterMultipleClick: () -> Unit = {},
 ) {
@@ -171,7 +170,7 @@ fun ManagerHomeScreen(
             ShortcutTile(
                 icon = Icons.Outlined.CheckCircle,
                 label = "Reg. Varias Personas",
-                onClick = onShiftsClick,
+                onClick = onRegisterMultipleClick,
                 modifier = Modifier.weight(1f),
             )
             ShortcutTile(
