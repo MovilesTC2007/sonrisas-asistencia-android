@@ -44,7 +44,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasShiftSchedule
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.components.WeekDay
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeepText
@@ -62,6 +64,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceLilac
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
+
 @Composable
 fun AddNewStaffScreen(
     facilityName: String,
@@ -75,7 +78,13 @@ fun AddNewStaffScreen(
     onAreaSelected: (String) -> Unit,
     hireDate: String,
     onHireDateClick: () -> Unit,
+    selectedDays: Set<WeekDay>,
+    onDayToggle: (WeekDay) -> Unit,
+    entryTime: String,
+    exitTime: String,
     modifier: Modifier = Modifier,
+    onEntryTimeClick: () -> Unit = {},
+    onExitTimeClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
 ) {
@@ -144,6 +153,20 @@ fun AddNewStaffScreen(
                     modifier = Modifier.size(22.dp),
                 )
             }
+
+            Spacer(modifier = Modifier.height(Spacing.lg))
+            FieldLabel(text = "Turno")
+
+            Spacer(modifier = Modifier.height(Spacing.lg))
+            SonrisasShiftSchedule(
+                selectedDays = selectedDays,
+                onDayToggle = onDayToggle,
+                entryTime = entryTime,
+                exitTime = exitTime,
+                onEntryTimeClick = onEntryTimeClick,
+                onExitTimeClick = onExitTimeClick,
+            )
+
             Spacer(modifier = Modifier.height(Spacing.xl))
             InvitationInfoBanner(facilityName = facilityName)
             Spacer(modifier = Modifier.height(Spacing.xxl))
@@ -333,6 +356,17 @@ private fun AddNewStaffScreenPreview() {
         var name by remember { mutableStateOf("Patricia Gómez Ríos") }
         var type by remember { mutableStateOf("Asistente") }
         var area by remember { mutableStateOf("Maternales") }
+        var selectedDays by remember {
+            mutableStateOf(
+                setOf(
+                    WeekDay.Monday,
+                    WeekDay.Tuesday,
+                    WeekDay.Wednesday,
+                    WeekDay.Thursday,
+                    WeekDay.Friday,
+                ),
+            )
+        }
 
         AddNewStaffScreen(
             facilityName = "Arcoíris",
@@ -346,6 +380,12 @@ private fun AddNewStaffScreenPreview() {
             onAreaSelected = { area = it },
             hireDate = "9 de noviembre de 2026",
             onHireDateClick = {},
+            selectedDays = selectedDays,
+            onDayToggle = { day ->
+                selectedDays = if (day in selectedDays) selectedDays - day else selectedDays + day
+            },
+            entryTime = "8:00",
+            exitTime = "16:00",
         )
     }
 }

@@ -32,8 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasButtonSize
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasListCard
-import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTintedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
@@ -50,9 +51,9 @@ import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
 enum class TodayListFilter(val label: String) {
-    All("Todas"),
-    NoClockIn("Sin entrada"),
-    Delays("Retardos"),
+    Attendance("Asistencia"),
+    NoClockIn("Falta"),
+    Delays("Retardo"),
 }
 
 data class TodayAttendanceEntry(
@@ -71,14 +72,11 @@ fun TodayAttendanceScreen(
     onFilterSelected: (TodayListFilter) -> Unit,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
-    onRegisterIncidenceClick: () -> Unit = {},
 ) {
     val filteredEntries = when (selectedFilter) {
-        TodayListFilter.All -> entries
+        TodayListFilter.Attendance -> entries.filter { it.status== AttendanceStatus.OnTime }
         TodayListFilter.NoClockIn -> entries.filter { it.status == AttendanceStatus.Absent }
-        TodayListFilter.Delays -> entries.filter {
-            it.status == AttendanceStatus.MinorDelay || it.status == AttendanceStatus.MajorDelay
-        }
+        TodayListFilter.Delays -> entries.filter { it.status == AttendanceStatus.MinorDelay || it.status == AttendanceStatus.MajorDelay }
     }
 
     Column(
@@ -91,13 +89,20 @@ fun TodayAttendanceScreen(
     ) {
         Spacer(Modifier.height(Spacing.md))
         SonrisasTopBar(title = "Lista de hoy", onBack = onBackClick)
-        Spacer(Modifier.height(Spacing.sm))
+        Spacer(Modifier.height(Spacing.md))
+
         Text(
             text = "$dateLabel · Estancia $facilityName",
-            style = SonrisasTextStyle.Body,
+            style = SonrisasTextStyle.Title,
             color = InkSoft,
         )
+        Spacer(Modifier.height(Spacing.md))
 
+        SonrisasTintedButton(
+            text = "Consultar áreas y mínimos",
+            onClick = {},
+            size = SonrisasButtonSize.Regular,
+        )
         Spacer(Modifier.height(Spacing.lg))
         FilterSegmentedControl(
             selected = selectedFilter,
@@ -119,11 +124,6 @@ fun TodayAttendanceScreen(
                 TodayAttendanceRow(entry = entry)
             }
         }
-        Spacer(Modifier.height(Spacing.lg))
-        SonrisasPrimaryButton(
-            text = "Registrar incidencia",
-            onClick = onRegisterIncidenceClick,
-        )
         Spacer(Modifier.height(Spacing.xxl))
     }
 }
@@ -238,7 +238,7 @@ private val sampleEntries = listOf(
 @Composable
 private fun TodayAttendanceListScreenPreview() {
     SonrisasAsistenciasTheme {
-        var filter by remember { mutableStateOf(TodayListFilter.All) }
+        var filter by remember { mutableStateOf(TodayListFilter.Attendance) }
 
         TodayAttendanceScreen(
             dateLabel = "Jueves 8 de octubre",

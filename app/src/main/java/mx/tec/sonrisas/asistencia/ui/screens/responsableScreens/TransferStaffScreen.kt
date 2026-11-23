@@ -36,6 +36,7 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasPersonCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasRouteCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.components.rememberSonrisasToast
 import mx.tec.sonrisas.asistencia.ui.components.sonrisasCardShadow
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
@@ -63,12 +64,13 @@ fun TransferStaffScreen(
     destinationCenter: String = "Rayito de Sol",
     startDate: String = "16 nov 2026",
     initialArea: String = "Lactantes",
+    onSaveClick: () -> Unit = {},
     workedPeriods: List<WorkedPeriod> = listOf(
         WorkedPeriod(center = "Arcoíris", range = "12 ene – 15 nov 2026", days = 214),
     ),
 ) {
     var area by rememberSaveable { mutableStateOf(initialArea) }
-
+    val showSavedToast = rememberSonrisasToast()
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -141,7 +143,10 @@ fun TransferStaffScreen(
             Spacer(Modifier.height(Spacing.xxl + Spacing.sm))
             SonrisasPrimaryButton(
                 text = "Confirmar traslado",
-                onClick = {},
+                onClick = {
+                    onSaveClick()
+                    showSavedToast()
+                },
                 size = SonrisasButtonSize.Large,
                 elevated = true,
             )

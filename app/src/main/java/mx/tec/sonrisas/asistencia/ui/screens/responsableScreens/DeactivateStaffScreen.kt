@@ -42,6 +42,7 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasOutlinedButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPersonCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasRadioButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.components.rememberSonrisasToast
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleDeep
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
@@ -66,9 +67,10 @@ fun DeactivateStaffScreen(
     personDetail: String = "Limpieza · Apoyo",
     initialReason: String = "Renuncia",
     lastDay: String = "30 de octubre de 2026",
+    onSaveClick: () -> Unit = {},
 ) {
     var reason by rememberSaveable { mutableStateOf(initialReason) }
-
+    val showSavedToast = rememberSonrisasToast()
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -131,7 +133,10 @@ fun DeactivateStaffScreen(
             Spacer(Modifier.height(Spacing.xxl + Spacing.sm))
             SonrisasOutlinedButton(
                 text = "Confirmar baja",
-                onClick = {},
+                onClick = {
+                    onSaveClick()
+                    showSavedToast()
+                },
                 leadingIcon = Icons.Outlined.PersonRemove,
                 destructive = true,
                 size = SonrisasButtonSize.Large,

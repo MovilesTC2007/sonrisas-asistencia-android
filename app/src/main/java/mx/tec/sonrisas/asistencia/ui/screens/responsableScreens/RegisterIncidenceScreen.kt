@@ -40,6 +40,7 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasSegmentedControl
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.components.rememberSonrisasToast
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
@@ -80,6 +81,7 @@ fun RegisterIncidenceScreen(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
 ) {
+    val showSavedToast = rememberSonrisasToast()
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -153,7 +155,10 @@ fun RegisterIncidenceScreen(
         Spacer(Modifier.height(Spacing.xl))
         SonrisasPrimaryButton(
             text = "Guardar registro",
-            onClick = onSaveClick,
+            onClick = {
+                onSaveClick()
+                showSavedToast()
+            },
         )
         Spacer(Modifier.height(Spacing.xxl))
     }

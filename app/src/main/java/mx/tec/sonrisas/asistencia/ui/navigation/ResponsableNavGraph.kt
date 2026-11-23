@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
+import mx.tec.sonrisas.asistencia.ui.components.WeekDay
 import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.LocationUnderReviewScreen
 import mx.tec.sonrisas.asistencia.ui.screens.generalScreens.AccountDetail
 import mx.tec.sonrisas.asistencia.ui.screens.generalScreens.UserProfileScreen
@@ -19,13 +20,11 @@ import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.InviteCodeScreen
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.NewStaffScreen
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.RegisterIncidenceScreen
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.RequestReviewScreen
-import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.ShiftScheduleType
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.StaffPermissionsScreen
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.TodayAttendanceEntry
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.TodayAttendanceScreen
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.TodayListFilter
 import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.TransferStaffScreen
-import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.WeekDay
 
 internal object ManagementRoutes {
     const val TODAY_LIST = "responsable/lista-hoy"
@@ -102,7 +101,7 @@ internal fun NavGraphBuilder.responsableRoutes(navController: NavHostController)
     val back: () -> Unit = { navController.popBackStack() }
 
     pushComposable(ManagementRoutes.TODAY_LIST) {
-        var filter by remember { mutableStateOf(TodayListFilter.All) }
+        var filter by remember { mutableStateOf(TodayListFilter.Attendance) }
         TodayAttendanceScreen(
             dateLabel = "Jueves 8 de octubre",
             facilityName = "Arcoíris",
@@ -110,7 +109,6 @@ internal fun NavGraphBuilder.responsableRoutes(navController: NavHostController)
             selectedFilter = filter,
             onFilterSelected = { filter = it },
             onBackClick = back,
-            onRegisterIncidenceClick = { navController.navigate(ManagementRoutes.REGISTER_INCIDENCE) },
         )
     }
 
@@ -156,17 +154,16 @@ internal fun NavGraphBuilder.responsableRoutes(navController: NavHostController)
     }
 
     pushComposable(ManagementRoutes.ASSIGN_SHIFT) {
-        var scheduleType by remember { mutableStateOf(ShiftScheduleType.Fixed) }
+        var staffName by remember { mutableStateOf("María Torres Díaz") }
         var days by remember {
             mutableStateOf(
                 setOf(WeekDay.Monday, WeekDay.Tuesday, WeekDay.Wednesday, WeekDay.Thursday, WeekDay.Friday),
             )
         }
         AssignShiftScreen(
-            staffName = "María Torres Díaz",
-            staffRoleSummary = "Maestra · Maternales",
-            scheduleType = scheduleType,
-            onScheduleTypeChange = { scheduleType = it },
+            staffName = staffName,
+            onStaffNameChange = { staffName = it },
+            roleName = "Maestra",
             selectedDays = days,
             onDayToggle = { day -> days = if (day in days) days - day else days + day },
             entryTime = "8:00",
