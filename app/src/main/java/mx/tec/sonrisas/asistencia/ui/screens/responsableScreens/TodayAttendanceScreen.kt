@@ -49,6 +49,7 @@ import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
 import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
+
 enum class TodayListFilter(val label: String) {
     Attendance("Asistencia"),
     NoClockIn("Falta"),
