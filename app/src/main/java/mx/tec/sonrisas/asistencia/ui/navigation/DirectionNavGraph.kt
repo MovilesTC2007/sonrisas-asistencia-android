@@ -167,6 +167,50 @@ internal fun NavGraphBuilder.estanciasGraph(navController: NavHostController) {
                 )
             }
         }
+        pushComposable(
+            route = SonrisasRoutes.HISTORY_LIST,
+            arguments = listOf(
+                navArgument(SonrisasRoutes.HISTORY_ESTANCIA_ARG) {
+                    type = NavType.IntType
+                    defaultValue = SonrisasRoutes.NO_ESTANCIA
+                },
+            ),
+        ) { entry ->
+            val estanciaId = entry.arguments?.getInt(SonrisasRoutes.HISTORY_ESTANCIA_ARG)
+                ?: SonrisasRoutes.NO_ESTANCIA
+            HistoryDestination(
+                initialEstanciaId = estanciaId,
+                onBack = { entry.ifResumed { navController.popBackStack() } },
+                onEventClick = { id ->
+                    entry.ifResumed { navController.navigate(SonrisasRoutes.historyEvent(id)) }
+                },
+                onReportsClick = {
+                    entry.ifResumed {
+                        navController.navigate(
+                            SonrisasRoutes.reports(view = ReportsView.Export.name, estanciaId = estanciaId),
+                        )
+                    }
+                },
+            )
+        }
+
+        pushComposable(
+            route = SonrisasRoutes.HISTORY_EVENT,
+            arguments = listOf(navArgument(SonrisasRoutes.HISTORY_EVENT_ID_ARG) { type = NavType.IntType }),
+        ) { entry ->
+            val event = entry.arguments
+                ?.getInt(SonrisasRoutes.HISTORY_EVENT_ID_ARG)
+                ?.let { MockData.changeEvent(it) }
+
+            if (event == null) {
+                LaunchedEffect(Unit) { navController.popBackStack() }
+            } else {
+                ChangeEventDetailScreen(
+                    event = event,
+                    onBack = { entry.ifResumed { navController.popBackStack() } },
+                )
+            }
+        }
     }
 }
 
@@ -271,54 +315,12 @@ private fun ReportsDestination(
     }
 }
 
-// Historial
-internal fun NavGraphBuilder.historialGraph(navController: NavHostController) {
-    navigation(
-        startDestination = SonrisasRoutes.HISTORY_LIST,
-        route = SonrisasTab.Historial.route,
-    ) {
-        composable(
-            route = SonrisasRoutes.HISTORY_LIST,
-            arguments = listOf(
-                navArgument(SonrisasRoutes.HISTORY_ESTANCIA_ARG) {
-                    type = NavType.IntType
-                    defaultValue = SonrisasRoutes.NO_ESTANCIA
-                },
-            ),
-        ) { entry ->
-            HistoryDestination(
-                initialEstanciaId = entry.arguments?.getInt(SonrisasRoutes.HISTORY_ESTANCIA_ARG)
-                    ?: SonrisasRoutes.NO_ESTANCIA,
-                onEventClick = { id ->
-                    entry.ifResumed { navController.navigate(SonrisasRoutes.historyEvent(id)) }
-                },
-            )
-        }
-
-        pushComposable(
-            route = SonrisasRoutes.HISTORY_EVENT,
-            arguments = listOf(navArgument(SonrisasRoutes.HISTORY_EVENT_ID_ARG) { type = NavType.IntType }),
-        ) { entry ->
-            val event = entry.arguments
-                ?.getInt(SonrisasRoutes.HISTORY_EVENT_ID_ARG)
-                ?.let { MockData.changeEvent(it) }
-
-            if (event == null) {
-                LaunchedEffect(Unit) { navController.popBackStack() }
-            } else {
-                ChangeEventDetailScreen(
-                    event = event,
-                    onBack = { entry.ifResumed { navController.popBackStack() } },
-                )
-            }
-        }
-    }
-}
-
 @Composable
 private fun HistoryDestination(
     initialEstanciaId: Int,
+    onBack: () -> Unit,
     onEventClick: (Int) -> Unit,
+    onReportsClick: () -> Unit,
 ) {
     var estancia by rememberSaveable { mutableStateOf(MockData.historyEstanciaLabel(initialEstanciaId)) }
     var period by rememberSaveable { mutableStateOf(HistoryPeriod.Week) }
@@ -333,7 +335,9 @@ private fun HistoryDestination(
         onPeriodChange = { period = it },
         kind = kind,
         onKindChange = { kind = it },
+        onBack = onBack,
         onEventClick = onEventClick,
+        onReportsClick = onReportsClick,
     )
 }
 

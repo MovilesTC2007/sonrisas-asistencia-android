@@ -248,7 +248,6 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
 
         estanciasGraph(navController)
         reportesGraph(navController)
-        historialGraph(navController)
         direccionProfileRoutes(navController)
         responsableRoutes(navController)
 

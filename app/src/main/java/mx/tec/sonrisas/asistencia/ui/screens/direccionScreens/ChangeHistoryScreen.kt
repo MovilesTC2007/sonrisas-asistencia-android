@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.MyLocation
@@ -39,13 +40,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasBackStyle
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasDropdownMenu
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasFilterChip
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasOutlinedButton
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurpleLight
@@ -115,8 +117,10 @@ fun ChangeHistoryScreen(
     onPeriodChange: (HistoryPeriod) -> Unit,
     kind: ChangeKind?,
     onKindChange: (ChangeKind?) -> Unit,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
     onEventClick: (Int) -> Unit = {},
+    onReportsClick: () -> Unit = {},
 ) {
     val kindOptions = listOf(ALL_KINDS) + ChangeKind.entries.map { it.label }
 
@@ -133,7 +137,7 @@ fun ChangeHistoryScreen(
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            ChangeHistoryHeader()
+            SonrisasTopBar(title = "Historial de cambios", onBack = onBack, backStyle = SonrisasBackStyle.Plain)
 
             Spacer(Modifier.height(Spacing.md))
             FlowRow(
@@ -179,25 +183,14 @@ fun ChangeHistoryScreen(
             } else {
                 ChangeLogCard(events = events, onEventClick = onEventClick)
             }
+            Spacer(Modifier.height(Spacing.lg))
+            SonrisasOutlinedButton(
+                text = "Ver en reportes",
+                onClick = onReportsClick,
+                leadingIcon = Icons.Outlined.BarChart,
+            )
             Spacer(Modifier.height(Spacing.xxl))
         }
-    }
-}
-
-@Composable
-private fun ChangeHistoryHeader() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp),
-        contentAlignment = Alignment.CenterStart,
-    ) {
-        Text(
-            text = "Historial de cambios",
-            style = SonrisasTextStyle.Display,
-            color = InkPrimary,
-            modifier = Modifier.semantics { heading() },
-        )
     }
 }
 
@@ -340,6 +333,9 @@ private fun ChangeHistoryScreenPreview() {
             onPeriodChange = {},
             kind = null,
             onKindChange = {},
+            onBack = {},
+            onEventClick = {},
+            onReportsClick = {},
         )
     }
 }
@@ -357,6 +353,9 @@ private fun ChangeHistoryEmptyPreview() {
             onPeriodChange = {},
             kind = ChangeKind.Access,
             onKindChange = {},
+            onBack = {},
+            onEventClick = {},
+            onReportsClick = {},
         )
     }
 }
