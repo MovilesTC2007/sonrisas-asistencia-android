@@ -2,7 +2,6 @@ package mx.tec.sonrisas.asistencia.ui.screens.responsableScreens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,19 +10,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material.icons.outlined.KeyboardArrowDown
-import androidx.compose.material.icons.outlined.Schedule
-import androidx.compose.material3.Icon
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,25 +27,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasAvatar
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasDropdownField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasNoticeBanner
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasShiftSchedule
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasTextField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.components.WeekDay
+import mx.tec.sonrisas.asistencia.ui.components.rememberSonrisasToast
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
-import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.InkFaint
 import mx.tec.sonrisas.asistencia.ui.theme.InkPrimary
 import mx.tec.sonrisas.asistencia.ui.theme.InkSoft
 import mx.tec.sonrisas.asistencia.ui.theme.LineColor
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusLg
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusMd
-import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasAsistenciasTheme
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTextStyle
 import mx.tec.sonrisas.asistencia.ui.theme.SonrisasTypography
@@ -59,103 +52,94 @@ import mx.tec.sonrisas.asistencia.ui.theme.Spacing
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceLilac
 import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 
-enum class ShiftScheduleType(val label: String) {
-    Fixed("Horario fijo"),
-    Rotating("Modificar datos"),
-}
-
-enum class WeekDay(val initial: String, val fullName: String) {
-    Monday("L", "Lunes"),
-    Tuesday("M", "Martes"),
-    Wednesday("M", "Miércoles"),
-    Thursday("J", "Jueves"),
-    Friday("V", "Viernes"),
-    Saturday("S", "Sábado"),
-    Sunday("D", "Domingo"),
-}
-
 @Composable
 fun AssignShiftScreen(
     staffName: String,
-    staffRoleSummary: String,
-    scheduleType: ShiftScheduleType,
-    onScheduleTypeChange: (ShiftScheduleType) -> Unit,
+    onStaffNameChange: (String) -> Unit,
+    roleName: String,
+    roleOptions: List<String>,
+    onRoleSelected: (String) -> Unit,
     selectedDays: Set<WeekDay>,
     onDayToggle: (WeekDay) -> Unit,
     entryTime: String,
     exitTime: String,
     areaName: String,
+    areaOptions: List<String>,
+    onAreaSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
     coverageWarning: String? = null,
+    timeError: String? = null,
     onBackClick: () -> Unit = {},
     onEntryTimeClick: () -> Unit = {},
     onExitTimeClick: () -> Unit = {},
-    onAreaClick: () -> Unit = {},
     onSaveClick: () -> Unit = {},
 ) {
+    val showSavedToast = rememberSonrisasToast()
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(BgCream)
             .statusBarsPadding()
+            .imePadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = Spacing.xl),
     ) {
         Spacer(Modifier.height(Spacing.md))
-        SonrisasTopBar(title = "Asignar turno", onBack = onBackClick)
+        SonrisasTopBar(title = "Editar personal", onBack = onBackClick)
         Spacer(Modifier.height(Spacing.lg))
-        StaffSummaryCard(name = staffName, roleSummary = staffRoleSummary)
+        StaffSummaryCard(name = staffName, roleSummary = "$roleName · $areaName")
         Spacer(Modifier.height(Spacing.lg))
-        ScheduleTypeSelector(
-            selectedType = scheduleType,
-            onTypeSelected = onScheduleTypeChange,
-        )
-        Spacer(Modifier.height(Spacing.xl))
-        FieldLabel(text = "Días")
+        FieldLabel(text = "Modificar nombre")
         Spacer(Modifier.height(Spacing.sm))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RadiusMd)
+                .background(SurfaceWhite)
+                .border(width = 1.dp, color = LineColor, shape = RadiusMd)
+                .padding(horizontal = Spacing.lg, vertical = Spacing.sm),
         ) {
-            WeekDay.values().forEach { day ->
-                DayChip(
-                    day = day,
-                    selected = day in selectedDays,
-                    onToggle = { onDayToggle(day) },
-                )
-            }
+            SonrisasTextField(
+                value = staffName,
+                onValueChange = onStaffNameChange,
+                label = "Nombre completo",
+                icon = Icons.Outlined.Person,
+            )
         }
         Spacer(Modifier.height(Spacing.lg))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.md),
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                FieldLabel(text = "Entrada")
-                Spacer(Modifier.height(Spacing.sm))
-                PickerField(
-                    value = entryTime,
-                    trailingIcon = Icons.Outlined.Schedule,
-                    onClick = onEntryTimeClick,
-                )
-            }
-            Column(modifier = Modifier.weight(1f)) {
-                FieldLabel(text = "Salida")
-                Spacer(Modifier.height(Spacing.sm))
-                PickerField(
-                    value = exitTime,
-                    trailingIcon = Icons.Outlined.Schedule,
-                    onClick = onExitTimeClick,
-                )
-            }
+        FieldLabel(text = "Rol")
+        Spacer(Modifier.height(Spacing.sm))
+        SonrisasDropdownField(
+            value = roleName,
+            options = roleOptions,
+            onSelect = onRoleSelected,
+            label = "Rol",
+        )
+        Spacer(Modifier.height(Spacing.lg))
+        SonrisasShiftSchedule(
+            selectedDays = selectedDays,
+            onDayToggle = onDayToggle,
+            entryTime = entryTime,
+            exitTime = exitTime,
+            onEntryTimeClick = onEntryTimeClick,
+            onExitTimeClick = onExitTimeClick,
+        )
+        if (timeError != null) {
+            Spacer(Modifier.height(Spacing.md))
+            SonrisasNoticeBanner(
+                icon = Icons.Outlined.ErrorOutline,
+                message = timeError,
+            )
         }
         Spacer(Modifier.height(Spacing.lg))
         FieldLabel(text = "Área")
         Spacer(Modifier.height(Spacing.sm))
-        PickerField(
+        SonrisasDropdownField(
             value = areaName,
-            trailingIcon = Icons.Outlined.KeyboardArrowDown,
-            onClick = onAreaClick,
+            options = areaOptions,
+            onSelect = onAreaSelected,
+            label = "Área",
         )
         if (coverageWarning != null) {
             Spacer(Modifier.height(Spacing.lg))
@@ -172,9 +156,12 @@ fun AssignShiftScreen(
         )
         Spacer(Modifier.height(Spacing.xl))
         SonrisasPrimaryButton(
-            text = "Guardar turno",
-            onClick = onSaveClick,
-            enabled = selectedDays.isNotEmpty(),
+            text = "Guardar cambios",
+            onClick = {
+                onSaveClick()
+                showSavedToast()
+            },
+            enabled = staffName.isNotBlank() && selectedDays.isNotEmpty() && timeError == null,
         )
         Spacer(Modifier.height(Spacing.xxl))
     }
@@ -212,42 +199,6 @@ private fun StaffSummaryCard(
 }
 
 @Composable
-private fun ScheduleTypeSelector(
-    selectedType: ShiftScheduleType,
-    onTypeSelected: (ShiftScheduleType) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RadiusPill)
-            .background(LineColor)
-            .padding(Spacing.xs),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        ShiftScheduleType.values().forEach { type ->
-            val isSelected = type == selectedType
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .heightIn(min = 44.dp)
-                    .clip(RadiusPill)
-                    .background(if (isSelected) BrandPurple else Color.Transparent)
-                    .clickable(role = Role.Tab) { onTypeSelected(type) },
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = type.label,
-                    style = SonrisasTypography.titleMedium,
-                    color = if (isSelected) Color.White else InkFaint,
-                    textAlign = TextAlign.Center,
-                )
-            }
-        }
-    }
-}
-
-@Composable
 private fun FieldLabel(
     text: String,
     modifier: Modifier = Modifier,
@@ -260,70 +211,11 @@ private fun FieldLabel(
     )
 }
 
-@Composable
-private fun DayChip(
-    day: WeekDay,
-    selected: Boolean,
-    onToggle: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(if (selected) BrandPurple else LineColor)
-            .toggleable(
-                value = selected,
-                role = Role.Checkbox,
-                onValueChange = { onToggle() },
-            ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = day.initial,
-            style = SonrisasTypography.titleLarge,
-            color = if (selected) Color.White else InkFaint,
-        )
-    }
-}
-
-@Composable
-private fun PickerField(
-    value: String,
-    trailingIcon: ImageVector,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RadiusMd)
-            .background(SurfaceWhite)
-            .border(width = 1.dp, color = LineColor, shape = RadiusMd)
-            .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = Spacing.lg, vertical = Spacing.lg),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = value,
-            style = SonrisasTextStyle.Body,
-            color = InkPrimary,
-            modifier = Modifier.weight(1f),
-        )
-        Icon(
-            imageVector = trailingIcon,
-            contentDescription = null,
-            tint = InkFaint,
-            modifier = Modifier.size(20.dp),
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
-private fun AssignShiftScreenPreview() {
+private fun EditStaffScreenPreview() {
     SonrisasAsistenciasTheme {
-        var scheduleType by remember { mutableStateOf(ShiftScheduleType.Fixed) }
+        var staffName by remember { mutableStateOf("María Torres Díaz") }
         var selectedDays by remember {
             mutableStateOf(
                 setOf(
@@ -336,10 +228,11 @@ private fun AssignShiftScreenPreview() {
             )
         }
         AssignShiftScreen(
-            staffName = "María Torres Díaz",
-            staffRoleSummary = "Maestra · Maternales",
-            scheduleType = scheduleType,
-            onScheduleTypeChange = { scheduleType = it },
+            staffName = staffName,
+            onStaffNameChange = { staffName = it },
+            roleName = "Maestra",
+            roleOptions = listOf("Maestra", "Asistente", "Cocina"),
+            onRoleSelected = {},
             selectedDays = selectedDays,
             onDayToggle = { day ->
                 selectedDays = if (day in selectedDays) selectedDays - day else selectedDays + day
@@ -347,6 +240,8 @@ private fun AssignShiftScreenPreview() {
             entryTime = "8:00",
             exitTime = "16:00",
             areaName = "Preescolar",
+            areaOptions = listOf("Lactantes", "Maternales", "Preescolar"),
+            onAreaSelected = {},
             coverageWarning = "Si mueves a María a Preescolar, Maternales queda con 1 de 2 personas.",
         )
     }
@@ -354,15 +249,16 @@ private fun AssignShiftScreenPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun AssignShiftScreenNoDaysPreview() {
+private fun EditStaffScreenNoDaysPreview() {
     SonrisasAsistenciasTheme {
-        var scheduleType by remember { mutableStateOf(ShiftScheduleType.Fixed) }
+        var staffName by remember { mutableStateOf("María Torres Díaz") }
         var selectedDays by remember { mutableStateOf(emptySet<WeekDay>()) }
         AssignShiftScreen(
-            staffName = "María Torres Díaz",
-            staffRoleSummary = "Maestra · Maternales",
-            scheduleType = scheduleType,
-            onScheduleTypeChange = { scheduleType = it },
+            staffName = staffName,
+            onStaffNameChange = { staffName = it },
+            roleName = "Maestra",
+            roleOptions = listOf("Maestra", "Asistente", "Cocina"),
+            onRoleSelected = {},
             selectedDays = selectedDays,
             onDayToggle = { day ->
                 selectedDays = if (day in selectedDays) selectedDays - day else selectedDays + day
@@ -370,6 +266,8 @@ private fun AssignShiftScreenNoDaysPreview() {
             entryTime = "8:00",
             exitTime = "16:00",
             areaName = "Maternales",
+            areaOptions = listOf("Lactantes", "Maternales", "Preescolar"),
+            onAreaSelected = {},
         )
     }
 }

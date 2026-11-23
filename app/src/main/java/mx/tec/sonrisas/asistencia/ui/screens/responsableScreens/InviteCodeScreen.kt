@@ -65,6 +65,7 @@ fun InviteCodeScreen(
     recipientDetail: String = "Asistente · Maternales",
     code: String = "SC4K 7R2T",
     validity: String = "Un solo uso · vence el 16 de noviembre",
+    onBack: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -81,7 +82,7 @@ fun InviteCodeScreen(
             Spacer(Modifier.height(Spacing.md))
             SonrisasTopBar(
                 title = "Código de invitación",
-                onBack = {},
+                onBack = onBack,
                 backStyle = SonrisasBackStyle.Plain,
             )
 

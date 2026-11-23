@@ -34,6 +34,7 @@ import mx.tec.sonrisas.asistencia.ui.components.SonrisasInfoCard
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasInputField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTopBar
+import mx.tec.sonrisas.asistencia.ui.components.rememberSonrisasToast
 import mx.tec.sonrisas.asistencia.ui.theme.BgCream
 import mx.tec.sonrisas.asistencia.ui.theme.BrandPurple
 import mx.tec.sonrisas.asistencia.ui.theme.RadiusPill
@@ -54,10 +55,13 @@ fun NewStaffScreen(
     initialType: String? = "Asistente",
     initialArea: String = "Maternales",
     startDate: String = "9 de noviembre de 2026",
+    onBack: () -> Unit = {},
+    onSaveClick: (name: String, detail: String) -> Unit = { _, _ -> },
 ) {
     var name by rememberSaveable { mutableStateOf(initialName) }
     var type by rememberSaveable { mutableStateOf(initialType) }
     var area by rememberSaveable { mutableStateOf(initialArea) }
+    val showSavedToast = rememberSonrisasToast("Persona guardada · código generado")
 
     Column(
         modifier = modifier
@@ -72,7 +76,7 @@ fun NewStaffScreen(
                 .padding(horizontal = Spacing.xl),
         ) {
             Spacer(Modifier.height(Spacing.md))
-            SonrisasTopBar(title = "Nueva persona", onBack = {})
+            SonrisasTopBar(title = "Nueva persona", onBack = onBack)
 
             Spacer(Modifier.height(Spacing.lg))
             SonrisasFormField(label = "Nombre completo") {
@@ -133,7 +137,11 @@ fun NewStaffScreen(
             Spacer(Modifier.height(Spacing.xxl))
             SonrisasPrimaryButton(
                 text = "Guardar y generar código",
-                onClick = {},
+                onClick = {
+                    showSavedToast()
+                    onSaveClick(name.trim(), "${type.orEmpty()} · $area")
+                },
+                enabled = name.isNotBlank() && type != null,
                 modifier = Modifier.shadow(
                     elevation = 12.dp,
                     shape = RadiusPill,
