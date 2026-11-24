@@ -138,6 +138,7 @@ internal object MockData {
 
     // Dirección
     const val DIRECTOR_NAME = "Patricia Gómez Ríos"
+    const val RESPONSABLE_INVITE_CODE = "RS7M 2K9Q"
     const val TODAY_LABEL = "Martes 17 de noviembre"
     const val UPDATED_LABEL = "Actualizado hace 2 min"
     const val TOTAL_STAFF = 480

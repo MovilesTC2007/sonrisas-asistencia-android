@@ -15,6 +15,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
+import java.util.Map.entry
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ChangeEventDetailScreen
@@ -27,6 +28,7 @@ import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.EstanciasListScree
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ExportContent
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.HistoryPeriod
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ManagementDashboardScreen
+import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.NewResponsableScreen
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.PersonDetailScreen
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ReportFormat
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ReportPeriod
@@ -40,6 +42,7 @@ import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.TransferAccountScr
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.TransferStep
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.filterChanges
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.filterEstancias
+import mx.tec.sonrisas.asistencia.ui.screens.responsableScreens.InviteCodeScreen
 
 private const val REFRESH_MOCK_MS = 800L
 
@@ -76,9 +79,6 @@ internal fun DireccionHomeDestination(
         worstCoverage = MockData.worstCoverage,
         totalEstancias = MockData.TOTAL_ESTANCIAS,
         weeklyAbsenteeism = MockData.weeklyAbsenteeism,
-        onProfileClick = {
-            entry.ifResumed { navController.navigate(SonrisasRoutes.DIRECCION_PROFILE) }
-        },
         onAlertClick = {
             entry.ifResumed {
                 navController.navigate(SonrisasRoutes.estanciasList(EstanciaFilter.WithAlert.name))
@@ -89,6 +89,9 @@ internal fun DireccionHomeDestination(
         },
         onViewAllClick = {
             entry.ifResumed { navController.navigate(SonrisasRoutes.estanciasList()) }
+        },
+        onNewResponsableClick = {
+            entry.ifResumed { navController.navigate(SonrisasRoutes.NEW_RESPONSABLE) }
         },
     )
 }
@@ -165,6 +168,50 @@ internal fun NavGraphBuilder.estanciasGraph(navController: NavHostController) {
             } else {
                 PersonDetailScreen(
                     person = person,
+                    onBack = { entry.ifResumed { navController.popBackStack() } },
+                )
+            }
+        }
+        pushComposable(
+            route = SonrisasRoutes.HISTORY_LIST,
+            arguments = listOf(
+                navArgument(SonrisasRoutes.HISTORY_ESTANCIA_ARG) {
+                    type = NavType.IntType
+                    defaultValue = SonrisasRoutes.NO_ESTANCIA
+                },
+            ),
+        ) { entry ->
+            val estanciaId = entry.arguments?.getInt(SonrisasRoutes.HISTORY_ESTANCIA_ARG)
+                ?: SonrisasRoutes.NO_ESTANCIA
+            HistoryDestination(
+                initialEstanciaId = estanciaId,
+                onBack = { entry.ifResumed { navController.popBackStack() } },
+                onEventClick = { id ->
+                    entry.ifResumed { navController.navigate(SonrisasRoutes.historyEvent(id)) }
+                },
+                onReportsClick = {
+                    entry.ifResumed {
+                        navController.navigate(
+                            SonrisasRoutes.reports(view = ReportsView.Export.name, estanciaId = estanciaId),
+                        )
+                    }
+                },
+            )
+        }
+
+        pushComposable(
+            route = SonrisasRoutes.HISTORY_EVENT,
+            arguments = listOf(navArgument(SonrisasRoutes.HISTORY_EVENT_ID_ARG) { type = NavType.IntType }),
+        ) { entry ->
+            val event = entry.arguments
+                ?.getInt(SonrisasRoutes.HISTORY_EVENT_ID_ARG)
+                ?.let { MockData.changeEvent(it) }
+
+            if (event == null) {
+                LaunchedEffect(Unit) { navController.popBackStack() }
+            } else {
+                ChangeEventDetailScreen(
+                    event = event,
                     onBack = { entry.ifResumed { navController.popBackStack() } },
                 )
             }
@@ -273,54 +320,12 @@ private fun ReportsDestination(
     }
 }
 
-// Historial
-internal fun NavGraphBuilder.historialGraph(navController: NavHostController) {
-    navigation(
-        startDestination = SonrisasRoutes.HISTORY_LIST,
-        route = SonrisasTab.Historial.route,
-    ) {
-        composable(
-            route = SonrisasRoutes.HISTORY_LIST,
-            arguments = listOf(
-                navArgument(SonrisasRoutes.HISTORY_ESTANCIA_ARG) {
-                    type = NavType.IntType
-                    defaultValue = SonrisasRoutes.NO_ESTANCIA
-                },
-            ),
-        ) { entry ->
-            HistoryDestination(
-                initialEstanciaId = entry.arguments?.getInt(SonrisasRoutes.HISTORY_ESTANCIA_ARG)
-                    ?: SonrisasRoutes.NO_ESTANCIA,
-                onEventClick = { id ->
-                    entry.ifResumed { navController.navigate(SonrisasRoutes.historyEvent(id)) }
-                },
-            )
-        }
-
-        pushComposable(
-            route = SonrisasRoutes.HISTORY_EVENT,
-            arguments = listOf(navArgument(SonrisasRoutes.HISTORY_EVENT_ID_ARG) { type = NavType.IntType }),
-        ) { entry ->
-            val event = entry.arguments
-                ?.getInt(SonrisasRoutes.HISTORY_EVENT_ID_ARG)
-                ?.let { MockData.changeEvent(it) }
-
-            if (event == null) {
-                LaunchedEffect(Unit) { navController.popBackStack() }
-            } else {
-                ChangeEventDetailScreen(
-                    event = event,
-                    onBack = { entry.ifResumed { navController.popBackStack() } },
-                )
-            }
-        }
-    }
-}
-
 @Composable
 private fun HistoryDestination(
     initialEstanciaId: Int,
+    onBack: () -> Unit,
     onEventClick: (Int) -> Unit,
+    onReportsClick: () -> Unit,
 ) {
     var estancia by rememberSaveable { mutableStateOf(MockData.historyEstanciaLabel(initialEstanciaId)) }
     var period by rememberSaveable { mutableStateOf(HistoryPeriod.Week) }
@@ -335,30 +340,72 @@ private fun HistoryDestination(
         onPeriodChange = { period = it },
         kind = kind,
         onKindChange = { kind = it },
+        onBack = onBack,
         onEventClick = onEventClick,
+        onReportsClick = onReportsClick,
     )
 }
 
-// Perfil
-
-// Sin barra inferior
-internal fun NavGraphBuilder.direccionProfileRoutes(navController: NavHostController) {
-    pushComposable(SonrisasRoutes.DIRECCION_PROFILE) { entry ->
-        DireccionProfileScreen(
-            profile = MockData.direccionProfile,
+// Nuevo responsable (sin barra inferior): formulario y código de invitación.
+internal fun NavGraphBuilder.nuevoResponsableRoutes(navController: NavHostController) {
+    pushComposable(SonrisasRoutes.NEW_RESPONSABLE) { entry ->
+        NewResponsableScreen(
+            estanciaOptions = MockData.estancias.map { it.name },
             onBack = { entry.ifResumed { navController.popBackStack() } },
-            onTransferClick = {
-                entry.ifResumed { navController.navigate(SonrisasRoutes.DIRECCION_TRANSFER) }
+            onSaveClick = { name, estancia ->
+                entry.ifResumed { navController.navigate(SonrisasRoutes.responsableInvite(name, estancia)) }
             },
-            onLogoutClick = { navController.signOut() },
         )
     }
 
-    pushComposable(SonrisasRoutes.DIRECCION_TRANSFER) { entry ->
-        TransferAccountDestination(
-            onBack = { entry.ifResumed { navController.popBackStack() } },
-            onFinished = { navController.signOut() },
+    pushComposable(
+        route = SonrisasRoutes.RESPONSABLE_INVITE,
+        arguments = listOf(
+            navArgument(SonrisasRoutes.RESPONSABLE_NAME_ARG) {
+                type = NavType.StringType
+                defaultValue = ""
+            },
+            navArgument(SonrisasRoutes.RESPONSABLE_ESTANCIA_ARG) {
+                type = NavType.StringType
+                defaultValue = ""
+            },
+        ),
+    ) { entry ->
+        val name = entry.arguments?.getString(SonrisasRoutes.RESPONSABLE_NAME_ARG).orEmpty()
+        val estancia = entry.arguments?.getString(SonrisasRoutes.RESPONSABLE_ESTANCIA_ARG).orEmpty()
+        InviteCodeScreen(
+            recipientName = name,
+            recipientDetail = "Responsable · $estancia",
+            code = MockData.RESPONSABLE_INVITE_CODE,
+            onBack = {
+                entry.ifResumed { navController.popBackStack(SonrisasTab.Inicio.route, inclusive = false) }
+            },
         )
+    }
+}
+
+// Pestaña Perfil de Dirección
+internal fun NavGraphBuilder.direccionProfileRoutes(navController: NavHostController) {
+    navigation(
+        startDestination = SonrisasRoutes.DIRECCION_PROFILE,
+        route = SonrisasTab.Perfil.route,
+    ) {
+        composable(SonrisasRoutes.DIRECCION_PROFILE) { entry ->
+            DireccionProfileScreen(
+                profile = MockData.direccionProfile,
+                onTransferClick = {
+                    entry.ifResumed { navController.navigate(SonrisasRoutes.DIRECCION_TRANSFER) }
+                },
+                onLogoutClick = { navController.signOut() },
+            )
+        }
+
+        pushComposable(SonrisasRoutes.DIRECCION_TRANSFER) { entry ->
+            TransferAccountDestination(
+                onBack = { entry.ifResumed { navController.popBackStack() } },
+                onFinished = { navController.signOut() },
+            )
+        }
     }
 }
 

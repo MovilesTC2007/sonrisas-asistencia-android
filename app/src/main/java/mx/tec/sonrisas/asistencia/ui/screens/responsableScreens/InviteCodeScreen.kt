@@ -61,11 +61,11 @@ private val SampleInvites = listOf(
 @Composable
 fun InviteCodeScreen(
     modifier: Modifier = Modifier,
+    onBack: () -> Unit = {},
     recipientName: String = "Patricia Gómez Ríos",
     recipientDetail: String = "Asistente · Maternales",
     code: String = "SC4K 7R2T",
     validity: String = "Un solo uso · vence el 16 de noviembre",
-    onBack: () -> Unit = {},
 ) {
     Column(
         modifier = modifier

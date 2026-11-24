@@ -241,14 +241,16 @@ private fun NavGraphBuilder.mainGraph(navController: NavHostController, role: Us
 
         estanciasGraph(navController)
         reportesGraph(navController)
-        historialGraph(navController)
         direccionProfileRoutes(navController)
+        nuevoResponsableRoutes(navController)
         responsableRoutes(navController)
 
-        composable(SonrisasTab.Perfil.route) {
-            when (role) {
-                UserRole.Responsable -> ManagerProfileDestination(navController)
-                UserRole.Empleado, UserRole.Direccion -> EmployeeProfileDestination()
+        if (role != UserRole.Direccion) {
+            composable(SonrisasTab.Perfil.route) {
+                when (role) {
+                    UserRole.Responsable -> ManagerProfileDestination(navController)
+                    else -> EmployeeProfileDestination()
+                }
             }
         }
 
