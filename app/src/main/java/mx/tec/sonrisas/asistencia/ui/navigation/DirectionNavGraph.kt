@@ -18,6 +18,7 @@ import androidx.navigation.navArgument
 import java.util.Map.entry
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import mx.tec.sonrisas.asistencia.data.AuthRepository
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ChangeEventDetailScreen
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ChangeHistoryScreen
 import mx.tec.sonrisas.asistencia.ui.screens.direccionScreens.ChangeKind
@@ -391,12 +392,18 @@ internal fun NavGraphBuilder.direccionProfileRoutes(navController: NavHostContro
         route = SonrisasTab.Perfil.route,
     ) {
         composable(SonrisasRoutes.DIRECCION_PROFILE) { entry ->
+            val scope = rememberCoroutineScope()
             DireccionProfileScreen(
                 profile = MockData.direccionProfile,
                 onTransferClick = {
                     entry.ifResumed { navController.navigate(SonrisasRoutes.DIRECCION_TRANSFER) }
                 },
-                onLogoutClick = { navController.signOut() },
+                onLogoutClick = {
+                    scope.launch {
+                        AuthRepository.logout()
+                        navController.signOut()
+                    }
+                },
             )
         }
 

@@ -6,12 +6,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import kotlinx.coroutines.launch
+import mx.tec.sonrisas.asistencia.data.AuthRepository
 import mx.tec.sonrisas.asistencia.ui.components.AttendanceStatus
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTimePickerDialog
 import mx.tec.sonrisas.asistencia.ui.components.WeekDay
@@ -87,9 +90,15 @@ internal fun EmployeeProfileDestination() {
 // Pestaña Perfil del rol Responsable.
 @Composable
 internal fun ManagerProfileDestination(navController: NavHostController) {
+    val scope = rememberCoroutineScope()
     ResponsableProfileScreen(
         profile = MockData.responsableProfile,
-        onLogoutClick = { navController.signOut() },
+        onLogoutClick = {
+            scope.launch {
+                AuthRepository.logout()
+                navController.signOut()
+            }
+        },
     )
 }
 
