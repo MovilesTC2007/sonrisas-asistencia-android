@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,6 +34,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import kotlinx.coroutines.launch
+import mx.tec.sonrisas.asistencia.data.AuthRepository
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasBottomBar
 import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.AttendanceConfirmationScreen
 import mx.tec.sonrisas.asistencia.ui.screens.empleadoScreens.AttendanceScreen
@@ -66,6 +69,10 @@ fun SonrisasApp(
     modifier: Modifier = Modifier,
     startAtLogin: Boolean = true,
     navController: NavHostController = rememberNavController(),
+    // le avisa al llamador (MainActivity) el rol que vino del login real, para
+    // que las pestañas se dibujen con el rol correcto en vez del valor con el
+    // que arrancó la app.
+    onRoleResolved: (UserRole) -> Unit = {},
 ) {
     // los siguientes comandos son para navegacion continua y actualizacion del Scaffold a tiempo real no fake yo no lo descargo porque ya lo tengo
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -113,6 +120,7 @@ fun SonrisasApp(
             navController = navController,
             role = role,
             startAtLogin = startAtLogin,
+            onRoleResolved = onRoleResolved,
             modifier = Modifier
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding),
@@ -126,6 +134,7 @@ private fun SonrisasNavHost(
     navController: NavHostController,
     role: UserRole,
     startAtLogin: Boolean,
+    onRoleResolved: (UserRole) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -135,17 +144,42 @@ private fun SonrisasNavHost(
         enterTransition = { fadeIn(tween(FADE_MS)) },
         exitTransition = { fadeOut(tween(FADE_MS)) },
     ) {
-        accessGraph(navController = navController, role = role)
+        accessGraph(navController = navController, role = role, onRoleResolved = onRoleResolved)
         mainGraph(navController = navController, role = role)
     }
 }
 
-private fun NavGraphBuilder.accessGraph(navController: NavHostController, role: UserRole) {
+private fun NavGraphBuilder.accessGraph(
+    navController: NavHostController,
+    role: UserRole,
+    onRoleResolved: (UserRole) -> Unit,
+) {
     navigation(startDestination = SonrisasRoutes.LOGIN, route = SonrisasRoutes.ACCESS_GRAPH) {
         composable(SonrisasRoutes.LOGIN) { entry ->
+            val scope = rememberCoroutineScope()
+            var isLoading by rememberSaveable { mutableStateOf(false) }
+            var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
+
             LoginScreen(
-                // esto es para el Mockup PARA QUE ENTRE CUALQUIER DATO DE CONTRASEÑA Y ASI igual se deja para cuando llamemos al back
-                onLogin = { _, _ -> entry.ifResumed { navController.onSignedIn(role) } },
+                isLoading = isLoading,
+                errorMessage = errorMessage,
+                onLogin = onLogin@{ email, password ->
+                    if (isLoading) return@onLogin
+                    isLoading = true
+                    errorMessage = null
+                    scope.launch {
+                        AuthRepository.login(email, password)
+                            .onSuccess { signedInRole ->
+                                isLoading = false
+                                onRoleResolved(signedInRole)
+                                entry.ifResumed { navController.onSignedIn(signedInRole) }
+                            }
+                            .onFailure { error ->
+                                isLoading = false
+                                errorMessage = error.message ?: "No se pudo iniciar sesión"
+                            }
+                    }
+                },
                 onInviteCode = { entry.ifResumed { navController.navigate(SonrisasRoutes.CREATE_ACCOUNT) } },
             )
         }

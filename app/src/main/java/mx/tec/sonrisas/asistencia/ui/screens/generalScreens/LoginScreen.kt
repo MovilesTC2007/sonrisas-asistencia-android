@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import mx.tec.sonrisas.asistencia.ui.components.SonrisasNoticeBanner
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasPrimaryButton
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTextField
 import mx.tec.sonrisas.asistencia.ui.components.SonrisasTextLink
@@ -50,6 +52,8 @@ import mx.tec.sonrisas.asistencia.ui.theme.SurfaceWhite
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    errorMessage: String? = null,
     onLogin: (email: String, password: String) -> Unit = { _, _ -> },
     onForgotPassword: () -> Unit = {},
     onInviteCode: () -> Unit = {},
@@ -142,8 +146,17 @@ fun LoginScreen(
             )
         }
 
+        if (errorMessage != null) {
+            Spacer(modifier = Modifier.height(Spacing.md))
+            SonrisasNoticeBanner(icon = Icons.Outlined.ErrorOutline, message = errorMessage)
+        }
+
         Spacer(modifier = Modifier.height(Spacing.lg))
-        SonrisasPrimaryButton(text = "Entrar", onClick = { onLogin(email, password) })
+        SonrisasPrimaryButton(
+            text = if (isLoading) "Entrando..." else "Entrar",
+            enabled = !isLoading,
+            onClick = { onLogin(email, password) },
+        )
         Spacer(modifier = Modifier.height(Spacing.sm))
         // el text link nos permite ya no forzar el ancho
         SonrisasTextLink(

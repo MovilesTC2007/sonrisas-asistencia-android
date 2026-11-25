@@ -6,8 +6,7 @@
    See https://developer.android.com/about/versions/12/backup-restore
 -->
 <full-backup-content>
-    <!--
-   <include domain="sharedpref" path="."/>
-   <exclude domain="sharedpref" path="device.xml"/>
--->
+    <!-- La llave del Keystore no viaja con el respaldo, asi que restaurar este
+         archivo en otro dispositivo solo dejaria un cifrado indescifrable. -->
+    <exclude domain="sharedpref" path="auth_secure_prefs.xml"/>
 </full-backup-content>
